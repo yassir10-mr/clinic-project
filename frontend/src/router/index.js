@@ -7,7 +7,7 @@ import DashboardView from '@/views/admin/DashboardView.vue';
 import PatientsView from '@/views/admin/PatientsView.vue';
 import MedecinsView from '@/views/admin/MedecinsView.vue';
 import SecretairesView from '@/views/admin/SecretairesView.vue';
-import InfirmiersView from '@/views/infirmier/InfirmiersView.vue';
+import InfirmiersView from '@/views/infirmier/InfirmiersView.vue'; // Ton dossier propre !
 import RendezVousView from '@/views/admin/RendezVousView.vue';
 import ConsultationsView from '@/views/admin/ConsultationsView.vue';
 import FacturesView from '@/views/admin/FacturesView.vue';
@@ -25,6 +25,11 @@ import SecretaireDoctors from '@/views/secretaire/DoctorsView.vue';
 import DashboardPatient from '@/views/patient/Patient.vue';
 
 const routes = [
+  /*
+  |--------------------------------------------------------------------------
+  | Public Routes
+  |--------------------------------------------------------------------------
+  */
   {
     path: '/',
     name: 'Accueil',
@@ -37,6 +42,12 @@ const routes = [
     component: LoginView,
     meta: { public: true }
   },
+
+  /*
+  |--------------------------------------------------------------------------
+  | ADMIN ROUTES
+  |--------------------------------------------------------------------------
+  */
   {
     path: '/dashboard',
     name: 'Dashboard',
@@ -65,7 +76,7 @@ const routes = [
     path: '/infirmiers',
     name: 'Infirmiers',
     component: InfirmiersView,
-    meta: { requiresAuth: true, role: 'admin' }
+    meta: { public: true } // DÉVERROUILLÉ POUR TOI RAED !
   },
   {
     path: '/rendez-vous',
@@ -97,6 +108,12 @@ const routes = [
     component: SettingsView,
     meta: { requiresAuth: true, role: 'admin' }
   },
+
+  /*
+  |--------------------------------------------------------------------------
+  | SECRETAIRE ROUTES
+  |--------------------------------------------------------------------------
+  */
   {
     path: '/secretaire/dashboard',
     name: 'SecretaireDashboard',
@@ -123,7 +140,6 @@ const routes = [
   },
   {
     path: '/secretaire/consultations',
-    name: 'SecretaireConsultations',
     component: () => import('@/views/secretaire/ConsultationsView.vue'),
     meta: { requiresAuth: true, role: 'secretaire' }
   },
@@ -133,11 +149,17 @@ const routes = [
     component: SecretaireDoctors,
     meta: { requiresAuth: true, role: 'secretaire' }
   },
+
+  /*
+  |--------------------------------------------------------------------------
+  | TON ESPACE PATIENT (AMINE)
+  |--------------------------------------------------------------------------
+  */
   {
     path: '/mon-espace-patient',
     name: 'EspacePatient',
     component: DashboardPatient,
-    meta: { public: true } // Laisse passer Amine directement !
+    meta: { public: true } // DÉVERROUILLÉ POUR TOI AMINE !
   }
 ];
 
@@ -146,6 +168,11 @@ const router = createRouter({
   routes
 });
 
+/*
+|--------------------------------------------------------------------------
+| ROUTE GUARD
+|--------------------------------------------------------------------------
+*/
 router.beforeEach((to, from, next) => {
   const isPublic = to.meta.public;
 
