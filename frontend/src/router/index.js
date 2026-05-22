@@ -7,7 +7,6 @@ import DashboardView from '@/views/admin/DashboardView.vue';
 import PatientsView from '@/views/admin/PatientsView.vue';
 import MedecinsView from '@/views/admin/MedecinsView.vue';
 import SecretairesView from '@/views/admin/SecretairesView.vue';
-import InfirmiersView from '@/views/infirmier/InfirmiersView.vue'; // Ton dossier propre !
 import RendezVousView from '@/views/admin/RendezVousView.vue';
 import ConsultationsView from '@/views/admin/ConsultationsView.vue';
 import FacturesView from '@/views/admin/FacturesView.vue';
@@ -20,6 +19,13 @@ import SecretairePatients from '@/views/secretaire/PatientsView.vue';
 import SecretaireAppointments from '@/views/secretaire/AppointmentsView.vue';
 import SecretaireInvoices from '@/views/secretaire/InvoicesView.vue';
 import SecretaireDoctors from '@/views/secretaire/DoctorsView.vue';
+
+// Infirmier layout + views
+import InfirmierLayout from '@/layouts/InfirmierLayout.vue';
+import InfirmierDashboard from '@/views/infirmier/DashboardView.vue';
+import InfirmierPatients from '@/views/infirmier/PatientsView.vue';
+import InfirmierAppointments from '@/views/infirmier/AppointmentsView.vue';
+import InfirmierMedicalRecords from '@/views/infirmier/MedicalRecordsView.vue';
 
 // --- TON IMPORT PATIENT (AMINE) ---
 import DashboardPatient from '@/views/patient/Patient.vue';
@@ -72,11 +78,21 @@ const routes = [
     component: SecretairesView,
     meta: { requiresAuth: true, role: 'admin' }
   },
+  /*
+  |--------------------------------------------------------------------------
+  | INFIRMIER ROUTES (LAYOUT DÉDIÉ)
+  |--------------------------------------------------------------------------
+  */
   {
-    path: '/infirmiers',
-    name: 'Infirmiers',
-    component: InfirmiersView,
-    meta: { public: true } // DÉVERROUILLÉ POUR TOI RAED !
+    path: '/infirmier',
+    component: InfirmierLayout,
+    meta: { requiresAuth: true, role: 'infirmier' },
+    children: [
+      { path: 'dashboard', name: 'InfirmierDashboard', component: InfirmierDashboard },
+      { path: 'patients', name: 'InfirmierPatients', component: InfirmierPatients },
+      { path: 'appointments', name: 'InfirmierAppointments', component: InfirmierAppointments },
+      { path: 'medical-records', name: 'InfirmierMedicalRecords', component: InfirmierMedicalRecords },
+    ]
   },
   {
     path: '/rendez-vous',
@@ -185,6 +201,7 @@ router.beforeEach((to, from, next) => {
     const requiredRole = to.meta.role;
     const token =
       localStorage.getItem(`${requiredRole}_token`) ||
+      localStorage.getItem('infirmier_token') ||
       localStorage.getItem('token');
 
     if (!token) {
@@ -203,6 +220,10 @@ router.beforeEach((to, from, next) => {
         next('/secretaire/dashboard');
         return;
       }
+      if (userRole === 'infirmier') {
+        next('/infirmier/dashboard');
+        return;
+      }
       next('/login');
       return;
     }
@@ -211,6 +232,7 @@ router.beforeEach((to, from, next) => {
   if (to.path === '/login') {
     const adminToken = localStorage.getItem('admin_token');
     const secretaireToken = localStorage.getItem('secretaire_token');
+    const infirmierToken = localStorage.getItem('infirmier_token');
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('user_role');
 
@@ -223,10 +245,19 @@ router.beforeEach((to, from, next) => {
         next('/secretaire/dashboard');
         return;
       }
+      if (role === 'infirmier') {
+        next('/infirmier/dashboard');
+        return;
+      }
     }
 
     if (secretaireToken) {
       next('/secretaire/dashboard');
+      return;
+    }
+
+    if (infirmierToken) {
+      next('/infirmier/dashboard');
       return;
     }
   }

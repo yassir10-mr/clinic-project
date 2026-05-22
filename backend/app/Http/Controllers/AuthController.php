@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Admin;
-use Illuminate\Validation\ValidationException;
+use App\Models\Infirmier;
+use App\Models\Patient;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    // ==================== LOGIN ADMIN ====================
     public function login(Request $request)
     {
         $request->validate([
@@ -17,16 +21,11 @@ class AuthController extends Controller
 
         $admin = Admin::where('email', $request->email)->first();
 
-        // 🔥 COMPARAISON EN TEXTE CLAIR (pas de Hash::check)
         if (!$admin || $admin->mot_de_passe !== $request->password) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid credentials'
-            ], 401);
+            return response()->json(['success' => false, 'message' => 'Invalid credentials'], 401);
         }
 
-        // Créer un token Sanctum
-        $token = $admin->createToken('admin-token')->plainTextToken;
+        $token = bin2hex(random_bytes(40)); // Token de démo robuste
 
         return response()->json([
             'success' => true,
@@ -35,81 +34,87 @@ class AuthController extends Controller
                 'id' => $admin->id_admin,
                 'nom' => $admin->nom,
                 'prenom' => $admin->prenom,
-                'email' => $admin->email
+                'email' => $admin->email,
+                'role' => 'admin'
             ]
         ]);
     }
 
-    public function logout(Request $request)
+    // ==================== LOGIN INFIRMIER ====================
+    public function loginInfirmier(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
-        return response()->json([
-            'success' => true,
-            'message' => 'Logged out'
-        ]);
-    }
+        try {
+            $request->validate([
+                'email' => 'required|email',
+                'password' => 'required'
+            ]);
 
-    public function user(Request $request)
-    {
-        return response()->json([
-            'success' => true,
-            'user' => $request->user()
-        ]);
-    }
+            $infirmier = Infirmier::where('email', $request->email)->first();
 
-    // ==================== UPDATE PROFILE ====================
-    public function updateProfile(Request $request)
-    {
-        $request->validate([
-            'nom' => 'required|string|max:255',
-            'prenom' => 'required|string|max:255',
-            'email' => 'required|email|unique:admin,email,' . $request->user()->id_admin . ',id_admin',
-        ]);
+            if (!$infirmier) {
+                return response()->json(['success' => false, 'message' => 'Infirmier introuvable'], 401);
+            }
 
-        $admin = $request->user();
-        $admin->update([
-            'nom' => $request->nom,
-            'prenom' => $request->prenom,
-            'email' => $request->email,
-        ]);
+            $passwordValide = ($infirmier->mot_de_passe === $request->password) || Hash::check($request->password, $infirmier->mot_de_passe);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Profile updated successfully',
-            'user' => [
-                'id_admin' => $admin->id_admin,
-                'nom' => $admin->nom,
-                'prenom' => $admin->prenom,
-                'email' => $admin->email
-            ]
-        ]);
-    }
+            if (!$passwordValide) {
+                return response()->json(['success' => false, 'message' => 'Mot de passe incorrect'], 401);
+            }
 
-    // ==================== CHANGE PASSWORD ====================
-    public function changePassword(Request $request)
-    {
-        $request->validate([
-            'current_password' => 'required',
-            'new_password' => 'required|min:3',
-        ]);
+            $token = bin2hex(random_bytes(40));
 
-        $admin = $request->user();
-
-        // Vérifier le mot de passe actuel (texte clair)
-        if (trim($admin->mot_de_passe) !== $request->current_password) {
             return response()->json([
-                'success' => false,
-                'message' => 'Current password is incorrect'
-            ], 401);
+                'success' => true,
+                'token' => $token,
+                'user' => [
+                    'id' => $infirmier->id_infirmier,
+                    'nom' => $infirmier->nom,
+                    'prenom' => $infirmier->prenom,
+                    'email' => $infirmier->email,
+                    'role' => 'infirmier'
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
+    }
 
-        $admin->update([
-            'mot_de_passe' => $request->new_password
-        ]);
+    // ==================== LOGIN PATIENT ====================
+    public function loginPatient(Request $request)
+    {
+        try {
+            $request->validate([
+                'email' => 'required|email',
+                'password' => 'required'
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Password updated successfully'
-        ]);
+            $patient = Patient::where('email', $request->email)->first();
+
+            if (!$patient) {
+                return response()->json(['success' => false, 'message' => 'Patient introuvable'], 401);
+            }
+
+            $passwordValide = ($patient->mot_de_passe === $request->password) || Hash::check($request->password, $patient->mot_de_passe);
+
+            if (!$passwordValide) {
+                return response()->json(['success' => false, 'message' => 'Mot de passe incorrect'], 401);
+            }
+
+            $token = bin2hex(random_bytes(40));
+
+            return response()->json([
+                'success' => true,
+                'token' => $token,
+                'user' => [
+                    'id' => $patient->id_patient,
+                    'nom' => $patient->nom,
+                    'prenom' => $patient->prenom,
+                    'email' => $patient->email,
+                    'role' => 'patient'
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 }

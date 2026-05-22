@@ -1,7 +1,7 @@
 <<template>
   <div class="app">
-    <!-- Sidebar -->
-    <aside v-if="isLoggedIn && !isAuthPage" class="sidebar">
+    <!-- Sidebar (hidden on pages with dedicated layout) -->
+    <aside v-if="isLoggedIn && !isAuthPage && !isDedicatedLayoutPage" class="sidebar">
       <!-- Logo -->
       <div class="sidebar-logo">
         <div class="logo-icon-small">
@@ -64,9 +64,9 @@
     </aside>
 
     <!-- Main -->
-    <main :class="['main-content', isAuthPage ? 'full-width' : '']">
-      <!-- Header -->
-      <header v-if="isLoggedIn && !isAuthPage" class="top-header">
+    <main :class="['main-content', isAuthPage || isDedicatedLayoutPage ? 'full-width' : '']">
+      <!-- Header (hidden on pages with dedicated layout) -->
+      <header v-if="isLoggedIn && !isAuthPage && !isDedicatedLayoutPage" class="top-header">
         <div class="header-actions">
           <div class="header-profile">
             <span class="header-name">{{ userFullName }}</span>
@@ -76,7 +76,7 @@
       </header>
 
       <!-- Content -->
-      <div :class="['content-area', isAuthPage ? 'auth-page' : '']">
+      <div :class="['content-area', isAuthPage ? 'auth-page' : '', isDedicatedLayoutPage ? 'no-padding' : '']">
         <router-view />
       </div>
     </main>
@@ -94,9 +94,14 @@ const route = useRoute();
 const showProfileMenu = ref(false);
 const profileRef = ref(null);
 
-// Hide sidebar on login/landing pages
+// Hide sidebar on login/landing pages OR on pages with their own dedicated layout
 const isAuthPage = computed(() => {
   return ['/login', '/', '/accueil'].includes(route.path);
+});
+
+const isDedicatedLayoutPage = computed(() => {
+  // Routes that have their own layout (infirmier, patient, etc.)
+  return route.path.startsWith('/infirmier');
 });
 
 // Auth
@@ -104,6 +109,7 @@ const isLoggedIn = computed(() => {
   return (
     !!localStorage.getItem('admin_token') ||
     !!localStorage.getItem('secretaire_token') ||
+    !!localStorage.getItem('infirmier_token') ||
     !!localStorage.getItem('token')
   );
 });
@@ -115,15 +121,17 @@ const userRole = computed(() => {
 const isAdmin = computed(() => userRole.value === 'admin');
 
 const userRoleLabel = computed(() => {
-  return userRole.value === 'admin' ? 'Admin' : 'Secrétaire';
+  if (userRole.value === 'admin') return 'Admin';
+  if (userRole.value === 'infirmier') return 'Nurse';
+  return 'Secrétaire';
 });
 
 // User data
 const userData = computed(() => {
-  const key =
-    userRole.value === 'admin'
-      ? 'admin_user'
-      : 'secretaire_user';
+  let key = 'user';
+  if (userRole.value === 'admin') key = 'admin_user';
+  else if (userRole.value === 'secretaire') key = 'secretaire_user';
+  else if (userRole.value === 'infirmier') key = 'infirmier_user';
 
   const user =
     localStorage.getItem(key) ||
@@ -203,6 +211,8 @@ const handleLogout = async () => {
   localStorage.removeItem('admin_user');
   localStorage.removeItem('secretaire_token');
   localStorage.removeItem('secretaire_user');
+  localStorage.removeItem('infirmier_token');
+  localStorage.removeItem('infirmier_user');
   localStorage.removeItem('user_role');
   localStorage.removeItem('token');
   localStorage.removeItem('user');
@@ -448,13 +458,16 @@ html, body {
   margin-left: 260px;
   display: flex;
   flex-direction: column;
-  height: 100vh; /* Full height */
-  overflow: hidden; /* Prevent scroll here, handle in content-area */
+  height: 100vh;
+  overflow: hidden;
+  width: calc(100% - 260px);
+  max-width: none;
 }
 
-/* Full width for auth pages (login/accueil) */
+/* Full width for auth pages and dedicated layouts */
 .main-content.full-width {
   margin-left: 0;
+  width: 100%;
 }
 
 /* ========== TOP HEADER ========== */
@@ -512,6 +525,12 @@ html, body {
 .content-area.auth-page {
   padding: 0;
   overflow-y: auto; /* Keep scroll for auth pages too */
+}
+
+/* No padding for pages with dedicated layout (infirmier, etc.) */
+.content-area.no-padding {
+  padding: 0;
+  overflow-y: hidden;
 }
 
 /* ========== RESPONSIVE ========== */

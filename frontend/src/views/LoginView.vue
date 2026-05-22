@@ -14,7 +14,7 @@
       <h2 class="welcome">Welcome Back</h2>
       <p class="subtitle">Sign in to access your dashboard</p>
 
-      <!-- Role Selector (Mis à jour avec TOUS les rôles !) -->
+      <!-- Role Selector (TOUS les rôles !) -->
       <div class="grid grid-cols-2 gap-2 mb-6">
         <button 
           :class="['role-btn', { active: role === 'admin' }]" 
@@ -55,7 +55,7 @@
             <input 
               v-model="form.email" 
               type="email" 
-              :placeholder="role === 'admin' ? 'admin@clinic.com' : role === 'secretaire' ? 'secretaire@clinic.com' : role === 'infirmier' ? 'infirmier@clinic.com' : 'patient@clinic.com'"
+              :placeholder="role === 'admin' ? 'admin@clinic.com' : role === 'secretaire' ? 'secretaire@clinic.com' : role === 'infirmier' ? 'raed@clinic.com' : 'jean.dupont@email.com'"
               required 
             />
           </div>
@@ -120,41 +120,54 @@ const handleLogin = async () => {
   error.value = '';
   
   try {
-    // Si c'est l'infirmier ou le patient, on fait une redirection simplifiée pour le moment
-    if (role.value === 'infirmier') {
-      router.push('/infirmiers');
-      return;
-    }
-    if (role.value === 'patient') {
-      router.push('/mon-espace-patient');
-      return;
-    }
+    console.log('🔑 Envoi de la demande de connexion...', { email: form.value.email, role: role.value });
+    
+    // 1. Définir le bon endpoint selon le rôle sélectionné
+    let endpoint = '/admin/login';
+    if (role.value === 'secretaire') endpoint = '/secretaire/login';
+    if (role.value === 'infirmier') endpoint = '/login/infirmier'; 
+    if (role.value === 'patient') endpoint = '/login/patient';     
 
-    // Sinon, on passe par l'authentification de Yassir
-    const endpoint = role.value === 'admin' ? '/admin/login' : '/secretaire/login';
+    // 2. Faire le vrai appel API sécurisé au backend Laravel
     const response = await api.post(endpoint, {
       email: form.value.email,
       password: form.value.password
     });
     
+    console.log(' Connexion réussie ! Réponse du serveur :', response.data);
+    
+    // 3. Enregistrer les jetons de sécurité dans le navigateur (localStorage)
     if (response.data.success && response.data.token) {
-      const tokenKey = role.value === 'admin' ? 'admin_token' : 'secretaire_token';
-      const userKey = role.value === 'admin' ? 'admin_user' : 'secretaire_user';
+      const tokenKey = `${role.value}_token`;
+      const userKey = `${role.value}_user`;
       
       localStorage.setItem(tokenKey, response.data.token);
       localStorage.setItem(userKey, JSON.stringify(response.data.user));
+      localStorage.setItem('token', response.data.token); // Jeton de secours
       localStorage.setItem('user_role', role.value);
       
       api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
       
+      if (rememberMe.value) {
+        localStorage.setItem('remember', 'true');
+      }
+      
+      // 4. Rediriger dynamiquement l'utilisateur vers son espace !
       if (role.value === 'admin') {
         router.push('/dashboard');
-      } else {
+      } else if (role.value === 'secretaire') {
         router.push('/secretaire/dashboard');
+      } else if (role.value === 'infirmier') {
+        router.push('/infirmier/dashboard'); // Redirige vers TON espace !
+      } else if (role.value === 'patient') {
+        router.push('/mon-espace-patient'); // Redirige vers l'espace d'Amine !
       }
+    } else {
+      error.value = 'Jeton de sécurité non reçu du serveur.';
     }
   } catch (err) {
-    error.value = 'Unable to sign in. Please verify your credentials and try again.';
+    console.error('❌ Erreur de connexion :', err);
+    error.value = 'Email ou mot de passe incorrect. Veuillez réessayer.';
   } finally {
     loading.value = false;
   }
@@ -162,7 +175,6 @@ const handleLogin = async () => {
 </script>
 
 <style scoped>
-/* Conserver tout le superbe CSS d'origine de Yassir */
 .login-page {
   min-height: 100vh;
   display: flex;

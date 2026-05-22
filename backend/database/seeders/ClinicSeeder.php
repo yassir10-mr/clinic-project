@@ -53,6 +53,7 @@ class ClinicSeeder extends Seeder
             'telephone' => '0601020304', 
             'email' => 'jean.dupont@email.com', 
             'groupe_sanguin' => 'O+',
+            'statut' => 'active',
             'mot_de_passe' => Hash::make('password') // <-- AJOUTÉ ICI !
         ]);
 
@@ -65,6 +66,7 @@ class ClinicSeeder extends Seeder
             'telephone' => '0612345678', 
             'email' => 'meryem.c@email.com', 
             'groupe_sanguin' => 'A+',
+            'statut' => 'inactive',
             'mot_de_passe' => Hash::make('password') // <-- AJOUTÉ ICI !
         ]);
 

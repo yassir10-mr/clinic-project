@@ -12,10 +12,11 @@ const api = axios.create({
 
 // ==================== REQUEST INTERCEPTOR ====================
 api.interceptors.request.use((config) => {
-    // Support admin + secretaire tokens
+    // Support admin + secretaire + infirmier tokens
     const token =
         localStorage.getItem('admin_token') ||
         localStorage.getItem('secretaire_token') ||
+        localStorage.getItem('infirmier_token') ||
         localStorage.getItem('token');
 
     if (token) {
@@ -38,6 +39,9 @@ api.interceptors.response.use(
 
             localStorage.removeItem('secretaire_token');
             localStorage.removeItem('secretaire_user');
+
+            localStorage.removeItem('infirmier_token');
+            localStorage.removeItem('infirmier_user');
 
             localStorage.removeItem('token');
             localStorage.removeItem('user');
@@ -202,5 +206,27 @@ export const deleteFacture = (id) =>
 // ==================== DASHBOARD ====================
 export const getDashboardStats = () =>
     api.get(`${getBasePath()}/dashboard`);
+
+// ==================== INFIRMIER ====================
+export const loginInfirmier = (credentials) =>
+    api.post('/login/infirmier', credentials);
+
+export const getInfirmierDashboard = () =>
+    api.get('/infirmier/dashboard');
+
+export const getInfirmierConsultations = () =>
+    api.get('/infirmier/consultations');
+
+export const getInfirmierPatients = () =>
+    api.get('/infirmier/patients');
+
+export const getInfirmierAppointments = () =>
+    api.get('/infirmier/appointments');
+
+export const getInfirmierMedicalRecords = () =>
+    api.get('/infirmier/medical-records');
+
+export const saveInfirmierObservations = (data) =>
+    api.post('/infirmier/observations', data);
 
 export default api;

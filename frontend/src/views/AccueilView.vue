@@ -2,7 +2,10 @@
   <div class="accueil">
     <!-- Header avec bouton login -->
     <header class="header">
-      <div class="logo">🏥 MediCare</div>
+      <div class="header-logo">
+        <img :src="logoImage" alt="MediCare" class="logo-img" />
+        <span class="logo-text">MediCare</span>
+      </div>
       <div class="nav-buttons">
         <router-link to="/login" class="btn-login">Sign In</router-link>
       </div>
@@ -53,6 +56,10 @@
   </div>
 </template>
 
+<script setup>
+import logoImage from '@/assets/logo-medicare.png';
+</script>
+
 <style scoped>
 .accueil {
   min-height: 100vh;
@@ -69,10 +76,24 @@
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.logo {
-  font-size: 24px;
-  font-weight: 700;
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+
+.logo-text {
+  font-family: 'Playfair Display', 'Times New Roman', Georgia, serif;
+  font-size: 28px;
+  font-weight: 800;
   color: #1e293b;
+  letter-spacing: -0.5px;
 }
 
 .nav-buttons {
