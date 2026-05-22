@@ -144,8 +144,8 @@ const loadDashboard = async () => {
 }
 
 const formatMoney = (amount) => {
-  if (!amount) return '$0'
-  return '$' + Number(amount).toLocaleString()
+  if (!amount) return '0MAD'
+  return 'MAD' + Number(amount).toLocaleString()
 }
 
 const formatTime = (time) => {

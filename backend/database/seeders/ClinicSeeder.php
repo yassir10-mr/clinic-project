@@ -4,8 +4,13 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+<<<<<<< HEAD
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+=======
+use Illuminate\Support\Facades\Hash; 
+use Carbon\Carbon; 
+>>>>>>> bfba969a4bbe0250ddd56d34b3d2e17d2e589261
 
 class ClinicSeeder extends Seeder
 {
@@ -43,7 +48,7 @@ class ClinicSeeder extends Seeder
             ],
         ]);
 
-        // 4. Ajouter des Patients
+        // 4. Ajouter des Patients (Avec les nouveaux mots de passe !)
         $patient1 = DB::table('patient')->insertGetId([
             'nom' => 'Dupont', 
             'prenom' => 'Jean', 
@@ -53,7 +58,11 @@ class ClinicSeeder extends Seeder
             'telephone' => '0601020304', 
             'email' => 'jean.dupont@email.com', 
             'groupe_sanguin' => 'O+',
+<<<<<<< HEAD
             'mot_de_passe' => Hash::make('password')
+=======
+            'mot_de_passe' => Hash::make('password') // <-- AJOUTÉ ICI !
+>>>>>>> bfba969a4bbe0250ddd56d34b3d2e17d2e589261
         ]);
 
         $patient2 = DB::table('patient')->insertGetId([
@@ -65,7 +74,11 @@ class ClinicSeeder extends Seeder
             'telephone' => '0612345678', 
             'email' => 'meryem.c@email.com', 
             'groupe_sanguin' => 'A+',
+<<<<<<< HEAD
             'mot_de_passe' => Hash::make('password')
+=======
+            'mot_de_passe' => Hash::make('password') // <-- AJOUTÉ ICI !
+>>>>>>> bfba969a4bbe0250ddd56d34b3d2e17d2e589261
         ]);
 
         // 5. Ajouter des Rendez-vous POUR AUJOURD'HUI

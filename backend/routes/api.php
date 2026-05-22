@@ -126,54 +126,32 @@ Route::middleware('auth:sanctum')->prefix('secretaire')->group(function () {
     Route::post('/logout', [SecretaireController::class, 'logout']);
     Route::get('/profile', [SecretaireController::class, 'profile']);
 
-    /*
-    |--------------------------------------------------------------------------
-    | PATIENTS
-    |--------------------------------------------------------------------------
-    */
-
+    // Patients
     Route::get('/patients', [SecretaireController::class, 'getPatients']);
     Route::post('/patients', [SecretaireController::class, 'addPatient']);
     Route::put('/patients/{id}', [SecretaireController::class, 'updatePatient']);
     Route::delete('/patients/{id}', [SecretaireController::class, 'deletePatient']);
 
-    /*
-    |--------------------------------------------------------------------------
-    | RENDEZ-VOUS
-    |--------------------------------------------------------------------------
-    */
-
+    // Rendez-vous
     Route::get('/rendez-vous', [SecretaireController::class, 'getRendezVous']);
     Route::post('/rendez-vous', [SecretaireController::class, 'addRendezVous']);
     Route::put('/rendez-vous/{id}', [SecretaireController::class, 'updateRendezVous']);
     Route::delete('/rendez-vous/{id}', [SecretaireController::class, 'deleteRendezVous']);
     Route::patch('/rendez-vous/{id}/status', [SecretaireController::class, 'updateRendezVousStatus']);
 
-    /*
-    |--------------------------------------------------------------------------
-    | MEDECINS
-    |--------------------------------------------------------------------------
-    */
-
+    // Medecins
     Route::get('/medecins', [SecretaireController::class, 'getMedecins']);
 
-    /*
-    |--------------------------------------------------------------------------
-    | FACTURES
-    |--------------------------------------------------------------------------
-    */
+    // 🔥 ADD THIS: Consultations
+    Route::get('/consultations', [SecretaireController::class, 'getConsultations']);
 
+    // Factures
     Route::get('/factures', [SecretaireController::class, 'getFactures']);
     Route::post('/factures', [SecretaireController::class, 'addFacture']);
     Route::put('/factures/{id}', [SecretaireController::class, 'updateFacture']);
     Route::delete('/factures/{id}', [SecretaireController::class, 'deleteFacture']);
 
-    /*
-    |--------------------------------------------------------------------------
-    | DASHBOARD
-    |--------------------------------------------------------------------------
-    */
-
+    // Dashboard
     Route::get('/dashboard', [SecretaireController::class, 'getDashboardStats']);
 
     /*
@@ -196,3 +174,10 @@ Route::middleware('auth:sanctum')->prefix('secretaire')->group(function () {
 */
 
 Route::get('/infirmier/consultations', [InfirmierController::class, 'getConsultationsDuJour']);
+
+
+use App\Http\Controllers\PatientController;
+
+Route::get('/patient/{id}/consultations', [PatientController::class, 'getMesConsultations']);
+Route::get('/patient/{id}/factures', [PatientController::class, 'getMesFactures']);
+Route::post('/patient/prendre-rdv', [PatientController::class, 'prendreRDV']);

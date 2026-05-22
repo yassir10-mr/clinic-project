@@ -172,6 +172,7 @@ export const updateRendezVousStatus = (id, status) => {
 };
 
 // ==================== CONSULTATIONS ====================
+
 export const getConsultations = () => {
     const role = getRole();
 

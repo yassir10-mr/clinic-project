@@ -17,7 +17,7 @@
       <div class="stat-card">
         <div class="stat-info">
           <span class="stat-label">Total Revenue</span>
-          <span class="stat-value">${{ formatNumber(montantTotal) }}</span>
+          <span class="stat-value">MAD{{ formatNumber(montantTotal) }}</span>
         </div>
         <div class="stat-icon blue">
           <i class="fas fa-dollar-sign"></i>
@@ -27,7 +27,7 @@
       <div class="stat-card">
         <div class="stat-info">
           <span class="stat-label">Paid</span>
-          <span class="stat-value green">${{ formatNumber(montantPaye) }}</span>
+          <span class="stat-value green">MAD{{ formatNumber(montantPaye) }}</span>
         </div>
         <div class="stat-icon green">
           <i class="fas fa-check-circle"></i>
@@ -37,7 +37,7 @@
       <div class="stat-card">
         <div class="stat-info">
           <span class="stat-label">Pending</span>
-          <span class="stat-value orange">${{ formatNumber(montantPending) }}</span>
+          <span class="stat-value orange">MAD{{ formatNumber(montantPending) }}</span>
         </div>
         <div class="stat-icon orange">
           <i class="fas fa-clock"></i>
@@ -47,7 +47,7 @@
       <div class="stat-card">
         <div class="stat-info">
           <span class="stat-label">Overdue</span>
-          <span class="stat-value red">${{ formatNumber(montantOverdue) }}</span>
+          <span class="stat-value red">MAD{{ formatNumber(montantOverdue) }}</span>
         </div>
         <div class="stat-icon red">
           <i class="fas fa-file-invoice-dollar"></i>
@@ -87,7 +87,7 @@
               </div>
             </td>
             <td>{{ formatDate(facture.date) }}</td>
-            <td class="amount">${{ facture.montant_total }}</td>
+            <td class="amount">MAD{{ facture.montant_total }}</td>
             <td>
               <span :class="['status-badge', getStatusClass(facture.statut_paiement)]">
                 {{ getStatusLabel(facture.statut_paiement) }}
@@ -192,7 +192,7 @@
           </div>
           <div class="detail-row">
             <span class="detail-label">Amount:</span>
-            <span class="detail-value amount">${{ selectedFacture.montant_total }}</span>
+            <span class="detail-value amount">MAD{{ selectedFacture.montant_total }}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Status:</span>
@@ -836,401 +836,9 @@ const resetForm = () => {
   }
 }
 </style>
-<<template>
-  <div class="page">
-    <!-- Page Header -->
-    <div class="page-header">
-      <div>
-        <h1 class="page-title">Invoices</h1>
-        <p class="page-subtitle">Manage billing and payments</p>
-      </div>
-      <button @click="openAddModal" class="btn-generate">
-        <i class="fas fa-file-invoice"></i>
-        Generate Invoice
-      </button>
-    </div>
 
-    <!-- Stats Cards -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-info">
-          <span class="stat-label">Total Revenue</span>
-          <span class="stat-value">${{ formatNumber(montantTotal) }}</span>
-        </div>
-        <div class="stat-icon blue">
-          <i class="fas fa-dollar-sign"></i>
-        </div>
-      </div>
 
-      <div class="stat-card">
-        <div class="stat-info">
-          <span class="stat-label">Paid</span>
-          <span class="stat-value green">${{ formatNumber(montantPaye) }}</span>
-        </div>
-        <div class="stat-icon green">
-          <i class="fas fa-check-circle"></i>
-        </div>
-      </div>
 
-      <div class="stat-card">
-        <div class="stat-info">
-          <span class="stat-label">Pending</span>
-          <span class="stat-value orange">${{ formatNumber(montantPending) }}</span>
-        </div>
-        <div class="stat-icon orange">
-          <i class="fas fa-clock"></i>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-info">
-          <span class="stat-label">Overdue</span>
-          <span class="stat-value red">${{ formatNumber(montantOverdue) }}</span>
-        </div>
-        <div class="stat-icon red">
-          <i class="fas fa-file-invoice-dollar"></i>
-        </div>
-      </div>
-    </div>
-
-    <!-- Invoices Table -->
-    <div class="table-container">
-      <h3 class="table-title">All Invoices</h3>
-      
-      <div v-if="loading" class="loading-state">
-        <div class="spinner"></div>
-        <span>Loading invoices...</span>
-      </div>
-
-      <table v-else-if="filteredFactures.length > 0" class="data-table">
-        <thead>
-          <tr>
-            <th>Invoice ID</th>
-            <th>Patient Name</th>
-            <th>Date</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="facture in filteredFactures" :key="facture.id_facture">
-            <td>
-              <span class="invoice-id">INV-{{ String(facture.id_facture).padStart(3, '0') }}</span>
-            </td>
-            <td>
-              <div class="patient-name">
-                {{ facture.consultation?.rendez_vous?.patient?.prenom || '' }} 
-                {{ facture.consultation?.rendez_vous?.patient?.nom || 'Unknown' }}
-              </div>
-            </td>
-            <td>{{ formatDate(facture.date) }}</td>
-            <td class="amount">${{ facture.montant_total }}</td>
-            <td>
-              <span :class="['status-badge', getStatusClass(facture.statut_paiement)]">
-                {{ getStatusLabel(facture.statut_paiement) }}
-              </span>
-            </td>
-            <td>
-              <div class="action-buttons">
-                <button @click="viewFacture(facture)" class="btn-action btn-view">
-                  <i class="fas fa-eye"></i>
-                  View
-                </button>
-                <button @click="downloadPDF(facture)" class="btn-action btn-pdf">
-                  <i class="fas fa-download"></i>
-                  PDF
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div v-else class="empty-state">
-        <i class="fas fa-file-invoice-dollar empty-icon"></i>
-        <p>No invoices found</p>
-      </div>
-    </div>
-
-    <!-- Add/Edit Modal -->
-    <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
-      <div class="modal">
-        <div class="modal-header">
-          <h2>{{ isEditing ? '✏️ Edit Invoice' : '➕ Generate Invoice' }}</h2>
-          <button @click="closeModal" class="btn-close">&times;</button>
-        </div>
-        <form @submit.prevent="saveFacture" class="modal-form">
-          <div class="form-row">
-            <div class="form-group">
-              <label>Consultation ID *</label>
-              <input v-model="form.id_consultation" type="number" placeholder="e.g. 1" required />
-            </div>
-            <div class="form-group">
-              <label>Date *</label>
-              <input v-model="form.date" type="date" required />
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Amount *</label>
-              <input v-model="form.montant_total" type="number" step="0.01" placeholder="250.00" required />
-            </div>
-            <div class="form-group">
-              <label>Status</label>
-              <select v-model="form.statut_paiement">
-                <option value="non payé">Pending</option>
-                <option value="payé">Paid</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Payment Method</label>
-            <select v-model="form.mode_paiement">
-              <option value="">-- Select --</option>
-              <option value="Cash">Cash</option>
-              <option value="Credit Card">Credit Card</option>
-              <option value="Check">Check</option>
-              <option value="Bank Transfer">Bank Transfer</option>
-            </select>
-          </div>
-          <div class="modal-footer">
-            <button type="button" @click="closeModal" class="btn-cancel">Cancel</button>
-            <button type="submit" class="btn-save">
-              <i class="fas fa-check"></i>
-              {{ isEditing ? 'Update' : 'Generate' }}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- View Modal -->
-    <div v-if="showViewModal" class="modal-overlay" @click.self="showViewModal = false">
-      <div class="modal modal-view">
-        <div class="modal-header">
-          <h2>Invoice Details</h2>
-          <button @click="showViewModal = false" class="btn-close">&times;</button>
-        </div>
-        <div class="invoice-details" v-if="selectedFacture">
-          <div class="detail-row">
-            <span class="detail-label">Invoice ID:</span>
-            <span class="detail-value">INV-{{ String(selectedFacture.id_facture).padStart(3, '0') }}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Patient:</span>
-            <span class="detail-value">
-              {{ selectedFacture.consultation?.rendez_vous?.patient?.prenom || '' }} 
-              {{ selectedFacture.consultation?.rendez_vous?.patient?.nom || 'Unknown' }}
-            </span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Date:</span>
-            <span class="detail-value">{{ formatDate(selectedFacture.date) }}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Amount:</span>
-            <span class="detail-value amount">${{ selectedFacture.montant_total }}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Status:</span>
-            <span :class="['status-badge', getStatusClass(selectedFacture.statut_paiement)]">
-              {{ getStatusLabel(selectedFacture.statut_paiement) }}
-            </span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Payment Method:</span>
-            <span class="detail-value">{{ selectedFacture.mode_paiement || 'N/A' }}</span>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button @click="showViewModal = false" class="btn-cancel">Close</button>
-          <button @click="downloadPDF(selectedFacture)" class="btn-save">
-            <i class="fas fa-download"></i>
-            Download PDF
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
-<script setup>
-import { ref, onMounted, computed } from 'vue';
-import { getFactures, addFacture, updateFacture, deleteFacture as apiDeleteFacture } from '@/services/api.js';
-
-const factures = ref([]);
-const loading = ref(false);
-const showModal = ref(false);
-const showViewModal = ref(false);
-const isEditing = ref(false);
-const editingId = ref(null);
-const selectedFacture = ref(null);
-const searchQuery = ref('');
-
-const form = ref({
-  id_consultation: '',
-  date: '',
-  montant_total: '',
-  statut_paiement: 'non payé',
-  mode_paiement: ''
-});
-
-onMounted(() => loadFactures());
-
-const loadFactures = async () => {
-  loading.value = true;
-  try {
-    const response = await getFactures();
-    factures.value = response.data.data || [];
-  } catch (error) {
-    console.error('Error:', error);
-    alert('Unable to load invoices');
-  } finally {
-    loading.value = false;
-  }
-};
-
-const filteredFactures = computed(() => {
-  if (!searchQuery.value) return factures.value;
-  const query = searchQuery.value.toLowerCase();
-  return factures.value.filter(f => {
-    const patientName = `${f.consultation?.rendez_vous?.patient?.prenom || ''} ${f.consultation?.rendez_vous?.patient?.nom || ''}`.toLowerCase();
-    const invoiceId = `inv-${f.id_facture}`.toLowerCase();
-    return patientName.includes(query) || invoiceId.includes(query);
-  });
-});
-
-const montantTotal = computed(() => {
-  return factures.value.reduce((sum, f) => sum + parseFloat(f.montant_total || 0), 0);
-});
-
-const montantPaye = computed(() => {
-  return factures.value
-    .filter(f => f.statut_paiement === 'payé')
-    .reduce((sum, f) => sum + parseFloat(f.montant_total || 0), 0);
-});
-
-const montantPending = computed(() => {
-  return factures.value
-    .filter(f => f.statut_paiement === 'non payé')
-    .reduce((sum, f) => sum + parseFloat(f.montant_total || 0), 0);
-});
-
-const montantOverdue = computed(() => {
-  const today = new Date();
-  return factures.value
-    .filter(f => {
-      if (f.statut_paiement === 'payé') return false;
-      const factureDate = new Date(f.date);
-      const diffDays = Math.floor((today - factureDate) / (1000 * 60 * 60 * 24));
-      return diffDays > 30;
-    })
-    .reduce((sum, f) => sum + parseFloat(f.montant_total || 0), 0);
-});
-
-const formatNumber = (num) => {
-  return num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-};
-
-const formatDate = (dateStr) => {
-  if (!dateStr) return '-';
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
-};
-
-const getStatusClass = (status) => {
-  switch (status) {
-    case 'payé': return 'status-paid';
-    case 'non payé': return 'status-pending';
-    default: return 'status-pending';
-  }
-};
-
-const getStatusLabel = (status) => {
-  switch (status) {
-    case 'payé': return 'paid';
-    case 'non payé': return 'pending';
-    default: return 'pending';
-  }
-};
-
-const openAddModal = () => {
-  isEditing.value = false;
-  editingId.value = null;
-  resetForm();
-  showModal.value = true;
-};
-
-const editFacture = (facture) => {
-  isEditing.value = true;
-  editingId.value = facture.id_facture;
-  form.value = {
-    id_consultation: facture.id_consultation,
-    date: facture.date,
-    montant_total: facture.montant_total,
-    statut_paiement: facture.statut_paiement,
-    mode_paiement: facture.mode_paiement || ''
-  };
-  showModal.value = true;
-};
-
-const viewFacture = (facture) => {
-  selectedFacture.value = facture;
-  showViewModal.value = true;
-};
-
-const saveFacture = async () => {
-  try {
-    if (isEditing.value) {
-      await updateFacture(editingId.value, form.value);
-      alert('✅ Invoice updated successfully!');
-    } else {
-      await addFacture(form.value);
-      alert('✅ Invoice generated successfully!');
-    }
-    closeModal();
-    await loadFactures();
-  } catch (error) {
-    console.error('Full error:', error);
-    
-    if (error.response?.status === 422) {
-      const errors = error.response.data.errors;
-      let message = '❌ Validation Error:\n\n';
-      for (let field in errors) {
-        message += `• ${field}: ${errors[field].join(', ')}\n`;
-      }
-      alert(message);
-    } else if (error.response?.status === 401) {
-      alert('❌ Session expired. Please login again.');
-      localStorage.removeItem('token');
-      window.location.href = '/login';
-    } else {
-      alert('❌ Error: ' + (error.response?.data?.message || 'Unknown error'));
-    }
-  }
-};
-
-const downloadPDF = (facture) => {
-  alert(`PDF download for INV-${String(facture.id_facture).padStart(3, '0')} - Feature coming soon!`);
-};
-
-const closeModal = () => {
-  showModal.value = false;
-  showViewModal.value = false;
-  resetForm();
-};
-
-const resetForm = () => {
-  form.value = {
-    id_consultation: '',
-    date: '',
-    montant_total: '',
-    statut_paiement: 'non payé',
-    mode_paiement: ''
-  };
-};
-</script>
 
 <style scoped>
 .page {
