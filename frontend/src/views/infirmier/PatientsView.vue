@@ -114,12 +114,95 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Toast Notification -->
+    <Transition name="toast">
+      <div v-if="toast.show" :class="['toast', toast.type]">
+        <i :class="toast.type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle'"></i>
+        <span>{{ toast.message }}</span>
+      </div>
+    </Transition>
+
+    <!-- Add Patient Modal -->
+    <Transition name="modal">
+      <div v-if="showAddModal" class="modal-overlay" @click.self="showAddModal = false">
+        <div class="modal">
+          <div class="modal-header">
+            <h2 class="modal-title">Add New Patient</h2>
+            <button class="modal-close" @click="showAddModal = false">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <form class="modal-body" @submit.prevent="submitPatient">
+            <div class="form-row">
+              <div class="form-group">
+                <label>First Name *</label>
+                <input v-model="newPatient.prenom" placeholder="First name" required />
+              </div>
+              <div class="form-group">
+                <label>Last Name *</label>
+                <input v-model="newPatient.nom" placeholder="Last name" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Date of Birth</label>
+                <input v-model="newPatient.date_naissance" type="date" />
+              </div>
+              <div class="form-group">
+                <label>Gender</label>
+                <select v-model="newPatient.sexe">
+                  <option value="">Select...</option>
+                  <option value="M">Male</option>
+                  <option value="F">Female</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Address</label>
+              <input v-model="newPatient.adresse" placeholder="Full address" />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Phone</label>
+                <input v-model="newPatient.telephone" placeholder="Phone number" />
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input v-model="newPatient.email" type="email" placeholder="Email address" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Blood Type</label>
+              <select v-model="newPatient.groupe_sanguin">
+                <option value="">Select...</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn-cancel" @click="showAddModal = false">Cancel</button>
+              <button type="submit" class="btn-submit" :disabled="submitting">
+                <i v-if="submitting" class="fas fa-spinner fa-spin"></i>
+                {{ submitting ? 'Saving...' : 'Save Patient' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { getInfirmierPatients } from '@/services/api.js';
+import { getInfirmierPatients, addPatient } from '@/services/api.js';
 
 const patients = ref([]);
 const loading = ref(true);
@@ -127,6 +210,36 @@ const searchQuery = ref('');
 const statusFilter = ref('all');
 const openDropdown = ref(null);
 const showAddModal = ref(false);
+const submitting = ref(false);
+
+const toast = ref({ show: false, message: '', type: 'success' });
+let toastTimer = null;
+
+const showToast = (message, type = 'success') => {
+  if (toastTimer) clearTimeout(toastTimer);
+  toast.value = { show: true, message, type };
+  toastTimer = setTimeout(() => {
+    toast.value.show = false;
+  }, 3000);
+};
+
+const newPatient = ref({
+  nom: '',
+  prenom: '',
+  date_naissance: '',
+  sexe: '',
+  adresse: '',
+  telephone: '',
+  email: '',
+  groupe_sanguin: ''
+});
+
+const resetForm = () => {
+  newPatient.value = {
+    nom: '', prenom: '', date_naissance: '', sexe: '',
+    adresse: '', telephone: '', email: '', groupe_sanguin: ''
+  };
+};
 
 const filteredPatients = computed(() => {
   let result = patients.value;
@@ -161,8 +274,7 @@ const formatDate = (dateStr) => {
 };
 
 const getStatus = (patient) => {
-  // Mock status based on ID parity for demo
-  return patient.id_patient % 2 === 0 ? 'active' : 'inactive';
+  return patient.statut || 'active';
 };
 
 const toggleDropdown = (id) => {
@@ -177,18 +289,36 @@ const closeDropdown = (e) => {
 
 const viewPatient = (patient) => {
   openDropdown.value = null;
-  alert(`View details for ${patient.prenom} ${patient.nom}`);
+  showToast(`Viewing details for ${patient.prenom} ${patient.nom}`, 'success');
 };
 
 const editPatient = (patient) => {
   openDropdown.value = null;
-  alert(`Edit ${patient.prenom} ${patient.nom}`);
+  showToast(`Edit mode for ${patient.prenom} ${patient.nom}`, 'success');
 };
 
 const deletePatient = (patient) => {
   openDropdown.value = null;
   if (confirm(`Delete patient ${patient.prenom} ${patient.nom}?`)) {
-    alert('Patient deleted (demo)');
+    showToast('Patient deleted (demo)', 'success');
+  }
+};
+
+const submitPatient = async () => {
+  submitting.value = true;
+  try {
+    const res = await addPatient(newPatient.value);
+    if (res.data.success || res.status === 201) {
+      showToast('Patient saved successfully!', 'success');
+      showAddModal.value = false;
+      resetForm();
+      await fetchPatients();
+    }
+  } catch (error) {
+    const msg = error.response?.data?.message || 'Failed to save patient. Please try again.';
+    showToast(msg, 'error');
+  } finally {
+    submitting.value = false;
   }
 };
 
@@ -213,6 +343,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener('click', closeDropdown);
+  if (toastTimer) clearTimeout(toastTimer);
 });
 </script>
 
@@ -518,5 +649,234 @@ onUnmounted(() => {
 .empty-state i {
   font-size: 32px;
   color: #cbd5e1;
+}
+
+/* ========== TOAST NOTIFICATION ========== */
+.toast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+  min-width: 280px;
+  max-width: 420px;
+}
+
+.toast.success {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #d1fae5;
+}
+
+.toast.error {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fee2e2;
+}
+
+.toast i {
+  font-size: 18px;
+}
+
+.toast-enter-active,
+.toast-leave-active {
+  transition: all 0.3s ease;
+}
+
+.toast-enter-from {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.toast-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+/* ========== MODAL ========== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin: 0;
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #94a3b8;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.modal-close:hover {
+  background: #f1f5f9;
+  color: #1a1a2e;
+}
+
+.modal-body {
+  padding: 20px 24px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 10px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1a1a2e;
+  outline: none;
+  background: #f8fafc;
+  transition: all 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #3b8d99;
+  background: white;
+}
+
+.form-group input::placeholder {
+  color: #94a3b8;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.btn-cancel {
+  padding: 10px 20px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancel:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.btn-submit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  background: #3b8d99;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-submit:hover {
+  background: #2c6e7a;
+}
+
+.btn-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Modal transitions */
+.modal-enter-active,
+.modal-leave-active {
+  transition: all 0.25s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-from .modal,
+.modal-leave-to .modal {
+  transform: scale(0.95);
+}
+
+@media (max-width: 640px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .modal {
+    max-width: 100%;
+    margin: 10px;
+  }
 }
 </style>
