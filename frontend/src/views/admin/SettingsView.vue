@@ -279,7 +279,7 @@ const showMessage = (text, type) => {
 
 .page-subtitle {
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
 }
 
 /* Tabs */
@@ -297,7 +297,7 @@ const showMessage = (text, type) => {
   padding: 8px 16px;
   border: none;
   background: transparent;
-  color: #64748b;
+  color: #475569;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -355,7 +355,7 @@ const showMessage = (text, type) => {
 
 .card-header p {
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
   margin: 0;
 }
 
@@ -466,7 +466,7 @@ const showMessage = (text, type) => {
 
 .page-subtitle {
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
 }
 
 /* Tabs */
@@ -484,7 +484,7 @@ const showMessage = (text, type) => {
   padding: 8px 16px;
   border: none;
   background: transparent;
-  color: #64748b;
+  color: #475569;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -542,7 +542,7 @@ const showMessage = (text, type) => {
 
 .card-header p {
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
   margin: 0;
 }
 

@@ -426,7 +426,7 @@ const resetForm = () => {
 
 .page-subtitle {
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
 }
 
 .btn-add {
@@ -475,7 +475,7 @@ const resetForm = () => {
 
 .stat-label {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   margin-bottom: 4px;
 }
 
@@ -599,7 +599,7 @@ const resetForm = () => {
 
 .doctor-info, .motif-info {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -693,7 +693,7 @@ const resetForm = () => {
 .loading {
   padding: 60px;
   text-align: center;
-  color: #64748b;
+  color: #475569;
 }
 
 /* Empty State */
@@ -702,7 +702,7 @@ const resetForm = () => {
   flex-direction: column;
   align-items: center;
   padding: 80px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .empty-icon {
@@ -764,7 +764,7 @@ const resetForm = () => {
   background: none;
   border: none;
   font-size: 24px;
-  color: #94a3b8;
+  color: #475569;
   cursor: pointer;
   width: 32px;
   height: 32px;
@@ -896,7 +896,7 @@ const resetForm = () => {
 
 .page-subtitle {
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
 }
 
 .btn-add {
@@ -945,7 +945,7 @@ const resetForm = () => {
 
 .stat-label {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   margin-bottom: 4px;
 }
 
@@ -1069,7 +1069,7 @@ const resetForm = () => {
 
 .doctor-info, .motif-info {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -1163,7 +1163,7 @@ const resetForm = () => {
 .loading {
   padding: 60px;
   text-align: center;
-  color: #64748b;
+  color: #475569;
 }
 
 /* Empty State */
@@ -1172,7 +1172,7 @@ const resetForm = () => {
   flex-direction: column;
   align-items: center;
   padding: 80px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .empty-icon {
@@ -1234,7 +1234,7 @@ const resetForm = () => {
   background: none;
   border: none;
   font-size: 24px;
-  color: #94a3b8;
+  color: #475569;
   cursor: pointer;
   width: 32px;
   height: 32px;

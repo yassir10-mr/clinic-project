@@ -13,15 +13,11 @@ class ClinicSeeder extends Seeder
     {
         // 1. Ajouter des Secrétaires
         DB::table('secretaire')->insert([
-            ['nom' => 'Benali', 'prenom' => 'Fatima', 'telephone' => '0600112233', 'email' => 'fatima@medicare.com'],
-            ['nom' => 'Idrissi', 'prenom' => 'Sara', 'telephone' => '0699887766', 'email' => 'sara@medicare.com'],
+            ['nom' => 'Benali', 'prenom' => 'Fatima', 'telephone' => '0600112233', 'email' => 'fatima@medicare.com', 'mot_de_passe' => Hash::make('password')],
+            ['nom' => 'Idrissi', 'prenom' => 'Sara', 'telephone' => '0699887766', 'email' => 'sara@medicare.com', 'mot_de_passe' => Hash::make('password')],
         ]);
 
-        // 2. Ajouter des Médecins
-        DB::table('medecin')->insert([
-            ['nom' => 'Alaoui', 'prenom' => 'Youssef', 'specialite' => 'Généraliste', 'telephone' => '0611223344', 'email' => 'dr.alaoui@medicare.com', 'matricule' => 'MED-001'],
-            ['nom' => 'Mansouri', 'prenom' => 'Nadia', 'specialite' => 'Pédiatre', 'telephone' => '0622334455', 'email' => 'dr.mansouri@medicare.com', 'matricule' => 'MED-002'],
-        ]);
+        // 2. Ajouter des Médecins (déjà dans CliniqueSeeder, on saute)
 
         // 3. Ajouter des Infirmiers
         DB::table('infirmier')->insert([
@@ -53,8 +49,7 @@ class ClinicSeeder extends Seeder
             'telephone' => '0601020304', 
             'email' => 'jean.dupont@email.com', 
             'groupe_sanguin' => 'O+',
-            'statut' => 'active',
-            'mot_de_passe' => Hash::make('password') // <-- AJOUTÉ ICI !
+            'mot_de_passe' => Hash::make('password')
         ]);
 
         $patient2 = DB::table('patient')->insertGetId([
@@ -66,8 +61,7 @@ class ClinicSeeder extends Seeder
             'telephone' => '0612345678', 
             'email' => 'meryem.c@email.com', 
             'groupe_sanguin' => 'A+',
-            'statut' => 'inactive',
-            'mot_de_passe' => Hash::make('password') // <-- AJOUTÉ ICI !
+            'mot_de_passe' => Hash::make('password')
         ]);
 
         // 5. Ajouter des Rendez-vous POUR AUJOURD'HUI

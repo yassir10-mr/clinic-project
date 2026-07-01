@@ -222,7 +222,7 @@ onMounted(() => {
 
 .page-subtitle {
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
   margin: 0;
 }
 
@@ -251,7 +251,7 @@ onMounted(() => {
 
 .stat-label {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   margin: 0 0 8px 0;
   font-weight: 500;
 }
@@ -316,7 +316,7 @@ onMounted(() => {
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: #94a3b8;
+  color: #475569;
   font-size: 14px;
 }
 
@@ -341,7 +341,7 @@ onMounted(() => {
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
   background: white;
   outline: none;
   cursor: pointer;
@@ -428,14 +428,14 @@ onMounted(() => {
 
 .record-description {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   margin: 0 0 8px 0;
   line-height: 1.4;
 }
 
 .record-meta {
   font-size: 12px;
-  color: #94a3b8;
+  color: #475569;
   margin: 0;
 }
 
@@ -471,7 +471,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   padding: 60px;
-  color: #94a3b8;
+  color: #475569;
   gap: 12px;
 }
 

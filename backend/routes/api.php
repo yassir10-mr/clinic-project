@@ -15,6 +15,7 @@ use App\Http\Controllers\PatientController;
 | PORTES D'ENTRÉE PUBLIQUES (LOGIN)
 |--------------------------------------------------------------------------
 */
+Route::post('/login', [AuthController::class, 'loginUnified']);
 Route::post('/admin/login', [AuthController::class, 'login']);
 Route::post('/secretaire/login', [SecretaireController::class, 'login']);
 Route::post('/login/infirmier', [AuthController::class, 'loginInfirmier']); 
@@ -97,6 +98,7 @@ Route::prefix('infirmier')->group(function () {
     Route::get('/consultations', [InfirmierController::class, 'getConsultationsDuJour']);
     Route::get('/patients', [InfirmierController::class, 'getPatients']);
     Route::get('/appointments', [InfirmierController::class, 'getAppointments']);
+    Route::patch('/rendez-vous/{id}/status', [InfirmierController::class, 'updateRendezVousStatus']);
     Route::get('/medical-records', [InfirmierController::class, 'getMedicalRecords']);
     Route::post('/observations', [InfirmierController::class, 'saveObservations']);
 });
@@ -109,3 +111,11 @@ Route::prefix('infirmier')->group(function () {
 Route::get('/patient/{id}/consultations', [PatientController::class, 'getMesConsultations']);
 Route::get('/patient/{id}/factures', [PatientController::class, 'getMesFactures']);
 Route::post('/patient/prendre-rdv', [PatientController::class, 'prendreRDV']);
+Route::get('/patient/medecins', [PatientController::class, 'getMedecins']);
+Route::get('/patient/disponibilites/{date}', [PatientController::class, 'getDisponibilites']);
+Route::get('/patient/{id}/rendez-vous', [PatientController::class, 'getMesRendezVous']);
+Route::patch('/patient/rendez-vous/{id}/annuler', [PatientController::class, 'annulerRDV']);
+Route::get('/patient/{id}/dossier-medical', [PatientController::class, 'getDossierMedical']);
+Route::get('/patient/{id}/profile', [PatientController::class, 'getProfile']);
+Route::put('/patient/{id}/profile', [PatientController::class, 'updateProfile']);
+Route::put('/patient/{id}/password', [PatientController::class, 'changePassword']);

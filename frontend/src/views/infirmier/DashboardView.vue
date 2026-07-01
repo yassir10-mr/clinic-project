@@ -39,7 +39,7 @@
       <div class="stat-card">
         <div class="stat-info">
           <p class="stat-label">Monthly Revenue</p>
-          <p class="stat-value">${{ formatNumber(stats.monthly_revenue) }}</p>
+          <p class="stat-value">{{ formatNumber(stats.monthly_revenue) }} DH</p>
           <p class="stat-change positive">
             <i class="fas fa-arrow-up"></i> 15% from last month
           </p>
@@ -195,7 +195,7 @@ onMounted(() => {
 
 .page-subtitle {
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
   margin: 0;
 }
 
@@ -224,7 +224,7 @@ onMounted(() => {
 
 .stat-label {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   margin: 0 0 8px 0;
   font-weight: 500;
 }
@@ -313,7 +313,7 @@ onMounted(() => {
   border-radius: 8px;
   font-size: 13px;
   font-weight: 500;
-  color: #64748b;
+  color: #475569;
   text-decoration: none;
   background: white;
   transition: all 0.2s;
@@ -372,13 +372,13 @@ onMounted(() => {
 
 .appointment-details {
   font-size: 12px;
-  color: #64748b;
+  color: #475569;
   margin: 0 0 4px 0;
 }
 
 .appointment-type {
   font-size: 12px;
-  color: #94a3b8;
+  color: #475569;
   margin: 0;
 }
 
@@ -422,7 +422,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   padding: 40px;
-  color: #94a3b8;
+  color: #475569;
   gap: 12px;
 }
 

@@ -20,6 +20,7 @@ class CliniqueSeeder extends Seeder
                 'adresse' => 'Alger, Bab El Oued',
                 'telephone' => '0555123456',
                 'email' => 'karim.benali@email.com',
+                'mot_de_passe' => Hash::make('password'),
                 'groupe_sanguin' => 'A+'
             ],
             [
@@ -30,6 +31,7 @@ class CliniqueSeeder extends Seeder
                 'adresse' => 'Oran, Es Senia',
                 'telephone' => '0555987654',
                 'email' => 'fatima.amrani@email.com',
+                'mot_de_passe' => Hash::make('password'),
                 'groupe_sanguin' => 'O-'
             ],
             [
@@ -40,6 +42,7 @@ class CliniqueSeeder extends Seeder
                 'adresse' => 'Constantine, El Khroub',
                 'telephone' => '0555345678',
                 'email' => 'ahmed.haddad@email.com',
+                'mot_de_passe' => Hash::make('password'),
                 'groupe_sanguin' => 'B+'
             ],
             [
@@ -50,6 +53,7 @@ class CliniqueSeeder extends Seeder
                 'adresse' => 'Annaba, Sidi Amar',
                 'telephone' => '0555765432',
                 'email' => 'sofia.boudiaf@email.com',
+                'mot_de_passe' => Hash::make('password'),
                 'groupe_sanguin' => 'AB+'
             ],
             [
@@ -60,6 +64,7 @@ class CliniqueSeeder extends Seeder
                 'adresse' => 'Tlemcen, Mansourah',
                 'telephone' => '0555123987',
                 'email' => 'youssef.merad@email.com',
+                'mot_de_passe' => Hash::make('password'),
                 'groupe_sanguin' => 'O+'
             ]
         ]);
@@ -67,7 +72,7 @@ class CliniqueSeeder extends Seeder
         // ==================== MEDECINS ====================
         DB::table('medecin')->insert([
             [
-                'nom' => 'Dr. Khelifi',
+                'nom' => 'Khelifi',
                 'prenom' => 'Samir',
                 'specialite' => 'Cardiologie',
                 'telephone' => '0555111111',
@@ -75,7 +80,7 @@ class CliniqueSeeder extends Seeder
                 'matricule' => 'MED-001'
             ],
             [
-                'nom' => 'Dr. Bouzid',
+                'nom' => 'Bouzid',
                 'prenom' => 'Nadia',
                 'specialite' => 'Pédiatrie',
                 'telephone' => '0555222222',
@@ -83,12 +88,84 @@ class CliniqueSeeder extends Seeder
                 'matricule' => 'MED-002'
             ],
             [
-                'nom' => 'Dr. Hamidi',
+                'nom' => 'Hamidi',
                 'prenom' => 'Rachid',
                 'specialite' => 'Chirurgie',
                 'telephone' => '0555333333',
                 'email' => 'rachid.hamidi@clinique.dz',
                 'matricule' => 'MED-003'
+            ],
+            [
+                'nom' => 'Alami',
+                'prenom' => 'Youssef',
+                'specialite' => 'Neurologie',
+                'telephone' => '0555444441',
+                'email' => 'youssef.alami@clinique.dz',
+                'matricule' => 'MED-004'
+            ],
+            [
+                'nom' => 'Ben Omar',
+                'prenom' => 'Hassan',
+                'specialite' => 'Orthopédie',
+                'telephone' => '0555444442',
+                'email' => 'hassan.benomar@clinique.dz',
+                'matricule' => 'MED-005'
+            ],
+            [
+                'nom' => 'El Fassi',
+                'prenom' => 'Noura',
+                'specialite' => 'Gynécologie',
+                'telephone' => '0555444443',
+                'email' => 'noura.elfassi@clinique.dz',
+                'matricule' => 'MED-006'
+            ],
+            [
+                'nom' => 'Marzouk',
+                'prenom' => 'Karim',
+                'specialite' => 'Urologie',
+                'telephone' => '0555444444',
+                'email' => 'karim.marzouk@clinique.dz',
+                'matricule' => 'MED-007'
+            ],
+            [
+                'nom' => 'Bennani',
+                'prenom' => 'Laila',
+                'specialite' => 'Ophtalmologie',
+                'telephone' => '0555444445',
+                'email' => 'laila.bennani@clinique.dz',
+                'matricule' => 'MED-008'
+            ],
+            [
+                'nom' => 'Idrissi',
+                'prenom' => 'Samir',
+                'specialite' => 'Dermatologie',
+                'telephone' => '0555444446',
+                'email' => 'samir.idrissi@clinique.dz',
+                'matricule' => 'MED-009'
+            ],
+            [
+                'nom' => 'Bouzidi',
+                'prenom' => 'Mohamed',
+                'specialite' => 'Urgences',
+                'telephone' => '0555444447',
+                'email' => 'mohamed.bouzidi@clinique.dz',
+                'matricule' => 'MED-010'
+            ],
+            [
+                'nom' => 'Foukara',
+                'prenom' => 'Amine',
+                'specialite' => 'Gastro-entérologie',
+                'telephone' => '0555444448',
+                'email' => 'amine.foukara@clinique.dz',
+                'matricule' => 'MED-011'
+            ],
+            [
+                'nom' => 'El Mokhtar',
+                'prenom' => 'Sara',
+                'specialite' => 'Imagerie Médicale',
+                'telephone' => '0555444449',
+                'email' => 'sara.elmokhtar@clinique.dz',
+                'matricule' => 'MED-012'
             ]
         ]);
 
@@ -98,13 +175,15 @@ class CliniqueSeeder extends Seeder
                 'nom' => 'Saadi',
                 'prenom' => 'Lamia',
                 'telephone' => '0555444444',
-                'email' => 'lamia.saadi@clinique.dz'
+                'email' => 'lamia.saadi@clinique.dz',
+                'mot_de_passe' => Hash::make('password')
             ],
             [
                 'nom' => 'Brahimi',
                 'prenom' => 'Amina',
                 'telephone' => '0555555555',
-                'email' => 'amina.brahimi@clinique.dz'
+                'email' => 'amina.brahimi@clinique.dz',
+                'mot_de_passe' => Hash::make('password')
             ]
         ]);
 
@@ -113,18 +192,24 @@ class CliniqueSeeder extends Seeder
             [
                 'nom' => 'Touati',
                 'prenom' => 'Khaled',
+                'email' => 'khaled.touati@clinique.dz',
+                'mot_de_passe' => Hash::make('password'),
                 'telephone' => '0555666666',
                 'service' => 'Urgences'
             ],
             [
                 'nom' => 'Zeroual',
                 'prenom' => 'Nawel',
+                'email' => 'nawel.zeroual@clinique.dz',
+                'mot_de_passe' => Hash::make('password'),
                 'telephone' => '0555777777',
                 'service' => 'Chirurgie'
             ],
             [
                 'nom' => 'Lounis',
                 'prenom' => 'Meriem',
+                'email' => 'meriem.lounis@clinique.dz',
+                'mot_de_passe' => Hash::make('password'),
                 'telephone' => '0555888888',
                 'service' => 'Pédiatrie'
             ]

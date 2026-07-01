@@ -6,11 +6,7 @@
         <h1 class="page-title">Patients Management</h1>
         <p class="page-subtitle">Manage and view all patient records</p>
       </div>
-      <button class="add-btn" @click="showAddModal = true">
-        <i class="fas fa-plus"></i>
-        Add Patient
-      </button>
-    </div>
+      </div>
 
     <!-- Filters -->
     <div class="filters-bar">
@@ -123,12 +119,12 @@
       </div>
     </Transition>
 
-    <!-- Add Patient Modal -->
+    <!-- Add / Edit Patient Modal -->
     <Transition name="modal">
       <div v-if="showAddModal" class="modal-overlay" @click.self="showAddModal = false">
         <div class="modal">
           <div class="modal-header">
-            <h2 class="modal-title">Add New Patient</h2>
+            <h2 class="modal-title">{{ editingPatient ? 'Edit Patient' : 'Add New Patient' }}</h2>
             <button class="modal-close" @click="showAddModal = false">
               <i class="fas fa-times"></i>
             </button>
@@ -190,10 +186,77 @@
               <button type="button" class="btn-cancel" @click="showAddModal = false">Cancel</button>
               <button type="submit" class="btn-submit" :disabled="submitting">
                 <i v-if="submitting" class="fas fa-spinner fa-spin"></i>
-                {{ submitting ? 'Saving...' : 'Save Patient' }}
+                {{ submitting ? 'Saving...' : (editingPatient ? 'Update Patient' : 'Save Patient') }}
               </button>
             </div>
           </form>
+        </div>
+      </div>
+    </Transition>
+
+    <!-- View Details Modal -->
+    <Transition name="modal">
+      <div v-if="showDetailsModal" class="modal-overlay" @click.self="showDetailsModal = false">
+        <div class="modal modal-details">
+          <div class="modal-header">
+            <h2 class="modal-title">Patient Details</h2>
+            <button class="modal-close" @click="showDetailsModal = false">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="details-grid">
+              <div class="detail-group">
+                <label>Full Name</label>
+                <p class="detail-value">{{ selectedPatient?.prenom }} {{ selectedPatient?.nom }}</p>
+              </div>
+              <div class="detail-group">
+                <label>Patient ID</label>
+                <p class="detail-value">#{{ selectedPatient?.id_patient }}</p>
+              </div>
+              <div class="detail-group">
+                <label>Email</label>
+                <p class="detail-value">{{ selectedPatient?.email || 'N/A' }}</p>
+              </div>
+              <div class="detail-group">
+                <label>Phone</label>
+                <p class="detail-value">{{ selectedPatient?.telephone || 'N/A' }}</p>
+              </div>
+              <div class="detail-group">
+                <label>Date of Birth</label>
+                <p class="detail-value">{{ formatDate(selectedPatient?.date_naissance) }}</p>
+              </div>
+              <div class="detail-group">
+                <label>Age</label>
+                <p class="detail-value">{{ calculateAge(selectedPatient?.date_naissance) }} years</p>
+              </div>
+              <div class="detail-group">
+                <label>Gender</label>
+                <p class="detail-value">{{ selectedPatient?.sexe === 'M' ? 'Male' : selectedPatient?.sexe === 'F' ? 'Female' : 'N/A' }}</p>
+              </div>
+              <div class="detail-group">
+                <label>Blood Type</label>
+                <p class="detail-value">{{ selectedPatient?.groupe_sanguin || 'N/A' }}</p>
+              </div>
+              <div class="detail-group full-width">
+                <label>Address</label>
+                <p class="detail-value">{{ selectedPatient?.adresse || 'N/A' }}</p>
+              </div>
+              <div class="detail-group">
+                <label>Status</label>
+                <p class="detail-value">
+                  <span :class="['status-badge', getStatus(selectedPatient)]">{{ getStatus(selectedPatient) }}</span>
+                </p>
+              </div>
+              <div class="detail-group">
+                <label>Registration</label>
+                <p class="detail-value">{{ formatDate(selectedPatient?.created_at) }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn-cancel" @click="showDetailsModal = false">Close</button>
+          </div>
         </div>
       </div>
     </Transition>
@@ -202,7 +265,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { getInfirmierPatients, addPatient } from '@/services/api.js';
+import { getInfirmierPatients, addPatient, updatePatient, deletePatient as apiDeletePatient } from '@/services/api.js';
 
 const patients = ref([]);
 const loading = ref(true);
@@ -210,6 +273,9 @@ const searchQuery = ref('');
 const statusFilter = ref('all');
 const openDropdown = ref(null);
 const showAddModal = ref(false);
+const showDetailsModal = ref(false);
+const selectedPatient = ref(null);
+const editingPatient = ref(null);
 const submitting = ref(false);
 
 const toast = ref({ show: false, message: '', type: 'success' });
@@ -238,6 +304,19 @@ const resetForm = () => {
   newPatient.value = {
     nom: '', prenom: '', date_naissance: '', sexe: '',
     adresse: '', telephone: '', email: '', groupe_sanguin: ''
+  };
+};
+
+const fillForm = (patient) => {
+  newPatient.value = {
+    nom: patient.nom || '',
+    prenom: patient.prenom || '',
+    date_naissance: patient.date_naissance || '',
+    sexe: patient.sexe || '',
+    adresse: patient.adresse || '',
+    telephone: patient.telephone || '',
+    email: patient.email || '',
+    groupe_sanguin: patient.groupe_sanguin || ''
   };
 };
 
@@ -274,7 +353,7 @@ const formatDate = (dateStr) => {
 };
 
 const getStatus = (patient) => {
-  return patient.statut || 'active';
+  return patient?.statut || 'active';
 };
 
 const toggleDropdown = (id) => {
@@ -289,31 +368,45 @@ const closeDropdown = (e) => {
 
 const viewPatient = (patient) => {
   openDropdown.value = null;
-  showToast(`Viewing details for ${patient.prenom} ${patient.nom}`, 'success');
+  selectedPatient.value = patient;
+  showDetailsModal.value = true;
 };
 
 const editPatient = (patient) => {
   openDropdown.value = null;
-  showToast(`Edit mode for ${patient.prenom} ${patient.nom}`, 'success');
+  editingPatient.value = patient;
+  fillForm(patient);
+  showAddModal.value = true;
 };
 
-const deletePatient = (patient) => {
+const deletePatient = async (patient) => {
   openDropdown.value = null;
-  if (confirm(`Delete patient ${patient.prenom} ${patient.nom}?`)) {
-    showToast('Patient deleted (demo)', 'success');
+  if (!confirm(`Delete patient ${patient.prenom} ${patient.nom}?`)) return;
+
+  try {
+    await apiDeletePatient(patient.id_patient);
+    patients.value = patients.value.filter(p => p.id_patient !== patient.id_patient);
+    showToast('Patient deleted successfully!', 'success');
+  } catch (error) {
+    const msg = error.response?.data?.message || 'Failed to delete patient.';
+    showToast(msg, 'error');
   }
 };
 
 const submitPatient = async () => {
   submitting.value = true;
   try {
-    const res = await addPatient(newPatient.value);
-    if (res.data.success || res.status === 201) {
+    if (editingPatient.value) {
+      await updatePatient(editingPatient.value.id_patient, newPatient.value);
+      showToast('Patient updated successfully!', 'success');
+    } else {
+      await addPatient(newPatient.value);
       showToast('Patient saved successfully!', 'success');
-      showAddModal.value = false;
-      resetForm();
-      await fetchPatients();
     }
+    showAddModal.value = false;
+    editingPatient.value = null;
+    resetForm();
+    await fetchPatients();
   } catch (error) {
     const msg = error.response?.data?.message || 'Failed to save patient. Please try again.';
     showToast(msg, 'error');
@@ -371,7 +464,7 @@ onUnmounted(() => {
 
 .page-subtitle {
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
   margin: 0;
 }
 
@@ -416,7 +509,7 @@ onUnmounted(() => {
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: #94a3b8;
+  color: #475569;
   font-size: 14px;
 }
 
@@ -441,7 +534,7 @@ onUnmounted(() => {
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
   background: white;
   outline: none;
   cursor: pointer;
@@ -483,7 +576,7 @@ onUnmounted(() => {
   text-align: left;
   font-size: 12px;
   font-weight: 600;
-  color: #64748b;
+  color: #475569;
   text-transform: none;
   border-bottom: 1px solid #e2e8f0;
 }
@@ -506,13 +599,13 @@ onUnmounted(() => {
 
 .patient-id {
   font-size: 12px;
-  color: #94a3b8;
+  color: #475569;
   margin-top: 2px;
 }
 
 .contact-item {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -521,14 +614,14 @@ onUnmounted(() => {
 
 .contact-item i {
   font-size: 12px;
-  color: #94a3b8;
+  color: #475569;
   width: 14px;
 }
 
 .age-value,
 .date-value {
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
 }
 
 .blood-badge {
@@ -557,7 +650,7 @@ onUnmounted(() => {
 
 .status-badge.inactive {
   background: #f1f5f9;
-  color: #64748b;
+  color: #475569;
 }
 
 /* Actions */
@@ -578,7 +671,7 @@ onUnmounted(() => {
   background: transparent;
   border-radius: 6px;
   cursor: pointer;
-  color: #64748b;
+  color: #475569;
   transition: all 0.2s;
 }
 
@@ -637,7 +730,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   padding: 60px;
-  color: #94a3b8;
+  color: #475569;
   gap: 12px;
 }
 
@@ -745,7 +838,7 @@ onUnmounted(() => {
   background: transparent;
   border-radius: 8px;
   cursor: pointer;
-  color: #94a3b8;
+  color: #475569;
   font-size: 16px;
   display: flex;
   align-items: center;
@@ -756,6 +849,44 @@ onUnmounted(() => {
 .modal-close:hover {
   background: #f1f5f9;
   color: #1a1a2e;
+}
+
+.modal-details {
+  max-width: 600px;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.detail-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.detail-group label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 4px;
+}
+
+.detail-value {
+  font-size: 14px;
+  color: #1a1a2e;
+  margin: 0;
+  font-weight: 500;
+}
+
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .modal-body {
@@ -800,7 +931,7 @@ onUnmounted(() => {
 }
 
 .form-group input::placeholder {
-  color: #94a3b8;
+  color: #475569;
 }
 
 .form-actions {
@@ -819,7 +950,7 @@ onUnmounted(() => {
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
-  color: #64748b;
+  color: #475569;
   cursor: pointer;
   transition: all 0.2s;
 }

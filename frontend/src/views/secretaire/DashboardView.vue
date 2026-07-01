@@ -144,8 +144,8 @@ const loadDashboard = async () => {
 }
 
 const formatMoney = (amount) => {
-  if (!amount) return '0MAD'
-  return 'MAD' + Number(amount).toLocaleString()
+  if (!amount) return '0 DH'
+  return Number(amount).toLocaleString() + ' DH'
 }
 
 const formatTime = (time) => {
@@ -214,7 +214,7 @@ onUnmounted(() => {
 }
 
 .welcome-text {
-  color: #64748b;
+  color: #475569;
   font-size: 14px;
 }
 
@@ -242,7 +242,7 @@ onUnmounted(() => {
 }
 
 .stat-label {
-  color: #64748b;
+  color: #475569;
   font-size: 13px;
   font-weight: 500;
   margin-bottom: 8px;
@@ -268,7 +268,7 @@ onUnmounted(() => {
 }
 
 .stat-change.neutral {
-  color: #94a3b8;
+  color: #475569;
 }
 
 .stat-icon {
@@ -387,7 +387,7 @@ onUnmounted(() => {
 }
 
 .doctor {
-  color: #64748b;
+  color: #475569;
   font-size: 12px;
   margin: 2px 0 0;
 }
@@ -404,7 +404,7 @@ onUnmounted(() => {
 }
 
 .motif {
-  color: #64748b;
+  color: #475569;
   font-size: 13px;
   margin: 2px 0 0;
 }
@@ -442,7 +442,7 @@ onUnmounted(() => {
 .empty-state {
   text-align: center;
   padding: 40px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .empty-state i {

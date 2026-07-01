@@ -13,7 +13,7 @@
 
 /* ========== GLOBAL FONT ========== */
 html, body, #app {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Playfair Display', 'Times New Roman', Georgia, serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -43,4 +43,154 @@ html, body, #app {
 #app {
   display: flex;
   flex-direction: column;
+}
+
+/* ============================================================
+   MEDICAL THEME DECORATIONS
+   ============================================================ */
+
+/* Heartbeat pulse animation */
+@keyframes medical-pulse {
+  0%, 100% { opacity: 0.10; }
+  50% { opacity: 0.28; }
+}
+
+/* Stat cards — left accent bar + hover lift */
+.stat-card {
+  position: relative;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: inset 3px 0 0 0 #3b8d99 !important;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: inset 3px 0 0 0 #3b8d99, 0 8px 25px rgba(59, 141, 153, 0.12) !important;
+}
+
+/* Heartbeat SVG motif — full-width bottom band */
+.stat-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 20 L80 20 L100 4 L120 36 L140 20 L260 20 L280 4 L300 36 L320 20 L400 20' stroke='%23059669' fill='none' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center bottom 6px;
+  background-size: 80% auto;
+  pointer-events: none;
+  opacity: 0.10;
+  animation: medical-pulse 4s ease-in-out infinite;
+}
+
+/* ============================================================
+   STAT ICONS — MODERN GRADIENT STYLE (light mode)
+   ============================================================ */
+
+/* Base: shared icon enhancements */
+.stat-icon {
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+/* Brand teal — total, blue, patients, appointments, consultations, completed, history, date, paid */
+.stat-icon.total,
+.stat-icon.blue,
+.stat-icon.patients,
+.stat-icon.appointments,
+.stat-icon.consultations,
+.stat-icon.completed,
+.stat-icon.history,
+.stat-icon.date,
+.stat-icon.paid {
+  background: linear-gradient(135deg, #3b8d99, #2c6e7a) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(59, 141, 153, 0.3);
+}
+
+/* Green / success — confirmed, green, revenue, green-bg, blood, lab */
+.stat-icon.confirmed,
+.stat-icon.green,
+.stat-icon.revenue,
+.stat-icon.green-bg,
+.stat-icon.blood,
+.stat-icon.lab {
+  background: linear-gradient(135deg, #059669, #047857) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+}
+
+/* Yellow / warning — pending, yellow */
+.stat-icon.pending,
+.stat-icon.yellow {
+  background: linear-gradient(135deg, #d97706, #b45309) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+}
+
+/* Orange */
+.stat-icon.orange,
+.stat-icon.orange-bg {
+  background: linear-gradient(135deg, #ea580c, #c2410c) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+}
+
+/* Red / danger — cancelled, red, red-bg */
+.stat-icon.cancelled,
+.stat-icon.red,
+.stat-icon.red-bg {
+  background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+/* Purple — doctors, imaging, prescriptions, allergies, amount, purple */
+.stat-icon.purple,
+.stat-icon.doctors,
+.stat-icon.imaging,
+.stat-icon.prescriptions,
+.stat-icon.allergies,
+.stat-icon.amount {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+/* Teal */
+.stat-icon.teal {
+  background: linear-gradient(135deg, #0d9488, #0f766e) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+}
+
+/* ============================================================
+   RECORD ICONS — MEDICAL RECORDS LIST ITEMS (light mode)
+   ============================================================ */
+
+.record-icon.consultation {
+  background: linear-gradient(135deg, #3b8d99, #2c6e7a) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(59, 141, 153, 0.3);
+}
+
+.record-icon.lab {
+  background: linear-gradient(135deg, #059669, #047857) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+}
+
+.record-icon.imaging {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.record-icon.prescription {
+  background: linear-gradient(135deg, #ea580c, #c2410c) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+}
+
+.record-icon.record {
+  background: linear-gradient(135deg, #059669, #047857) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
 }

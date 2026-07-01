@@ -7,12 +7,6 @@
         <p class="page-subtitle">Schedule and manage appointments</p>
       </div>
       <div class="header-actions">
-        <button class="toggle-btn" :class="{ active: viewMode === 'list' }" @click="viewMode = 'list'">
-          <i class="fas fa-list"></i>
-        </button>
-        <button class="toggle-btn" :class="{ active: viewMode === 'calendar' }" @click="viewMode = 'calendar'">
-          <i class="fas fa-calendar"></i>
-        </button>
         <button class="new-btn" @click="showNewModal = true">
           <i class="fas fa-plus"></i>
           New Appointment
@@ -76,7 +70,7 @@
         <h3 class="date-header">{{ formatDateHeader(date) }}</h3>
 
         <div class="appointments-list">
-          <div v-for="rdv in dateGroup" :key="rdv.id_rdv" class="appointment-card">
+          <div v-for="rdv in dateGroup" :key="rdv.id_rdv" :class="['appointment-card', rdv.statut === 'terminé' || rdv.statut === 'termine' ? 'completed' : '']">
             <div class="appointment-icon">
               <i class="fas fa-clock"></i>
             </div>
@@ -162,12 +156,14 @@
         </div>
       </div>
     </Transition>
+
+    <!-- Add/Edit Patient Modal -->
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { getInfirmierAppointments, addRendezVous, getInfirmierPatients, getMedecins } from '@/services/api.js';
+import { getInfirmierAppointments, addRendezVous, getInfirmierPatients, getMedecins, updateRendezVousStatus } from '@/services/api.js';
 
 const appointments = ref([]);
 const loading = ref(true);
@@ -205,9 +201,9 @@ const resetForm = () => {
 
 const appointmentStats = computed(() => {
   const total = appointments.value.length;
-  const confirmed = appointments.value.filter(a => a.statut === 'confirme').length;
+  const confirmed = appointments.value.filter(a => a.statut === 'confirmé' || a.statut === 'confirme').length;
   const pending = appointments.value.filter(a => a.statut === 'en attente').length;
-  const completed = appointments.value.filter(a => a.statut === 'termine').length;
+  const completed = appointments.value.filter(a => a.statut === 'terminé' || a.statut === 'termine').length;
   return { total, confirmed, pending, completed };
 });
 
@@ -247,7 +243,7 @@ const formatStatus = (status) => {
 
 const getStatusClass = (status) => {
   if (!status) return 'pending';
-  const s = status.toLowerCase();
+  const s = status.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   if (s.includes('confirme')) return 'confirmed';
   if (s.includes('attente')) return 'pending';
   if (s.includes('annule')) return 'cancelled';
@@ -255,8 +251,14 @@ const getStatusClass = (status) => {
   return 'pending';
 };
 
-const viewAppointment = (rdv) => {
-  showToast(`Viewing appointment for ${rdv.patient_prenom} ${rdv.patient_nom}`, 'success');
+const viewAppointment = async (rdv) => {
+  try {
+    await updateRendezVousStatus(rdv.id_rdv, 'terminé');
+    rdv.statut = 'terminé';
+    showToast(`Appointment for ${rdv.patient_prenom} ${rdv.patient_nom} marked as completed`, 'success');
+  } catch (error) {
+    showToast('Failed to update appointment status', 'error');
+  }
 };
 
 const submitAppointment = async () => {
@@ -334,7 +336,7 @@ onMounted(() => {
 
 .page-subtitle {
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
   margin: 0;
 }
 
@@ -353,7 +355,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #64748b;
+  color: #475569;
   cursor: pointer;
   font-size: 14px;
   transition: all 0.2s;
@@ -410,7 +412,7 @@ onMounted(() => {
 
 .stat-label {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   margin: 0 0 8px 0;
   font-weight: 500;
 }
@@ -479,7 +481,6 @@ onMounted(() => {
 .appointments-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
 }
 
 .appointment-card {
@@ -492,8 +493,34 @@ onMounted(() => {
   transition: background 0.2s;
 }
 
+.appointment-card + .appointment-card {
+  border-top: 1px solid #e2e8f0;
+  border-radius: 0;
+}
+
+.appointment-card:first-child {
+  border-radius: 10px 10px 0 0;
+}
+
+.appointment-card:last-child {
+  border-radius: 0 0 10px 10px;
+}
+
+.appointment-card:only-child {
+  border-radius: 10px;
+}
+
 .appointment-card:hover {
   background: #f1f5f9;
+}
+
+.appointment-card.completed {
+  background: #ecfdf5;
+}
+
+.appointment-card.completed .appointment-icon {
+  background: #d1fae5;
+  color: #059669;
 }
 
 .appointment-icon {
@@ -523,13 +550,13 @@ onMounted(() => {
 
 .appointment-details {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   margin: 0 0 4px 0;
 }
 
 .appointment-type {
   font-size: 12px;
-  color: #94a3b8;
+  color: #475569;
   margin: 0;
 }
 
@@ -574,7 +601,7 @@ onMounted(() => {
   border-radius: 6px;
   font-size: 13px;
   font-weight: 500;
-  color: #64748b;
+  color: #475569;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -592,7 +619,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   padding: 60px;
-  color: #94a3b8;
+  color: #475569;
   gap: 12px;
   background: white;
   border-radius: 12px;
@@ -711,7 +738,7 @@ onMounted(() => {
   background: transparent;
   border-radius: 8px;
   cursor: pointer;
-  color: #94a3b8;
+  color: #475569;
   font-size: 16px;
   display: flex;
   align-items: center;
@@ -726,6 +753,44 @@ onMounted(() => {
 
 .modal-body {
   padding: 20px 24px;
+}
+
+.modal-details {
+  max-width: 560px;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.detail-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.detail-group label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 4px;
+}
+
+.detail-value {
+  font-size: 14px;
+  color: #1a1a2e;
+  margin: 0;
+  font-weight: 500;
+}
+
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .form-row {
@@ -766,7 +831,7 @@ onMounted(() => {
 }
 
 .form-group input::placeholder {
-  color: #94a3b8;
+  color: #475569;
 }
 
 .form-actions {
@@ -785,7 +850,7 @@ onMounted(() => {
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
-  color: #64748b;
+  color: #475569;
   cursor: pointer;
   transition: all 0.2s;
 }

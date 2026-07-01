@@ -10,6 +10,7 @@ use App\Models\Facture;
 use App\Models\Consultation;
 use App\Models\Secretaire;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class SecretaireController extends Controller
 {
@@ -24,14 +25,14 @@ class SecretaireController extends Controller
 
         $secretaire = Secretaire::where('email', $request->email)->first();
 
-        if (!$secretaire || $secretaire->mot_de_passe !== $request->password) {
+        if (!$secretaire || !Hash::check($request->password, $secretaire->mot_de_passe)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid credentials'
             ], 401);
         }
 
-        $token = $secretaire->createToken('secretaire-token')->plainTextToken;
+        $token = bin2hex(random_bytes(40));
 
         return response()->json([
             'success' => true,
@@ -47,7 +48,6 @@ class SecretaireController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
         return response()->json([
             'success' => true,
             'message' => 'Logged out'

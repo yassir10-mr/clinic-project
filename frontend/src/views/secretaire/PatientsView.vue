@@ -436,7 +436,7 @@ onMounted(() => {
 }
 
 .subtitle {
-  color: #64748b;
+  color: #475569;
   font-size: 14px;
 }
 
@@ -486,7 +486,7 @@ onMounted(() => {
 }
 
 .search-box i {
-  color: #94a3b8;
+  color: #475569;
   font-size: 14px;
 }
 
@@ -500,7 +500,7 @@ onMounted(() => {
 }
 
 .search-box input::placeholder {
-  color: #94a3b8;
+  color: #475569;
 }
 
 .status-filter {
@@ -548,7 +548,7 @@ thead th {
   padding: 14px 24px;
   font-size: 11px;
   font-weight: 600;
-  color: #64748b;
+  color: #475569;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   background: #f8fafc;
@@ -602,7 +602,7 @@ tbody tr:last-child td {
 }
 
 .patient-id {
-  color: #94a3b8;
+  color: #475569;
   font-size: 12px;
   margin: 2px 0 0;
 }
@@ -611,7 +611,7 @@ tbody tr:last-child td {
 .contact-info p {
   margin: 0;
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -623,7 +623,7 @@ tbody tr:last-child td {
 
 .contact-info i {
   font-size: 12px;
-  color: #94a3b8;
+  color: #475569;
   width: 14px;
 }
 
@@ -654,7 +654,7 @@ tbody tr:last-child td {
 
 .date {
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
 }
 
 /* Actions */
@@ -706,7 +706,7 @@ tbody tr:last-child td {
 .empty-state {
   text-align: center;
   padding: 60px 20px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .empty-state i {
@@ -764,7 +764,7 @@ tbody tr:last-child td {
 .btn-close {
   background: none;
   border: none;
-  color: #94a3b8;
+  color: #475569;
   cursor: pointer;
   padding: 8px;
   border-radius: 8px;
@@ -773,7 +773,7 @@ tbody tr:last-child td {
 
 .btn-close:hover {
   background: #f1f5f9;
-  color: #64748b;
+  color: #475569;
 }
 
 .modal-body {
@@ -831,7 +831,7 @@ tbody tr:last-child td {
   padding: 12px 24px;
   border: 1px solid #e2e8f0;
   background: white;
-  color: #64748b;
+  color: #475569;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
@@ -898,7 +898,7 @@ tbody tr:last-child td {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  color: #64748b;
+  color: #475569;
   font-size: 14px;
 }
 
@@ -909,7 +909,7 @@ tbody tr:last-child td {
 }
 
 .patient-meta i {
-  color: #94a3b8;
+  color: #475569;
   font-size: 13px;
 }
 
@@ -957,7 +957,7 @@ tbody tr:last-child td {
 }
 
 .medical-card p {
-  color: #64748b;
+  color: #475569;
   font-size: 14px;
   line-height: 1.6;
 }
@@ -983,7 +983,7 @@ tbody tr:last-child td {
 }
 
 .info-section p {
-  color: #64748b;
+  color: #475569;
   font-size: 14px;
 }
 
@@ -1031,7 +1031,7 @@ tbody tr:last-child td {
 
 .history-date .time {
   font-size: 12px;
-  color: #64748b;
+  color: #475569;
 }
 
 .history-details {
@@ -1046,13 +1046,13 @@ tbody tr:last-child td {
 }
 
 .history-details .diagnosis {
-  color: #64748b;
+  color: #475569;
   font-size: 13px;
   margin-bottom: 2px;
 }
 
 .history-details .treatment {
-  color: #94a3b8;
+  color: #475569;
   font-size: 12px;
 }
 
@@ -1084,7 +1084,7 @@ tbody tr:last-child td {
 .no-history {
   text-align: center;
   padding: 40px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .no-history i {

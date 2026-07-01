@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\RendezVous;
 
 class InfirmierController extends Controller
 {
@@ -138,6 +139,18 @@ class InfirmierController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Observations enregistrées avec succès'
+        ]);
+    }
+
+    public function updateRendezVousStatus(Request $request, $id)
+    {
+        $rdv = RendezVous::findOrFail($id);
+        $rdv->update(['statut' => $request->statut]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Statut mis à jour',
+            'data' => $rdv
         ]);
     }
 }

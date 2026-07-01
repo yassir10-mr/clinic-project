@@ -1,0 +1,3037 @@
+﻿<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MediCare — Landing Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            serif: ['Playfair Display', 'Georgia', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    /* Fade-in-up animation */
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .animate-on-scroll.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Frame sibling delays */
+    .frame-section:nth-child(2) .animate-on-scroll {
+      transition-delay: 0.08s;
+    }
+
+    .frame-section:nth-child(3) .animate-on-scroll {
+      transition-delay: 0.08s;
+    }
+
+    .frame-section:nth-child(4) .animate-on-scroll {
+      transition-delay: 0.08s;
+    }
+
+    /* Shiny Button Styles (based on button.md) */
+    @property --x {
+      syntax: '<percentage>';
+      inherits: false;
+      initial-value: 100%;
+    }
+
+    @keyframes shiny-animation {
+      0% {
+        --x: 100%;
+      }
+
+      100% {
+        --x: -100%;
+      }
+    }
+
+    .shiny-button {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(24px);
+      transition: box-shadow 0.3s ease, transform 0.1s ease;
+      background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.2) 0%, transparent 60%), #0d9488;
+      /* Teal 600 logo color */
+      color: rgba(255, 255, 255, 1);
+      animation: shiny-animation 3s infinite linear;
+      border-radius: 0.5rem;
+      /* Will be overridden by inline classes if needed */
+    }
+
+    .shiny-button:hover {
+      box-shadow: 0 0 20px rgba(13, 148, 136, 0.6);
+      transform: scale(0.95);
+    }
+
+    .shiny-button::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(-75deg,
+          rgba(255, 255, 255, 0.1) calc(var(--x) + 20%),
+          rgba(255, 255, 255, 0.8) calc(var(--x) + 25%),
+          rgba(255, 255, 255, 0.1) calc(var(--x) + 100%));
+      -webkit-mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
+      mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .shiny-button-text {
+      display: block;
+      width: 100%;
+      height: 100%;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 300;
+      -webkit-mask-image: linear-gradient(-75deg,
+          #000 calc(var(--x) + 20%),
+          transparent calc(var(--x) + 30%),
+          #000 calc(var(--x) + 100%));
+      mask-image: linear-gradient(-75deg,
+          #000 calc(var(--x) + 20%),
+          transparent calc(var(--x) + 30%),
+          #000 calc(var(--x) + 100%));
+    }
+
+    @keyframes marquee-vertical {
+      0% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(-50%);
+      }
+    }
+
+    .animate-marquee-vertical {
+      animation: marquee-vertical linear infinite;
+    }
+
+    .animate-marquee-vertical:hover {
+      animation-play-state: paused;
+    }
+
+    /* Spatial Navigation CSS */
+    .outer {
+      width: 100%;
+      flex: 1;
+      overflow: visible;
+      background: transparent;
+      display: flex;
+      flex-direction: column
+    }
+
+    .scene {
+      width: 100%;
+      flex: 1;
+      min-height: 400px;
+      overflow: hidden;
+      position: relative
+    }
+
+    .world {
+      position: absolute;
+      width: 3200px;
+      height: 2200px;
+      transform-origin: 0 0;
+      transition: transform .9s cubic-bezier(.4, 0, .2, 1)
+    }
+
+    .card {
+      position: absolute;
+      display: flex;
+      width: 1120px;
+      height: 620px;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 24px 50px rgba(10, 37, 64, .15)
+    }
+
+    .card-left {
+      background: #0A2540;
+      padding: 72px 64px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%
+    }
+
+    .tag {
+      font-size: 18px;
+      letter-spacing: 2px;
+      color: #1BA87D;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 20px
+    }
+
+    .title {
+      font-size: 48px;
+      font-weight: 400;
+      color: #fff;
+      line-height: 1.2;
+      font-family: Georgia, serif;
+      margin-bottom: 24px
+    }
+
+    .desc {
+      font-size: 20px;
+      color: rgba(255, 255, 255, .7);
+      line-height: 1.7
+    }
+
+    .stats-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 32px
+    }
+
+    .stat {
+      flex: 1;
+      text-align: center;
+      padding: 0 16px
+    }
+
+    .stat:not(:last-child) {
+      border-right: 1px solid #E2E8F0
+    }
+
+    .stat .n {
+      font-size: 56px;
+      font-weight: 500;
+      color: #0A2540;
+      line-height: 1;
+      font-family: Georgia, serif
+    }
+
+    .stat .n sup {
+      font-size: 28px;
+      color: #1BA87D;
+      font-weight: 400
+    }
+
+    .stat .l {
+      font-size: 18px;
+      color: #9CA3AF;
+      margin-top: 10px;
+      letter-spacing: .3px
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: #E2E8F0;
+      margin: 0 0 24px
+    }
+
+    .caption {
+      font-size: 18px;
+      color: #9CA3AF;
+      line-height: 1.6;
+      text-align: center
+    }
+
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px
+    }
+
+    .pill {
+      font-size: 16px;
+      padding: 10px 20px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, .08);
+      color: rgba(255, 255, 255, .7);
+      border: 0.5px solid rgba(255, 255, 255, .12)
+    }
+
+    .right-title {
+      font-size: 30px;
+      font-weight: 500;
+      color: #0A2540;
+      font-family: Georgia, serif;
+      margin-bottom: 14px
+    }
+
+    .right-desc {
+      font-size: 20px;
+      color: #6B7280;
+      line-height: 1.65
+    }
+
+    .right-big {
+      font-size: 86px;
+      font-weight: 400;
+      color: #0A2540;
+      font-family: Georgia, serif;
+      line-height: 1
+    }
+
+    .right-big sup {
+      font-size: 38px;
+      color: #1BA87D
+    }
+
+    .right-sub {
+      font-size: 18px;
+      color: #9CA3AF;
+      margin-top: 10px;
+      letter-spacing: .3px
+    }
+
+    /* positions — symmetrical layout */
+    /* World: 3200x2200, card: 1120x620 */
+    /* Center card: c0 at center (1040, 790) */
+    /* Corners at equal distance from center */
+    .c0 {
+      left: 1040px;
+      top: 790px
+    }
+
+    .c1 {
+      left: 2000px;
+      top: 150px
+    }
+
+    .c2 {
+      left: 2000px;
+      top: 1430px
+    }
+
+    .c3 {
+      left: 80px;
+      top: 1430px
+    }
+
+    .c4 {
+      left: 80px;
+      top: 150px
+    }
+
+    /* ——— Cinematic Doctor Scroll ——— */
+    .doc-wrapper {
+      position: relative;
+      z-index: 20
+    }
+
+    .doc-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+      background: #0a1628;
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .doc-header-text {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      z-index: 200;
+      pointer-events: none;
+      padding: 0 16px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5)
+    }
+
+    .doc-eyebrow {
+      font-size: 14px;
+      font-weight: 600;
+      color: #0d9488;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 12px
+    }
+
+    .doc-htitle {
+      font-size: 48px;
+      font-weight: 500;
+      color: white;
+      margin-bottom: 12px;
+      font-family: 'Playfair Display', Georgia, serif;
+      line-height: 1.1
+    }
+
+    .doc-hsub {
+      font-size: 18px;
+      color: rgba(255, 255, 255, .7);
+      font-family: 'Inter', system-ui, sans-serif
+    }
+
+    .doc-card-wrap {
+      position: absolute;
+      will-change: transform, opacity;
+      pointer-events: auto;
+    }
+
+    .doc-card {
+      width: 560px;
+      max-width: calc(100vw - 40px);
+      background: white;
+      border-radius: 16px;
+      padding: 40px 40px 36px;
+      will-change: transform;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, .12)
+    }
+
+    .doc-card-top {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 28px
+    }
+
+    .doc-av {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      object-fit: cover;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .08)
+    }
+
+    .doc-name {
+      font-size: 28px;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 6px;
+      font-family: 'Playfair Display', Georgia, serif;
+      line-height: 1.2
+    }
+
+    .doc-spec {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: #0d9488;
+      font-family: 'Inter', system-ui, sans-serif
+    }
+
+    .doc-divider {
+      border: none;
+      border-top: 1px solid #f3f4f6;
+      margin: 0 0 24px 0
+    }
+
+    .doc-desc {
+      font-size: 16px;
+      color: #4b5563;
+      line-height: 1.6;
+      margin-bottom: 24px;
+      font-family: 'Inter', system-ui, sans-serif
+    }
+
+    .doc-formations {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+
+    .doc-formation-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #6b7280;
+      font-family: 'Inter', system-ui, sans-serif
+    }
+
+    .doc-formation-icon {
+      width: 16px;
+      height: 16px;
+      color: #1BA87D
+    }
+
+    .doc-rdv-wrapper {
+      text-align: right
+    }
+
+    .doc-rdv-btn {
+      background: #0d9488;
+      border: none;
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-family: 'Inter', system-ui, sans-serif;
+      transition: background-color .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2)
+    }
+
+    .doc-rdv-btn:hover {
+      background: #0f766e
+    }
+
+    .doc-progress-bar {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 100
+    }
+
+    .doc-prog-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .25);
+      transition: all .4s
+    }
+
+    .doc-prog-dot.active {
+      background: #0d9488;
+      width: 24px;
+      border-radius: 4px
+    }
+
+    .doc-hint {
+      position: absolute;
+      bottom: 48px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255, 255, 255, .35);
+      z-index: 100;
+      pointer-events: none;
+      letter-spacing: .05em
+    }
+
+    @media(max-width:600px) {
+      .doc-card {
+        width: 340px;
+        padding: 28px;
+        border-radius: 12px
+      }
+
+      .doc-av {
+        width: 64px;
+        height: 64px
+      }
+
+      .doc-name {
+        font-size: 22px
+      }
+
+      .doc-desc {
+        font-size: 15px;
+        margin-bottom: 20px
+      }
+
+      .doc-header-text {
+        top: 20px
+      }
+
+      .doc-eyebrow {
+        font-size: 12px;
+        margin-bottom: 8px
+      }
+
+      .doc-htitle {
+        font-size: 32px;
+        margin-bottom: 8px
+      }
+
+      .doc-hsub {
+        font-size: 15px
+      }
+    }
+
+    /* ——— Equipements Scroll Section ——— */
+    .equip-section {
+      position: relative;
+      background: #061828
+    }
+
+    .equip-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #061828
+    }
+
+    .equip-header {
+      position: absolute;
+      top: 56px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      z-index: 10;
+      pointer-events: none
+    }
+
+    .equip-eyebrow {
+      font-size: 13px;
+      font-weight: 600;
+      color: #0d9488;
+      letter-spacing: .12em;
+      text-transform: uppercase
+    }
+
+    .equip-title {
+      font-size: 44px;
+      font-weight: 500;
+      color: #fff;
+      margin-top: 10px;
+      font-family: 'Playfair Display', Georgia, serif;
+      line-height: 1.15
+    }
+
+    .equip-panels-container {
+      position: relative;
+      width: 100%;
+      max-width: 1200px;
+      height: 100%;
+      margin: 0 auto
+    }
+
+    .equip-panel {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 130px 40px 90px;
+      opacity: 0;
+      transform: translateY(80px) scale(0.95);
+      will-change: transform, opacity;
+      background: #061828
+    }
+
+    .equip-panel.is-first {
+      opacity: 1;
+      transform: translateY(0) scale(1)
+    }
+
+    .equip-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      width: 100%;
+      max-width: 1100px
+    }
+
+    .equip-image-wrapper {
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4)
+    }
+
+    .equip-image {
+      width: 100%;
+      height: 420px;
+      object-fit: cover;
+      display: block
+    }
+
+    .equip-content {
+      color: #fff
+    }
+
+    .equip-number {
+      font-size: 13px;
+      font-weight: 600;
+      color: #0d9488;
+      letter-spacing: .15em;
+      text-transform: uppercase
+    }
+
+    .equip-name {
+      font-size: 38px;
+      font-weight: 500;
+      margin-top: 16px;
+      font-family: 'Playfair Display', Georgia, serif;
+      line-height: 1.2
+    }
+
+    .equip-desc {
+      font-size: 17px;
+      color: rgba(255, 255, 255, .7);
+      line-height: 1.7;
+      margin-top: 20px;
+      font-family: 'Inter', system-ui, sans-serif
+    }
+
+    .equip-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px
+    }
+
+    .equip-tag {
+      font-size: 13px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      background: rgba(13, 148, 136, .12);
+      color: #0d9488;
+      border: 1px solid rgba(13, 148, 136, .25);
+      font-weight: 500;
+      letter-spacing: .02em;
+      font-family: 'Inter', system-ui, sans-serif
+    }
+
+    .equip-progress {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 10
+    }
+
+    .equip-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .25);
+      transition: all .4s
+    }
+
+    .equip-dot.active {
+      background: #0d9488;
+      width: 24px;
+      border-radius: 4px
+    }
+
+    @media(max-width:900px) {
+      .equip-grid {
+        grid-template-columns: 1fr;
+        gap: 28px
+      }
+
+      .equip-image {
+        height: 260px
+      }
+
+      .equip-name {
+        font-size: 28px
+      }
+
+      .equip-title {
+        font-size: 32px
+      }
+
+      .equip-panel {
+        padding: 120px 24px 80px
+      }
+    }
+
+    /* Custom dropdown transitions */
+    .dropdown-enter-active,
+    .dropdown-leave-active {
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .dropdown-enter-from,
+    .dropdown-leave-to {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+
+  </style>
+</head>
+
+<body class="antialiased">
+  <div id="app">
+    <div class="landing-page">
+      <!-- Navigation -->
+      <header ref="headerRef" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+        :class="{ 'bg-white/90 backdrop-blur-md shadow-sm': scrolled }">
+        <div class="mx-auto max-w-[1600px] px-6 lg:px-12">
+          <div class="flex h-14 items-center justify-between gap-4 lg:gap-8">
+            <a href="#" class="flex items-center gap-2 shrink-0">
+              <img src="/image-removebg-preview.png" alt="MediCare Logo"
+                class="h-8 w-auto object-contain transition-all duration-300"
+                :class="!scrolled ? 'brightness-0 invert' : ''" />
+              <span class="text-lg tracking-tight" :class="scrolled ? 'text-slate-900' : 'text-white'"
+                style="font-family: 'Playfair Display', Georgia, serif; font-weight: 500;">
+                MediCare
+              </span>
+            </a>
+
+            <nav class="hidden lg:flex items-center gap-5 xl:gap-8">
+              <a href="#services" class="text-xs font-medium tracking-wide transition-colors"
+                :class="scrolled ? 'text-slate-600 hover:text-slate-900' : 'text-white/80 hover:text-white'">Nos
+                Services</a>
+              <a href="#doctors" class="text-xs font-medium tracking-wide transition-colors"
+                :class="scrolled ? 'text-slate-600 hover:text-slate-900' : 'text-white/80 hover:text-white'">Notre
+                Équipe</a>
+              <a href="#about" class="text-xs font-medium tracking-wide transition-colors"
+                :class="scrolled ? 'text-slate-600 hover:text-slate-900' : 'text-white/80 hover:text-white'">Qui
+                Sommes-Nous</a>
+              <a href="#location" class="text-xs font-medium tracking-wide transition-colors"
+                :class="scrolled ? 'text-slate-600 hover:text-slate-900' : 'text-white/80 hover:text-white'">Notre
+                Présence</a>
+              <a href="#testimonials" class="text-xs font-medium tracking-wide transition-colors"
+                :class="scrolled ? 'text-slate-600 hover:text-slate-900' : 'text-white/80 hover:text-white'">Témoignages</a>
+            </nav>
+
+            <div class="flex items-center gap-3">
+              <a href="/login.html"
+                class="hidden sm:inline-flex text-xs font-semibold tracking-wide transition-colors"
+                :class="scrolled ? 'text-teal-600 hover:text-teal-700' : 'text-teal-400 hover:text-teal-300'">
+                Connexion
+              </a>
+              <a href="#" @click.prevent="openModal"
+                class="shiny-button rounded-md px-4 py-2 text-xs shadow-sm">
+                <span class="shiny-button-text">Prendre Rendez-vous</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Fixed Video Background -->
+      <div class="fixed inset-0 z-0">
+        <video ref="videoRef" class="h-full w-full object-cover" :src="videoSrc" muted playsinline
+          preload="auto"></video>
+        <div class="absolute inset-0 bg-black/45"></div>
+      </div>
+
+      <!-- Scroll-bound Frames Container -->
+      <div ref="framesWrapperRef" class="relative z-10" style="height: 400vh;">
+        <!-- Frame 1 : Réception -->
+        <section class="frame-section h-screen flex items-center justify-center px-6">
+          <div class="animate-on-scroll max-w-3xl text-center">
+            <h1 class="text-5xl sm:text-6xl lg:text-7xl leading-tight tracking-tight text-white"
+              style="font-family: 'Playfair Display', Georgia, serif; font-weight: 500;">
+              L'Excellence Médicale.
+            </h1>
+            <p class="mt-6 text-lg sm:text-xl leading-relaxed text-white/80 max-w-xl mx-auto"
+              style="font-family: 'Inter', system-ui, sans-serif;">
+              Votre santé mérite un environnement d'exception.
+            </p>
+          </div>
+        </section>
+
+        <!-- Frame 2 : Couloirs / Chambres -->
+        <section class="frame-section h-screen flex items-center px-6 lg:px-24">
+          <div class="animate-on-scroll max-w-2xl">
+            <h2 class="text-4xl sm:text-5xl lg:text-6xl leading-tight tracking-tight text-white"
+              style="font-family: 'Playfair Display', Georgia, serif; font-weight: 500;">
+              Confort &amp; Sérénité.
+            </h2>
+            <p class="mt-6 text-lg sm:text-xl leading-relaxed text-white/80 max-w-lg"
+              style="font-family: 'Inter', system-ui, sans-serif;">
+              Des espaces privés conçus pour votre tranquillité et votre rétablissement.
+            </p>
+          </div>
+        </section>
+
+        <!-- Frame 3 : Bloc opératoire -->
+        <section class="frame-section h-screen flex items-center justify-end px-6 lg:px-24">
+          <div class="animate-on-scroll max-w-2xl text-right">
+            <h2 class="text-4xl sm:text-5xl lg:text-6xl leading-tight tracking-tight text-white"
+              style="font-family: 'Playfair Display', Georgia, serif; font-weight: 500;">
+              Technologie de Pointe.
+            </h2>
+            <p class="mt-6 text-lg sm:text-xl leading-relaxed text-white/80 max-w-lg ml-auto"
+              style="font-family: 'Inter', system-ui, sans-serif;">
+              Des blocs opératoires de dernière génération pour des interventions ultra-précises.
+            </p>
+          </div>
+        </section>
+
+        <!-- Frame 4 : CTA Final -->
+        <section id="rendez-vous" class="frame-section h-screen flex items-center justify-center px-6">
+          <div class="animate-on-scroll max-w-4xl text-center">
+            <h2 class="text-4xl sm:text-5xl lg:text-6xl leading-tight tracking-tight text-white"
+              style="font-family: 'Playfair Display', Georgia, serif; font-weight: 500;">
+              Prêt à nous confier votre santé&nbsp;?
+            </h2>
+            <a href="#" @click.prevent="openModal"
+              class="shiny-button mt-10 rounded-xl px-10 py-5 text-base sm:text-lg shadow-lg">
+              <span class="shiny-button-text">Prendre Rendez-vous Aujourd'hui</span>
+            </a>
+          </div>
+        </section>
+      </div>
+
+      <!-- Services Section (Stacking Cards) -->
+      <section id="services" class="relative z-20 bg-slate-50">
+        <div class="mx-auto max-w-7xl px-6 lg:px-8 flex flex-col lg:flex-row justify-between gap-12 lg:gap-8 relative">
+
+          <!-- Sticky Title Side -->
+          <div class="lg:w-1/2 lg:h-auto">
+            <div class="lg:sticky lg:top-0 lg:h-screen flex flex-col justify-center max-w-lg py-20 lg:py-0">
+              <p class="text-sm font-semibold uppercase tracking-widest" style="color: #0d9488;">Nos Expertises</p>
+              <h2 class="mt-4 text-4xl sm:text-5xl tracking-tight text-slate-900"
+                style="font-family: 'Playfair Display', Georgia, serif; font-weight: 500;">
+                Une prise en charge complète.
+              </h2>
+              <p class="mt-5 text-lg leading-relaxed text-slate-600"
+                style="font-family: 'Inter', system-ui, sans-serif;">
+                De la consultation préventive à la chirurgie la plus complexe, nos équipes vous accompagnent à chaque
+                étape. Faites défiler vers le bas pour découvrir.
+              </p>
+            </div>
+          </div>
+
+          <!-- Stacking Cards Side -->
+          <div class="w-full lg:w-1/2 flex flex-col relative z-10">
+            <!-- Card 1 -->
+            <figure class="lg:sticky lg:top-0 lg:h-screen flex items-center justify-center mb-8 lg:mb-0">
+              <div class="relative w-full max-w-md lg:rotate-2 transform transition-transform origin-bottom group">
+                <article
+                  class="relative w-full rounded-2xl border border-white/20 bg-white/10 p-8 shadow-2xl backdrop-blur-md transition-transform duration-300 group-hover:-translate-y-2">
+                  <div
+                    class="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-teal-500/20 text-teal-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"
+                      stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                  </div>
+                  <h3 class="text-2xl font-semibold text-slate-900"
+                    style="font-family: 'Playfair Display', Georgia, serif;">Consultations Spécialisées</h3>
+                  <p class="mt-4 text-base leading-relaxed text-slate-600"
+                    style="font-family: 'Inter', system-ui, sans-serif;">
+                    Cardiologie, neurologie, oncologie et plus de 25 spécialités médicales disponibles sur rendez-vous
+                    rapide.
+                  </p>
+
+                </article>
+              </div>
+            </figure>
+
+            <!-- Card 2 -->
+            <figure class="lg:sticky lg:top-0 lg:h-screen flex items-center justify-center mb-8 lg:mb-0">
+              <div class="relative w-full max-w-md lg:-rotate-1 transform transition-transform origin-bottom group">
+                <article
+                  class="relative w-full rounded-2xl border border-white/20 bg-white/10 p-8 shadow-2xl backdrop-blur-md transition-transform duration-300 group-hover:-translate-y-2">
+                  <div
+                    class="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-teal-500/20 text-teal-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"
+                      stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h3 class="text-2xl font-semibold text-slate-900"
+                    style="font-family: 'Playfair Display', Georgia, serif;">Chirurgie Ambulatoire</h3>
+                  <p class="mt-4 text-base leading-relaxed text-slate-600"
+                    style="font-family: 'Inter', system-ui, sans-serif;">
+                    Blocs opératoires haute technologie avec rétablissement accéléré et sortie le jour même pour la
+                    majorité des actes.
+                  </p>
+
+                </article>
+              </div>
+            </figure>
+
+            <!-- Card 3 -->
+            <figure class="lg:sticky lg:top-0 lg:h-screen flex items-center justify-center mb-8 lg:mb-0">
+              <div class="relative w-full max-w-md lg:rotate-1 transform transition-transform origin-bottom group">
+                <article
+                  class="relative w-full rounded-2xl border border-white/20 bg-white/10 p-8 shadow-2xl backdrop-blur-md transition-transform duration-300 group-hover:-translate-y-2">
+                  <div
+                    class="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-teal-500/20 text-teal-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"
+                      stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h3 class="text-2xl font-semibold text-slate-900"
+                    style="font-family: 'Playfair Display', Georgia, serif;">Urgences 24h/24</h3>
+                  <p class="mt-4 text-base leading-relaxed text-slate-600"
+                    style="font-family: 'Inter', system-ui, sans-serif;">
+                    Service d'urgences ouvert en continu avec scanner et IRM d'urgence intégrés pour un diagnostic
+                    immédiat.
+                  </p>
+
+                </article>
+              </div>
+            </figure>
+
+            <!-- Card 4 -->
+            <figure class="lg:sticky lg:top-0 lg:h-screen flex items-center justify-center mb-8 lg:mb-0">
+              <div class="relative w-full max-w-md lg:-rotate-2 transform transition-transform origin-bottom group">
+                <article
+                  class="relative w-full rounded-2xl border border-white/20 bg-white/10 p-8 shadow-2xl backdrop-blur-md transition-transform duration-300 group-hover:-translate-y-2">
+                  <div
+                    class="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-teal-500/20 text-teal-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"
+                      stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  </div>
+                  <h3 class="text-2xl font-semibold text-slate-900"
+                    style="font-family: 'Playfair Display', Georgia, serif;">Imagerie Médicale</h3>
+                  <p class="mt-4 text-base leading-relaxed text-slate-600"
+                    style="font-family: 'Inter', system-ui, sans-serif;">
+                    Un plateau d'imagerie complet avec IRM 3 Tesla, scanners haute résolution et échographie 3D pour des
+                    diagnostics d'une précision absolue.
+                  </p>
+
+                </article>
+              </div>
+            </figure>
+
+            <!-- Card 5 -->
+            <figure class="lg:sticky lg:top-0 lg:h-screen flex items-center justify-center mb-8 lg:mb-0">
+              <div class="relative w-full max-w-md lg:rotate-1 transform transition-transform origin-bottom group">
+                <article
+                  class="relative w-full rounded-2xl border border-white/20 bg-white/10 p-8 shadow-2xl backdrop-blur-md transition-transform duration-300 group-hover:-translate-y-2">
+                  <div
+                    class="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-teal-500/20 text-teal-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"
+                      stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                  </div>
+                  <h3 class="text-2xl font-semibold text-slate-900"
+                    style="font-family: 'Playfair Display', Georgia, serif;">Maternité &amp; Pédiatrie</h3>
+                  <p class="mt-4 text-base leading-relaxed text-slate-600"
+                    style="font-family: 'Inter', system-ui, sans-serif;">
+                    Un accompagnement personnalisé de la grossesse jusqu'à l'accouchement, avec un service de
+                    néonatologie niveau 2B pour la sécurité de votre enfant.
+                  </p>
+
+                </article>
+              </div>
+            </figure>
+
+            <!-- Card 6 -->
+            <figure class="lg:sticky lg:top-0 lg:h-screen flex items-center justify-center">
+              <div class="relative w-full max-w-md lg:-rotate-1 transform transition-transform origin-bottom group">
+                <article
+                  class="relative w-full rounded-2xl border border-white/20 bg-white/10 p-8 shadow-2xl backdrop-blur-md transition-transform duration-300 group-hover:-translate-y-2">
+                  <div
+                    class="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-teal-500/20 text-teal-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"
+                      stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h3 class="text-2xl font-semibold text-slate-900"
+                    style="font-family: 'Playfair Display', Georgia, serif;">Bilan de Santé Premium</h3>
+                  <p class="mt-4 text-base leading-relaxed text-slate-600"
+                    style="font-family: 'Inter', system-ui, sans-serif;">
+                    Des check-ups complets réalisés en une demi-journée, avec parcours VIP et synthèse médicale
+                    immédiate par notre médecin coordinateur.
+                  </p>
+
+                </article>
+              </div>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- Doctors Section (Cinematic Scroll — page-scroll driven) -->
+      <section id="doctors">
+      <div class="doc-wrapper" id="docWrapper" style="height:700vh;">
+        <div class="doc-sticky" id="docSticky">
+          <div class="doc-header-text" id="docHeaderText">
+            <div class="doc-eyebrow">Notre équipe médicale</div>
+            <div class="doc-htitle">L'excellence à votre service</div>
+            <div class="doc-hsub">Rencontrez nos spécialistes hautement qualifiés.</div>
+          </div>
+          <div id="docCardsContainer" style="position: absolute; inset: 0; pointer-events: none;"></div>
+          <div class="doc-hint" id="docHint">↓ Scrollez pour découvrir</div>
+          <div class="doc-progress-bar" id="docProgressBar"></div>
+        </div>
+      </div>
+      </section>
+
+
+      <!-- Location / Spatial Section (Scroll-hijack wrapper) -->
+      <div ref="spatialWrapperRef" style="height: 600vh; position: relative;">
+        <section id="about"
+          class="flex flex-col w-full items-center justify-start pt-32 pb-8 overflow-hidden bg-slate-50 px-6 md:px-12 animate-on-scroll"
+          style="position: sticky; top: 0; height: 100vh; z-index: 20;">
+          <div class="mx-auto flex w-full h-full max-w-7xl flex-col items-center">
+
+            <div class="text-center mb-16 w-full flex-shrink-0">
+              <p class="text-sm font-bold uppercase tracking-widest text-[#1BA87D]">Qui Sommes-Nous</p>
+              <h2 class="mt-4 text-4xl sm:text-5xl tracking-tight text-slate-900"
+                style="font-family: 'Playfair Display', Georgia, serif; font-weight: 500;">
+                L'humain avant tout
+              </h2>
+            </div>
+
+            <div class="outer flex-1 w-full relative">
+              <div class="scene" id="scene" ref="sceneRef" @touchstart.passive="onSpatialTouchStart"
+                @touchend.passive="onSpatialTouchEnd">
+                <div class="world" id="world" :style="{ transform: worldTransform }">
+
+                  <!-- 0 : centre — vue globale -->
+                  <div class="card c0">
+                    <div class="card-left">
+                      <div class="tag">Notre Clinique</div>
+                      <div class="title">L'excellence au quotidien.</div>
+                      <div class="desc">Fondée en 2008, la clinique MediCare regroupe plus de 120 praticiens et 400
+                        collaborateurs dédiés à une mission simple : offrir les meilleurs soins dans un cadre qui
+                        respecte votre dignité.</div>
+                      <div class="pills"><span class="pill">120+ Praticiens</span><span class="pill">15k
+                          Patients/an</span><span class="pill">4.9★. Google</span><span class="pill">ISO 9001</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 1 : haut droite — équipe -->
+                  <div class="card c1">
+                    <div class="card-left">
+                      <div class="tag">01 — Notre équipe</div>
+                      <div class="title">120 praticiens, une seule vision.</div>
+                      <div class="desc">Médecins généralistes, chirurgiens et spécialistes partagent la même exigence du
+                        soin et le même respect du patient. 400 collaborateurs au total, dédiés à votre prise en charge.
+                      </div>
+                      <div class="pills"><span class="pill">15 spécialités</span><span class="pill">Formation
+                          continue</span><span class="pill">Staff hebdo</span></div>
+                    </div>
+                  </div>
+
+                  <!-- 2 : bas droite — résultats -->
+                  <div class="card c2">
+                    <div class="card-left">
+                      <div class="tag">02 — Nos résultats</div>
+                      <div class="title">La confiance de 15 000 patients.</div>
+                      <div class="desc">Chaque année, MediCare publie son rapport qualité. La satisfaction patient
+                        s'améliore continuellement depuis 2008.</div>
+                      <div class="pills"><span class="pill">4.9★. Google</span><span class="pill">2 400+ avis</span><span
+                          class="pill">97% satisfaction</span></div>
+                    </div>
+                  </div>
+
+                  <!-- 3 : bas gauche — fondation -->
+                  <div class="card c3">
+                    <div class="card-left">
+                      <div class="tag">03 — Notre histoire</div>
+                      <div class="title">Ancrés à Tanger depuis 2008.</div>
+                      <div class="desc">Créée par le Dr. Alami avec 12 praticiens, la clinique compte aujourd'hui 6
+                        bâtiments et 15 spécialités médicales actives. 17 ans d'excellence médicale.</div>
+                      <div class="pills"><span class="pill">Tanger, Maroc</span><span class="pill">ISO 9001</span><span
+                          class="pill">6 bâtiments</span></div>
+                    </div>
+                  </div>
+
+                  <!-- 4 : haut gauche — innovation -->
+                  <div class="card c4">
+                    <div class="card-left">
+                      <div class="tag">04 — Innovation</div>
+                      <div class="title">Technologie de pointe, soins humains.</div>
+                      <div class="desc">IRM 3T, chirurgie robotisée, dossier médical 100 % numérique. MediCare investit
+                        chaque année dans les meilleurs équipements disponibles.</div>
+                      <div class="pills"><span class="pill">IRM 3T</span><span class="pill">Robotique</span><span
+                          class="pill">100% digital</span></div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+      </div>
+
+      <!-- Location / Presence Section -->
+      <section id="location"
+        class="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-white px-6 py-12 md:px-12">
+        <div class="mx-auto flex w-full max-w-7xl flex-col items-center gap-12 lg:flex-row lg:justify-between">
+
+          <!-- Contenu (Gauche) -->
+          <div class="z-20 w-full max-w-xl text-left text-slate-900 lg:w-1/2">
+            <p class="text-sm font-semibold uppercase tracking-widest text-teal-600 mb-4">Notre Présence</p>
+            <h2 class="text-4xl sm:text-5xl font-medium tracking-tight mb-6"
+              style="font-family: 'Playfair Display', Georgia, serif;">
+              Où nous trouver sur Terre
+            </h2>
+            <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+              Nous sommes ravis d'annoncer que MediCare étend sa présence au-delà de Paris.
+              Retrouvez nos cliniques d'excellence à travers le monde.
+            </p>
+            <div class="h-16 relative w-full overflow-hidden" @mouseenter="isAddressPaused = true"
+              @mouseleave="isAddressPaused = false">
+              <Transition enter-active-class="transition duration-500 ease-out"
+                enter-from-class="opacity-0 translate-y-2" enter-to-class="opacity-100 translate-y-0"
+                leave-active-class="transition duration-500 ease-in absolute top-0 left-0"
+                leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 -translate-y-2">
+                <div :key="currentAddressIndex" class="flex items-center gap-4 text-slate-700 w-full">
+                  <svg class="w-6 h-6 text-teal-600 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.242-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <span class="text-lg">{{ addressList[currentAddressIndex] }}</span>
+                </div>
+              </Transition>
+            </div>
+          </div>
+
+          <!-- Globe (Droite) -->
+          <div
+            class="relative w-full max-w-[650px] lg:absolute lg:right-16 lg:top-1/2 lg:w-[650px] lg:-translate-y-1/2 z-10">
+            <div class="relative aspect-square select-none">
+              <canvas ref="globeCanvas" @pointerdown="onPointerDownGlobe" @pointerenter="isPausedRef = true"
+                @pointerleave="isPausedRef = false; pointerInteracting = null; lastPointer = null; if (globeCanvas) globeCanvas.style.cursor = 'grab';"
+                style="width:100%;height:100%;cursor:grab;opacity:0;transition:opacity 1.2s ease;border-radius:50%;touch-action:none;"></canvas>
+              <!-- Marker labels -->
+              <div v-for="m in globeMarkers" :key="m.id"
+                :style="{position:'absolute',positionAnchor:'--cobe-'+m.id,bottom:'anchor(top)',left:'anchor(center)',translate:'-50% 0',marginBottom:'8px',padding:'2px 6px',background:'#1a1a2e',color:'#fff',fontFamily:'monospace',fontSize:'0.6rem',letterSpacing:'0.08em',textTransform:'uppercase',whiteSpace:'nowrap',pointerEvents:'none',opacity:'var(--cobe-visible-'+m.id+', 0)',filter:'blur(calc((1 - var(--cobe-visible-'+m.id+', 0)) * 8px))',transition:'opacity 0.8s, filter 0.8s'}">
+                {{ m.label }}
+                <span
+                  style="position:absolute;top:100%;left:50%;transform:translate3d(-50%,-1px,0);border:5px solid transparent;border-top-color:#1a1a2e;"></span>
+              </div>
+            </div>
+          </div>
+    </div>
+  </section>
+
+  <!-- Equipements Section (GSAP ScrollTrigger) -->
+  <section id="equipements" class="equip-section relative z-20" style="height: 700vh;">
+    <div class="equip-sticky">
+      <div class="equip-header">
+        <div class="equip-eyebrow">Nos Équipements</div>
+        <div class="equip-title">Technologies d'exception</div>
+      </div>
+
+      <div class="equip-panels-container">
+        <div v-for="(eq, i) in equipments" :key="i" class="equip-panel" :class="{ 'is-first': i === 0 }">
+          <div class="equip-grid">
+            <div class="equip-image-wrapper">
+              <img :src="eq.image" :alt="eq.title" class="equip-image" />
+            </div>
+            <div class="equip-content">
+              <span class="equip-number">0{{ i + 1 }}</span>
+              <h3 class="equip-name">{{ eq.title }}</h3>
+              <p class="equip-desc">{{ eq.description }}</p>
+              <div class="equip-tags">
+                <span v-for="tag in eq.tags" :key="tag" class="equip-tag">{{ tag }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="equip-progress">
+        <div v-for="(eq, i) in equipments" :key="i" class="equip-dot" :class="{ active: i === 0 }"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+      <section id="testimonials" class="bg-white py-20 relative z-20">
+        <div class="mx-auto max-w-7xl px-6 lg:px-8 z-10 relative">
+          <div class="flex flex-col items-center justify-center max-w-[540px] mx-auto animate-on-scroll">
+            <span class="text-sm font-bold tracking-widest text-teal-600 uppercase mb-5">
+              Témoignages
+            </span>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tighter text-slate-900 text-center"
+              style="font-family: 'Playfair Display', Georgia, serif;">
+              Ce que disent nos patients
+            </h2>
+            <p class="text-center mt-5 text-slate-600 text-lg" style="font-family: 'Inter', system-ui, sans-serif;">
+              Découvrez les retours de ceux qui nous ont fait confiance pour leur santé et leur bien-être.
+            </p>
+          </div>
+
+          <!-- Marquee Columns -->
+          <div class="flex justify-center gap-6 mt-16 max-h-[500px] overflow-hidden"
+            style="-webkit-mask-image: linear-gradient(to bottom, transparent, black 25%, black 75%, transparent); mask-image: linear-gradient(to bottom, transparent, black 25%, black 75%, transparent);">
+
+            <!-- Column 1 -->
+            <div class="flex flex-col gap-6 w-full max-w-xs">
+              <div class="flex flex-col gap-6 pb-6 animate-marquee-vertical" style="animation-duration: 15s;">
+                <div v-for="(t, i) in firstColumn" :key="'col1-'+i"
+                  class="relative overflow-hidden p-8 rounded-3xl border border-teal-100/50 bg-gradient-to-br from-white to-teal-50/30 shadow-xl shadow-teal-900/5 w-full">
+                  <svg class="absolute top-6 right-6 w-12 h-12 text-teal-500/10" fill="currentColor"
+                    viewBox="0 0 24 24">
+                    <path
+                      d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                  </svg>
+                  <div class="relative z-10 text-slate-700 leading-relaxed"
+                    style="font-family: 'Inter', system-ui, sans-serif;">{{ t.text }}</div>
+                  <div class="relative z-10 mt-6">
+                    <div class="flex flex-col">
+                      <div class="font-medium tracking-tight text-teal-950 leading-5">{{ t.name }}</div>
+                      <div class="leading-5 text-teal-600 font-medium text-sm mt-1">{{ t.role }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Column 2 -->
+            <div class="hidden md:flex flex-col gap-6 w-full max-w-xs">
+              <div class="flex flex-col gap-6 pb-6 animate-marquee-vertical" style="animation-duration: 19s;">
+                <div v-for="(t, i) in secondColumn" :key="'col2-'+i"
+                  class="relative overflow-hidden p-8 rounded-3xl border border-teal-100/50 bg-gradient-to-br from-white to-teal-50/30 shadow-xl shadow-teal-900/5 w-full">
+                  <svg class="absolute top-6 right-6 w-12 h-12 text-teal-500/10" fill="currentColor"
+                    viewBox="0 0 24 24">
+                    <path
+                      d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                  </svg>
+                  <div class="relative z-10 text-slate-700 leading-relaxed"
+                    style="font-family: 'Inter', system-ui, sans-serif;">{{ t.text }}</div>
+                  <div class="relative z-10 mt-6">
+                    <div class="flex flex-col">
+                      <div class="font-medium tracking-tight text-teal-950 leading-5">{{ t.name }}</div>
+                      <div class="leading-5 text-teal-600 font-medium text-sm mt-1">{{ t.role }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Column 3 -->
+            <div class="hidden lg:flex flex-col gap-6 w-full max-w-xs">
+              <div class="flex flex-col gap-6 pb-6 animate-marquee-vertical" style="animation-duration: 17s;">
+                <div v-for="(t, i) in thirdColumn" :key="'col3-'+i"
+                  class="relative overflow-hidden p-8 rounded-3xl border border-teal-100/50 bg-gradient-to-br from-white to-teal-50/30 shadow-xl shadow-teal-900/5 w-full">
+                  <svg class="absolute top-6 right-6 w-12 h-12 text-teal-500/10" fill="currentColor"
+                    viewBox="0 0 24 24">
+                    <path
+                      d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                  </svg>
+                  <div class="relative z-10 text-slate-700 leading-relaxed"
+                    style="font-family: 'Inter', system-ui, sans-serif;">{{ t.text }}</div>
+                  <div class="relative z-10 mt-6">
+                    <div class="flex flex-col">
+                      <div class="font-medium tracking-tight text-teal-950 leading-5">{{ t.name }}</div>
+                      <div class="leading-5 text-teal-600 font-medium text-sm mt-1">{{ t.role }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="relative z-30 bg-slate-900 text-slate-300">
+        <div class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+          <div class="grid gap-12 md:grid-cols-3">
+            <div>
+              <h3 class="text-xl text-white" style="font-family: 'Playfair Display', Georgia, serif; font-weight: 500;">
+                MediCare</h3>
+              <p class="mt-4 text-sm leading-relaxed text-slate-400"
+                style="font-family: 'Inter', system-ui, sans-serif;">
+                42 Avenue de la Santé<br />
+                75008 Paris, France<br />
+                contact@medicare.com
+              </p>
+            </div>
+            <div>
+              <h3 class="text-white font-semibold mb-6">LIENS RAPIDES</h3>
+              <ul class="space-y-4">
+                <li><a href="#services" class="text-slate-400 hover:text-teal-400 transition-colors">Nos Services</a>
+                </li>
+                <li><a href="#doctors" class="text-slate-400 hover:text-teal-400 transition-colors">Notre Équipe</a>
+                </li>
+                <li><a href="#about" class="text-slate-400 hover:text-teal-400 transition-colors">Qui Sommes-Nous</a>
+                </li>
+                <li><a href="#location" class="text-slate-400 hover:text-teal-400 transition-colors">Notre Présence</a>
+                </li>
+                <li><a href="#equipements" class="text-slate-400 hover:text-teal-400 transition-colors">Nos Équipements</a>
+                </li>
+                <li><a href="#testimonials" class="text-slate-400 hover:text-teal-400 transition-colors">Témoignages</a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 class="text-white font-semibold mb-6">CONTACT</h3>
+              <ul class="space-y-4">
+                <li class="text-slate-400">Urgences: +33 1 23 45 67 89 <br /><span
+                    class="text-xs text-slate-500">(Accessible à l'international)</span></li>
+                <li class="text-slate-400">RDV: +33 1 98 76 54 32</li>
+              </ul>
+            </div>
+          </div>
+          <div class="mt-16 border-t border-slate-800 pt-8 text-center text-xs text-slate-500">
+            &copy; 2026 MediCare. Tous droits réservés.
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Appointment Modal -->
+    <div v-if="isModalOpen"
+      class="fixed inset-0 z-[100] flex items-center justify-center bg-teal-950/40 backdrop-blur-md p-4 sm:p-6"
+      @click.self="closeModal">
+      <div
+        class="bg-white rounded-3xl shadow-2xl shadow-teal-900/20 w-full max-w-5xl flex flex-col md:flex-row overflow-hidden relative animate-on-scroll is-visible border border-teal-100"
+        style="max-height: 90vh;">
+
+        <!-- Medical Cross Background Decoration -->
+        <svg
+          class="absolute bottom-0 left-0 w-96 h-96 text-teal-500/5 -translate-x-1/4 translate-y-1/4 pointer-events-none"
+          viewBox="0 0 100 100" fill="currentColor">
+          <path d="M35 0h30v35h35v30h-35v35h-30v-35h-35v-30h35z" />
+        </svg>
+        <svg
+          class="absolute top-0 right-0 w-64 h-64 text-teal-500/5 translate-x-1/4 -translate-y-1/4 pointer-events-none"
+          viewBox="0 0 100 100" fill="currentColor">
+          <path d="M35 0h30v35h35v30h-35v35h-30v-35h-35v-30h35z" />
+        </svg>
+
+        <button @click="resetAndCloseModal"
+          class="absolute top-4 right-4 text-teal-700 hover:text-teal-900 z-[60] bg-white/80 rounded-full p-2 backdrop-blur-sm transition-colors hover:bg-teal-50">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <template v-if="!appointmentSuccess">
+          <!-- Left Pane: Calendar & Time Slots -->
+          <div
+            class="w-full md:w-5/12 p-6 md:p-8 bg-gradient-to-br from-teal-50/50 to-white border-r border-teal-100/50 flex flex-col overflow-y-auto relative z-10 custom-scrollbar">
+            <h3 class="text-2xl font-semibold text-teal-950 mb-6" style="font-family: 'Playfair Display', serif;">Date &
+              Heure</h3>
+
+            <!-- Simple Calendar Grid -->
+            <div class="bg-white rounded-2xl shadow-sm border border-teal-100 p-5 mb-6 relative">
+              <div class="flex items-center justify-between mb-4">
+                <button @click="prevMonth"
+                  class="p-2 text-teal-600 hover:text-teal-800 rounded-lg hover:bg-teal-50 transition-colors">
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <div class="font-medium text-sm text-teal-900 capitalize tracking-wide">{{ currentMonthName }} {{
+                  currentYear }}</div>
+                <button @click="nextMonth"
+                  class="p-2 text-teal-600 hover:text-teal-800 rounded-lg hover:bg-teal-50 transition-colors">
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+
+              <div class="grid grid-cols-7 gap-1 text-center mb-3">
+                <div v-for="day in ['Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa', 'Di']" :key="day"
+                  class="text-xs font-semibold text-teal-600/70">{{ day }}</div>
+              </div>
+
+              <div class="grid grid-cols-7 gap-1.5 text-center">
+                <div v-for="blank in blankDays" :key="'blank-'+blank" class="h-9 w-9"></div>
+                <button v-for="date in monthDays" :key="date" @click="selectDate(date)" :disabled="isPast(date)"
+                  class="h-9 w-9 rounded-xl flex items-center justify-center text-sm transition-all mx-auto" :class="[
+                   selectedDate === date ? 'bg-teal-600 text-white font-medium shadow-md shadow-teal-600/30' : 'text-slate-700 hover:bg-teal-100/50',
+                   isPast(date) ? 'opacity-30 cursor-not-allowed hover:bg-transparent' : ''
+                ]">
+                  {{ date }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Time Slots -->
+            <div class="flex-1 flex flex-col min-h-[150px]">
+              <div class="text-xs font-semibold text-teal-700/70 mb-3 uppercase tracking-wider">Créneaux de 30 min</div>
+              <div class="grid grid-cols-2 gap-2.5 overflow-y-auto pr-2 custom-scrollbar" style="max-height: 200px;">
+                <button v-for="time in timeSlots" :key="time" @click="selectedTime = time" :disabled="isBooked(time)"
+                  class="py-2.5 text-sm rounded-xl border transition-all font-medium"
+                  :class="selectedTime === time ? 'border-teal-600 bg-teal-600 text-white shadow-md shadow-teal-600/20' : isBooked(time) ? 'border-teal-100 bg-gray-50 text-gray-300 cursor-not-allowed' : 'border-teal-100 bg-white text-teal-900 hover:border-teal-300 hover:bg-teal-50'">
+                  {{ time }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Pane: Form Details -->
+          <div
+            class="w-full md:w-7/12 p-6 md:p-10 bg-white flex flex-col overflow-y-auto relative z-10 custom-scrollbar">
+            <h3 class="text-2xl font-semibold text-teal-950 mb-6" style="font-family: 'Playfair Display', serif;">
+              Détails du Patient</h3>
+
+            <form @submit.prevent="submitAppointment" class="flex flex-col gap-5 flex-1">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label class="block text-sm font-medium text-teal-900 mb-1.5">Nom complet</label>
+                  <input v-model="patientName" type="text" required
+                    class="w-full rounded-xl border border-teal-100 px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 transition-colors shadow-sm bg-teal-50/10 placeholder-slate-400"
+                    placeholder="Jean Dupont">
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-teal-900 mb-1.5">Adresse Email</label>
+                  <input v-model="patientEmail" type="email" required
+                    class="w-full rounded-xl border border-teal-100 px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 transition-colors shadow-sm bg-teal-50/10 placeholder-slate-400"
+                    placeholder="jean.dupont@email.com">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label class="block text-sm font-medium text-teal-900 mb-1.5">Numéro de téléphone</label>
+                  <input v-model="patientPhone" type="tel" required
+                    class="w-full rounded-xl border border-teal-100 px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 transition-colors shadow-sm bg-teal-50/10 placeholder-slate-400"
+                    placeholder="+33 6 12 34 56 78">
+                </div>
+
+                <div class="relative">
+                  <label class="block text-sm font-medium text-teal-900 mb-1.5">Service m&eacute;dical</label>
+                  <div class="relative" data-dropdown="service">
+                    <button type="button" @click="toggleServiceDropdown"
+                      class="w-full flex items-center justify-between rounded-xl border px-4 py-3.5 text-sm shadow-sm bg-white cursor-pointer transition-all"
+                      :class="serviceOpen ? 'border-teal-500 ring-2 ring-teal-500/25' : 'border-teal-200 hover:border-teal-300'">
+                      <span :class="selectedService ? 'text-slate-800 font-medium' : 'text-slate-400'">{{ selectedService || 'S&eacute;lectionner...' }}</span>
+                      <svg class="w-4 h-4 text-teal-500 transition-transform duration-200" :class="{ 'rotate-180': serviceOpen }" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/>
+                      </svg>
+                    </button>
+                    <Transition name="dropdown">
+                      <ul v-if="serviceOpen"
+                        class="absolute top-full left-0 right-0 mt-1.5 bg-white border border-teal-100 rounded-xl shadow-lg shadow-teal-900/10 z-50 max-h-56 overflow-y-auto py-1.5">
+                        <li v-for="s in landingServices" :key="s"
+                          @click="selectLandingService(s)"
+                          class="px-4 py-2.5 text-sm cursor-pointer transition-colors"
+                          :class="selectedService === s ? 'bg-teal-600 text-white font-medium' : 'text-slate-700 hover:bg-teal-50 hover:text-teal-700'">
+                          {{ s }}
+                        </li>
+                      </ul>
+                    </Transition>
+                  </div>
+                </div>
+              </div>
+
+              <div class="relative">
+                <label class="block text-sm font-medium text-teal-900 mb-1.5">M&eacute;decin</label>
+                <div class="relative" data-dropdown="doctor">
+                  <button type="button" @click="toggleDoctorDropdown"
+                    class="w-full flex items-center justify-between rounded-xl border px-4 py-3.5 text-sm shadow-sm bg-white cursor-pointer transition-all"
+                    :class="doctorOpen ? 'border-teal-500 ring-2 ring-teal-500/25' : 'border-teal-200 hover:border-teal-300'">
+                    <span :class="selectedDoctor ? 'text-slate-800 font-medium' : 'text-slate-400'">{{ selectedDoctorLabelLanding || 'Choisir un m&eacute;decin...' }}</span>
+                    <svg class="w-4 h-4 text-teal-500 transition-transform duration-200" :class="{ 'rotate-180': doctorOpen }" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/>
+                    </svg>
+                  </button>
+                  <Transition name="dropdown">
+                    <ul v-if="doctorOpen"
+                      class="absolute top-full left-0 right-0 mt-1.5 bg-white border border-teal-100 rounded-xl shadow-lg shadow-teal-900/10 z-50 max-h-56 overflow-y-auto py-1.5">
+                      <li v-for="doc in filteredDoctors" :key="doc.id_medecin"
+                        @click="selectLandingDoctor(doc.id_medecin)"
+                        class="px-4 py-2.5 text-sm cursor-pointer transition-colors"
+                        :class="selectedDoctor === doc.id_medecin ? 'bg-teal-600 text-white font-medium' : 'text-slate-700 hover:bg-teal-50 hover:text-teal-700'">
+                        Dr. {{ doc.prenom }} {{ doc.nom }} &mdash; {{ doc.specialite }}
+                      </li>
+                      <li v-if="!filteredDoctors.length" class="px-4 py-2.5 text-sm text-slate-400 cursor-default">Aucun m&eacute;decin disponible</li>
+                    </ul>
+                  </Transition>
+                </div>
+              </div>
+
+              <div class="flex-1 flex flex-col">
+                <label class="block text-sm font-medium text-teal-900 mb-1.5">Description des symptômes</label>
+                <textarea v-model="patientDescription" required rows="3"
+                  class="w-full rounded-xl border border-teal-100 px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 transition-colors resize-none shadow-sm min-h-[100px] flex-1 bg-teal-50/10 placeholder-slate-400"
+                  placeholder="Décrivez brièvement la raison de votre consultation..."></textarea>
+              </div>
+
+              <div class="mt-2 pt-5 border-t border-teal-50 flex flex-col gap-4">
+                <div class="text-sm text-teal-800 bg-teal-50/50 p-4 rounded-xl border border-teal-100/50">
+                  <span v-if="selectedDate && selectedTime">
+                    Votre rendez-vous est prévu le <span class="font-semibold text-teal-950">{{ selectedDate }} {{
+                      currentMonthName }} {{ currentYear }}</span> à <span class="font-semibold text-teal-950">{{
+                      selectedTime }}</span>.
+                  </span>
+                  <span v-else class="text-teal-600/70">
+                    Veuillez sélectionner une date et une heure.
+                  </span>
+                </div>
+
+                <button type="submit"
+                  :disabled="!selectedDate || !selectedTime || !patientName || !patientEmail || !patientPhone || !patientDescription || !selectedService || !selectedDoctor"
+                  class="shiny-button w-full rounded-xl px-6 py-4 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group">
+                  <span
+                    class="shiny-button-text font-medium text-base group-disabled:opacity-80 transition-opacity">Confirmer
+                    le Rendez-vous</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </template>
+
+        <!-- Premium Success State -->
+        <template v-else>
+          <div
+            class="w-full p-6 md:p-12 flex flex-col items-center justify-start text-center relative z-10 flex-1 overflow-y-auto">
+            <div
+              class="w-24 h-24 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full flex items-center justify-center mb-8 shadow-xl shadow-teal-900/20 transform animate-on-scroll is-visible"
+              style="animation-duration: 0.5s;">
+              <svg class="w-12 h-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+
+            <h3 class="text-4xl sm:text-5xl font-semibold text-teal-950 mb-4"
+              style="font-family: 'Playfair Display', serif;">Rendez-vous Confirmé !</h3>
+            <p class="text-lg text-slate-600 mb-10 max-w-2xl">
+              Merci <span class="font-medium text-teal-900">{{ patientName }}</span>. Votre demande de consultation en
+              <span class="font-medium text-teal-900">{{ selectedService }}</span> a bien été enregistrée.
+            </p>
+
+            <div
+              class="bg-white border border-teal-100 rounded-2xl p-6 md:p-8 w-full max-w-2xl shadow-sm shadow-teal-900/5 text-left mb-10 relative">
+              <svg
+                class="absolute top-0 right-0 w-32 h-32 text-teal-500/5 translate-x-1/4 -translate-y-1/4 pointer-events-none"
+                viewBox="0 0 100 100" fill="currentColor">
+                <path d="M35 0h30v35h35v30h-35v35h-30v-35h-35v-30h35z" />
+              </svg>
+              <h4
+                class="text-sm font-semibold text-teal-600 uppercase tracking-widest mb-5 border-b border-teal-50 pb-3">
+                Récapitulatif de votre rendez-vous</h4>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-8 text-base pb-3">
+                <div class="flex flex-col"><span
+                    class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">Date & Heure</span> <span
+                    class="font-semibold text-slate-900">{{ selectedDate }} {{ currentMonthName }} {{ currentYear }} à
+                    {{ selectedTime }}</span></div>
+                <div class="flex flex-col"><span
+                    class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">Patient</span> <span
+                    class="font-medium text-slate-900">{{ patientName }}</span></div>
+                <div class="flex flex-col"><span
+                    class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">Email</span> <span
+                    class="font-medium text-slate-900">{{ patientEmail }}</span></div>
+                <div class="flex flex-col"><span
+                    class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">Téléphone</span> <span
+                    class="font-medium text-slate-900">{{ patientPhone }}</span></div>
+                <div class="flex flex-col" v-if="selectedDoctor"><span
+                    class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">Médecin</span> <span
+                    class="font-medium text-slate-900">{{ selectedDoctorLabelLanding }}</span></div>
+              </div>
+            </div>
+
+            <button @click="resetAndCloseModal" class="shiny-button rounded-xl px-10 py-4 shadow-lg group">
+              <span class="shiny-button-text font-medium text-lg tracking-wide">Retourner à l'accueil</span>
+            </button>
+      </div>
+    </template>
+  </div>
+
+  </div>
+
+</div>
+
+    <script type="module">
+      console.log("MODULE STARTED");
+      import createGlobe from 'https://cdn.skypack.dev/cobe';
+      console.log("IMPORT SUCCESS");
+      const { createApp, ref, computed, watch, onMounted, onUnmounted } = Vue;
+
+      createApp({
+        setup() {
+          const videoRef = ref(null);
+          const framesWrapperRef = ref(null);
+          const scrolled = ref(false);
+          const videoSrc = ref('/videos/landing-bg.mp4');
+
+          const equipments = [
+            {
+              title: "IRM 3 Tesla",
+              description: "Notre IRM SIGNA Premier offre une résolution d'image exceptionnelle grâce à son champ magnétique de 3 Tesla. Idéal pour le diagnostic neurologique avancé, l'imagerie cardiaque et l'oncologie de précision.",
+              image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?w=800&q=80",
+              tags: ["Neurologie", "Cardiaque", "Oncologie"]
+            },
+            {
+              title: "Scanner CT 640 Coupes",
+              description: "Imagerie volumique ultra-rapide permettant des acquisitions en moins d'une seconde avec une réduction de dose de 82%. Parfait pour les urgences traumatologiques et le dépistage précoce.",
+              image: "https://images.unsplash.com/photo-1579154204601-01588f351e67?w=800&q=80",
+              tags: ["Urgences", "Dépistage", "Cardiaque"]
+            },
+            {
+              title: "Échographie 3D / 4D",
+              description: "Système avec sondes matricielles pour une imagerie fœtale et gynécologique inégalée. Visualisation en temps réel des structures anatomiques avec rendu photo-réaliste.",
+              image: "https://images.unsplash.com/photo-1551076805-e1869033e561?w=800&q=80",
+              tags: ["Gynécologie", "Pédiatrie", "Cardiaque"]
+            },
+            {
+              title: "Chirurgie Robotisée Da Vinci",
+              description: "Le système Da Vinci Xi permet une chirurgie mini-invasive de haute précision. Quatre bras articulés offrent une dextérité supérieure avec vision 3D HD pour des interventions complexes.",
+              image: "https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=800&q=80",
+              tags: ["Chirurgie", "Urologie", "Gynécologie"]
+            },
+            {
+              title: "Mammographie 3D Tomosynthèse",
+              description: "Dépistage du cancer du sein plus précoce et plus précis grâce à la tomosynthèse. Réduction des faux positifs de 40% par rapport à la mammographie 2D standard.",
+              image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80",
+              tags: ["Dépistage", "Oncologie", "Imagerie"]
+            },
+            {
+              title: "Laser Chirurgical Femtoseconde",
+              description: "Plateforme laser femtoseconde pour la chirurgie réfractive (LASIK) et le traitement des cataractes. Précision au micron près avec une récupération visuelle en 24 heures.",
+              image: "https://images.unsplash.com/photo-1530497610245-94d3c16cda28?w=800&q=80",
+              tags: ["Ophtalmologie", "Chirurgie", "Laser"]
+            }
+          ];
+
+          const sceneRef = ref(null);
+          const sceneWidth = ref(1000);
+          const sceneHeight = ref(700);
+
+          const spatialStops = [
+            // Stop 0: Overview — zoomed out to see all cards
+            { cx: 1600, cy: 1100, scale: 0.35, label: "Vue d'ensemble — MediCare" },
+            // Stop 1-5: Zoomed in on each card
+            { cx: 1600, cy: 1100, scale: 1, label: "Notre Clinique" },
+            { cx: 2560, cy: 460, scale: 1, label: "01 — Notre équipe" },
+            { cx: 2560, cy: 1740, scale: 1, label: "02 — Nos résultats" },
+            { cx: 640, cy: 1740, scale: 1, label: "03 — Notre histoire" },
+            { cx: 640, cy: 460, scale: 1, label: "04 — Innovation" }
+          ];
+          const spatialCur = ref(0);
+
+          const worldTransform = computed(() => {
+            const s = spatialStops[spatialCur.value];
+            const sw = sceneWidth.value;
+            const sh = sceneHeight.value;
+
+            let scale = s.scale || 1;
+
+            // Compute dynamic scale if card doesn't fit
+            if (s.scale === 1) { // Zoomed in on a card
+              const cardW = 1120;
+              const cardH = 620;
+              const scaleX = sw / cardW;
+              const scaleY = sh / cardH;
+              const fitScale = Math.min(scaleX, scaleY) * 0.95; // 95% to leave breathing room
+              scale = Math.min(fitScale, 1); // Don't scale up beyond 1
+            } else if (s.scale === 0.35) { // Overview
+              const worldW = 3200;
+              const worldH = 2200;
+              const scaleX = sw / worldW;
+              const scaleY = sh / worldH;
+              const fitScale = Math.min(scaleX, scaleY) * 0.95;
+              scale = Math.min(Math.max(fitScale, 0.15), 0.5); // Cap scale range
+            }
+
+            // Center the world or focus on the card.
+            const tx = s.cx - sw / (2 * scale);
+            const ty = s.cy - sh / (2 * scale);
+            return `scale(${scale}) translate(${-tx}px, ${-ty}px)`;
+          });
+
+          const spatialLabel = computed(() => spatialStops[spatialCur.value].label);
+
+          const spatialGoto = (n) => {
+            const total = spatialStops.length;
+            spatialCur.value = Math.min(Math.max(n, 0), total - 1);
+          };
+          const spatialNext = () => spatialGoto(spatialCur.value + 1);
+          const spatialPrev = () => spatialGoto(spatialCur.value - 1);
+
+          // Scroll-driven spatial navigation
+          const spatialWrapperRef = ref(null);
+
+          function updateSpatialFromScroll() {
+            if (!spatialWrapperRef.value) return;
+            const wrapper = spatialWrapperRef.value;
+            const rect = wrapper.getBoundingClientRect();
+            const wrapperHeight = wrapper.offsetHeight;
+            const viewportHeight = window.innerHeight;
+            // scrollProgress goes from 0 (top of wrapper at viewport top) to 1 (bottom of wrapper at viewport bottom)
+            const scrollProgress = Math.min(Math.max(-rect.top / (wrapperHeight - viewportHeight), 0), 1);
+            // Map scroll progress to card index (6 stops => 0..5)
+            const totalStops = spatialStops.length;
+            const newIndex = Math.min(Math.floor(scrollProgress * totalStops), totalStops - 1);
+            if (newIndex !== spatialCur.value) {
+              spatialCur.value = newIndex;
+            }
+          }
+
+          let spatialTx0 = 0;
+          const onSpatialTouchStart = (e) => {
+            spatialTx0 = e.touches[0].clientX;
+          };
+          const onSpatialTouchEnd = (e) => {
+            const dx = e.changedTouches[0].clientX - spatialTx0;
+            if (dx < -40) spatialNext();
+            else if (dx > 40) spatialPrev();
+          };
+
+          // Globe State — exact codeterre.md
+          const globeCanvas = ref(null);
+          let globeInstance = null;
+          let globeAnimationId = null;
+          const pointerInteracting = ref(null);
+          let lastPointer = null;
+          let dragOffset = { phi: 0, theta: 0 };
+          let velocity = { phi: 0, theta: 0 };
+          let phiOffsetRef = 0;
+          let thetaOffsetRef = 0;
+          let isPausedRef = false;
+
+          // Globe data — Maroc + Europe + Arabie Saoudite + Asie + Afrique + Canada
+          const globeMarkers = [
+            { id: 'tanger', location: [35.7595, -5.8340], label: 'Tanger' },
+            { id: 'oujda', location: [34.6814, -1.9086], label: 'Oujda' },
+            { id: 'marrakech', location: [31.6295, -7.9811], label: 'Marrakech' },
+            { id: 'paris', location: [48.8566, 2.3522], label: 'Paris' },
+            { id: 'madrid', location: [40.4168, -3.7038], label: 'Madrid' },
+            { id: 'roma', location: [41.9028, 12.4964], label: 'Roma' },
+            { id: 'riyadh', location: [24.7136, 46.6753], label: 'Riyadh' },
+            { id: 'tokyo', location: [35.6762, 139.6503], label: 'Tokyo' },
+            { id: 'mumbai', location: [19.0760, 72.8777], label: 'Mumbai' },
+            { id: 'cairo', location: [30.0444, 31.2357], label: 'Le Caire' }, // Egypt
+            { id: 'toronto', location: [43.6510, -79.3470], label: 'Toronto' }, // Canada 1
+            { id: 'vancouver', location: [49.2827, -123.1207], label: 'Vancouver' }, // Canada 2
+            { id: 'abidjan', location: [5.3600, -4.0083], label: 'Abidjan' }, // Cote d'Ivoire
+            { id: 'kinshasa', location: [-4.4419, 15.2663], label: 'Kinshasa' } // Congo
+          ];
+          const globeArcs = [];
+
+          const markerColor = [0.3, 0.45, 0.85];
+          const baseColor = [1, 1, 1];
+          const arcColor = [0.3, 0.45, 0.85];
+          const glowColor = [0.94, 0.93, 0.91];
+          const globeSpeed = 0.003;
+          const globeTheta = 0.2;
+          const markerSize = 0.025;
+
+          const onPointerDownGlobe = (e) => {
+            pointerInteracting.value = { x: e.clientX, y: e.clientY };
+            if (globeCanvas.value) globeCanvas.value.style.cursor = "grabbing";
+            isPausedRef = true;
+          };
+
+          const onPointerMoveGlobe = (e) => {
+            if (pointerInteracting.value !== null) {
+              const deltaX = e.clientX - pointerInteracting.value.x;
+              const deltaY = e.clientY - pointerInteracting.value.y;
+              dragOffset = { phi: deltaX / 300, theta: deltaY / 1000 };
+              const now = Date.now();
+              if (lastPointer) {
+                const dt = Math.max(now - lastPointer.t, 1);
+                const maxVelocity = 0.15;
+                velocity = {
+                  phi: Math.max(-maxVelocity, Math.min(maxVelocity, ((e.clientX - lastPointer.x) / dt) * 0.3)),
+                  theta: Math.max(-maxVelocity, Math.min(maxVelocity, ((e.clientY - lastPointer.y) / dt) * 0.08)),
+                };
+              }
+              lastPointer = { x: e.clientX, y: e.clientY, t: now };
+            }
+          };
+
+          const onPointerUpGlobe = () => {
+            if (pointerInteracting.value !== null) {
+              phiOffsetRef += dragOffset.phi;
+              thetaOffsetRef += dragOffset.theta;
+              dragOffset = { phi: 0, theta: 0 };
+              lastPointer = null;
+            }
+            pointerInteracting.value = null;
+            if (globeCanvas.value) globeCanvas.value.style.cursor = "grab";
+            isPausedRef = false;
+          };
+
+          // Modal State
+          const isModalOpen = ref(false);
+          const appointmentSuccess = ref(false);
+          const selectedDate = ref(null);
+          const selectedTime = ref(null);
+          const patientName = ref('');
+          const patientEmail = ref('');
+          const patientPhone = ref('');
+          const patientDescription = ref('');
+          const selectedDoctor = ref('');
+          const selectedService = ref('');
+          const bookedSlots = ref([]);
+          const medecins = ref([]);
+          const currentMonth = ref(new Date());
+
+          // Custom dropdown state
+          const serviceOpen = ref(false);
+          const doctorOpen = ref(false);
+
+          const landingServices = ['Cardiologie','Neurologie','Pédiatrie','Orthopédie','Urgences','Imagerie Médicale'];
+
+          const selectedDoctorLabelLanding = computed(() => {
+            if (!selectedDoctor.value) return '';
+            const doc = medecins.value.find(d => d.id_medecin === selectedDoctor.value);
+            return doc ? `Dr. ${doc.prenom} ${doc.nom} — ${doc.specialite}` : '';
+          });
+
+          const toggleServiceDropdown = () => {
+            serviceOpen.value = !serviceOpen.value;
+            doctorOpen.value = false;
+          };
+
+          const toggleDoctorDropdown = () => {
+            if (!filteredDoctors.value.length) return;
+            doctorOpen.value = !doctorOpen.value;
+            serviceOpen.value = false;
+          };
+
+          const selectLandingService = (s) => {
+            selectedService.value = s;
+            selectedDoctor.value = '';
+            serviceOpen.value = false;
+            if (selectedDate.value) {
+              selectedTime.value = null;
+              fetchAvailability(selectedDate.value);
+            }
+          };
+
+          const selectLandingDoctor = (id) => {
+            selectedDoctor.value = id;
+            doctorOpen.value = false;
+            if (selectedDate.value) {
+              selectedTime.value = null;
+              fetchAvailability(selectedDate.value);
+            }
+          };
+
+          const closeDropdowns = () => {
+            serviceOpen.value = false;
+            doctorOpen.value = false;
+          };
+
+          const filteredDoctors = computed(() => {
+            const source = medecins.value.length ? medecins.value : doctorCards.value;
+            if (!selectedService.value) return source;
+            return source.filter(d =>
+              (d.specialite || d.specialty || '').toLowerCase().includes(selectedService.value.toLowerCase())
+            );
+          });
+
+          const openModal = () => {
+            isModalOpen.value = true;
+            document.body.style.overflow = 'hidden';
+            fetchMedecins();
+          };
+          const closeModal = () => {
+            isModalOpen.value = false;
+            document.body.style.overflow = '';
+          };
+
+          const resetAndCloseModal = () => {
+            closeModal();
+            setTimeout(() => {
+              appointmentSuccess.value = false;
+              selectedDate.value = null;
+              selectedTime.value = null;
+              patientName.value = '';
+              patientEmail.value = '';
+              patientPhone.value = '';
+              patientDescription.value = '';
+              selectedService.value = '';
+              selectedDoctor.value = '';
+              bookedSlots.value = [];
+            }, 300);
+          };
+
+          const currentMonthName = computed(() => {
+            return currentMonth.value.toLocaleString('fr-FR', { month: 'long' });
+          });
+          const currentYear = computed(() => currentMonth.value.getFullYear());
+
+          const prevMonth = () => {
+            currentMonth.value = new Date(currentMonth.value.getFullYear(), currentMonth.value.getMonth() - 1, 1);
+            selectedDate.value = null;
+            selectedTime.value = null;
+            bookedSlots.value = [];
+          };
+          const nextMonth = () => {
+            currentMonth.value = new Date(currentMonth.value.getFullYear(), currentMonth.value.getMonth() + 1, 1);
+            selectedDate.value = null;
+            selectedTime.value = null;
+            bookedSlots.value = [];
+          };
+
+          const monthDays = computed(() => {
+            const year = currentMonth.value.getFullYear();
+            const month = currentMonth.value.getMonth();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            return Array.from({ length: daysInMonth }, (_, i) => i + 1);
+          });
+
+          const blankDays = computed(() => {
+            const year = currentMonth.value.getFullYear();
+            const month = currentMonth.value.getMonth();
+            let firstDay = new Date(year, month, 1).getDay();
+            firstDay = firstDay === 0 ? 6 : firstDay - 1; // Monday start
+            return Array.from({ length: firstDay }, (_, i) => i);
+          });
+
+          const isPast = (day) => {
+            const today = new Date();
+            const date = new Date(currentMonth.value.getFullYear(), currentMonth.value.getMonth(), day);
+            return date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+          };
+
+          const selectDate = async (day) => {
+            if (!isPast(day)) {
+              selectedDate.value = day;
+              selectedTime.value = null;
+              await fetchAvailability(day);
+            }
+          };
+
+          const fetchAvailability = async (day) => {
+            const m = currentMonth.value.getMonth() + 1;
+            const y = currentMonth.value.getFullYear();
+            const dateStr = `${y}-${String(m).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            try {
+              let url = `/api/patient/disponibilites/${dateStr}`;
+              if (selectedDoctor.value) url += `?medecin_id=${selectedDoctor.value}`;
+              const res = await fetch(url);
+              const data = await res.json();
+              bookedSlots.value = data.success ? data.reserve : [];
+            } catch (e) {
+              bookedSlots.value = [];
+            }
+          };
+
+          const isBooked = (t) => bookedSlots.value.includes(t);
+
+          const fetchMedecins = async () => {
+            try {
+              const res = await fetch('/api/patient/medecins');
+              const data = await res.json();
+              if (data.success) medecins.value = data.data;
+            } catch (e) {
+              console.error('fetchMedecins error', e);
+            }
+          };
+
+          watch(selectedDoctor, () => {
+            if (selectedDate.value) {
+              selectedTime.value = null;
+              fetchAvailability(selectedDate.value);
+            }
+          });
+
+          const timeSlots = Array.from({ length: 19 }, (_, i) => {
+            const totalMinutes = i * 30;
+            const hour = Math.floor(totalMinutes / 60) + 9;
+            const minute = totalMinutes % 60;
+            return `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+          });
+
+          const bookDoctor = (doctorName, specialty) => {
+            const found = medecins.value.find(d =>
+              d.specialite.toLowerCase() === specialty.toLowerCase()
+            );
+            if (found) selectedDoctor.value = found.id_medecin;
+
+            const specialtyMap = {
+              'Chirurgie Cardiaque': 'Cardiologie',
+              'Neurologie': 'Neurologie',
+              'Pédiatrie': 'Pediatrie',
+              'Oncologie': 'Imagerie',
+              'Dermatologie': 'Dermatologie',
+              'Orthopédie': 'Orthopedie'
+            };
+
+            if (specialtyMap[specialty]) {
+              selectedService.value = specialtyMap[specialty];
+            }
+
+            openModal();
+          };
+
+          const bookService = (serviceName) => {
+            selectedService.value = serviceName;
+            selectedDoctor.value = ''; // Reset doctor
+            openModal();
+          };
+
+          const submitAppointment = async () => {
+            // Validate the slot is not already booked before confirming
+            if (selectedDoctor.value && selectedDate.value && selectedTime.value) {
+              const m = currentMonth.value.getMonth() + 1;
+              const y = currentMonth.value.getFullYear();
+              const dateStr = `${y}-${String(m).padStart(2, '0')}-${String(selectedDate.value).padStart(2, '0')}`;
+              try {
+                const res = await fetch(`/api/patient/disponibilites/${dateStr}?medecin_id=${selectedDoctor.value}`);
+                const data = await res.json();
+                if (data.success && data.reserve.includes(selectedTime.value)) {
+                  alert('Ce créneau est déjà réservé pour ce médecin. Veuillez choisir un autre horaire.');
+                  return;
+                }
+              } catch (e) {
+                console.error('Validation error', e);
+              }
+            }
+            appointmentSuccess.value = true;
+          };
+
+          // Testimonials Logic
+          const testimonials = ref([
+            {
+              text: "Ce centre médical a révolutionné ma santé. L'équipe est à l'écoute et les installations sont incroyables.",
+              name: "Sophie Martin",
+              role: "Patiente"
+            },
+            {
+              text: "Une prise en charge rapide et efficace. L'interface de réservation est très intuitive.",
+              name: "Youssef El Fassi",
+              role: "Patient régulier"
+            },
+            {
+              text: "L'équipe de support est exceptionnelle, m'accompagnant tout au long de mon parcours de soins.",
+              name: "Léa Roux",
+              role: "Patiente"
+            },
+            {
+              text: "Les médecins prennent le temps d'expliquer chaque étape. On se sent vraiment en confiance.",
+              name: "Amine Berrada",
+              role: "Patient"
+            },
+            {
+              text: "Des équipements de pointe et un personnel extrêmement compétent. Je recommande vivement.",
+              name: "Julie Petit",
+              role: "Patiente"
+            },
+            {
+              text: "Une expérience fluide du début à la fin. Les délais d'attente sont minimes.",
+              name: "Fatima Zahra Alaoui",
+              role: "Patiente"
+            },
+            {
+              text: "La clinique est moderne et très propre. Le personnel infirmier est adorable.",
+              name: "Antoine Michel",
+              role: "Patient"
+            },
+            {
+              text: "Diagnostic rapide et précis. Merci au Dr. Chen pour son professionnalisme.",
+              name: "Sara Chraibi",
+              role: "Patiente"
+            },
+            {
+              text: "Un suivi médical au top, même après mon opération. Merci à toute l'équipe.",
+              name: "Mehdi Benjelloun",
+              role: "Patient"
+            }
+          ]);
+
+          const firstColumn = ref([...testimonials.value.slice(0, 3), ...testimonials.value.slice(0, 3)]);
+          const secondColumn = ref([...testimonials.value.slice(3, 6), ...testimonials.value.slice(3, 6)]);
+          const thirdColumn = ref([...testimonials.value.slice(6, 9), ...testimonials.value.slice(6, 9)]);
+
+          // Cinematic Doctor Scroll — ref + data
+          const docScrollerRef = ref(null);
+          const doctorCards = ref([
+            {
+              image: "https://i.pravatar.cc/150?u=32",
+              name: "Dr. Amira Hassan",
+              spec: "DERMATOLOGIE",
+              desc: "Expertise en chirurgie dermatologique et médecine esthétique avec une approche sur-mesure.",
+              specialty: "Dermatologie",
+              title: "Dr. Amira Hassan",
+              formations: ["Diplômée de la Faculté de Médecine de Paris", "Ancienne Chef de Clinique", "DU de Médecine Morphologique"]
+            },
+            {
+              image: "https://i.pravatar.cc/150?u=12",
+              name: "Dr. Karim Mansour",
+              spec: "CARDIOLOGIE",
+              desc: "Spécialiste en cardiologie interventionnelle, certifié en échocardiographie avancée.",
+              specialty: "Cardiologie",
+              title: "Dr. Karim Mansour",
+              formations: ["Diplômé de la Faculté de Médecine de Lyon", "Fellowship en Cardiologie Interventionnelle", "Membre de la Société Française de Cardiologie"]
+            },
+            {
+              image: "https://i.pravatar.cc/150?u=5",
+              name: "Dr. Sara Benali",
+              spec: "PÉDIATRIE",
+              desc: "Prend en charge les enfants de la naissance à l'adolescence avec douceur et expertise.",
+              specialty: "Pédiatrie",
+              title: "Dr. Sara Benali",
+              formations: ["Diplômée de la Faculté de Médecine de Genève", "Spécialisation en Néonatologie", "DU d'Urgences Pédiatriques"]
+            },
+            {
+              image: "https://i.pravatar.cc/150?u=68",
+              name: "Dr. Mehdi Ouhbi",
+              spec: "OPHTALMOLOGIE",
+              desc: "Expert en chirurgie oculaire, utilise les techniques récentes pour corriger la vision.",
+              specialty: "Ophtalmologie",
+              title: "Dr. Mehdi Ouhbi",
+              formations: ["Diplômé de la Faculté de Médecine de Strasbourg", "Ancien Interne des Hôpitaux", "Expertise en Chirurgie Réfractive"]
+            },
+            {
+              image: "https://i.pravatar.cc/150?u=42",
+              name: "Dr. Youssef Tazi",
+              spec: "NEUROLOGIE",
+              desc: "Spécialiste des troubles du système nerveux central et périphérique.",
+              specialty: "Neurologie",
+              title: "Dr. Youssef Tazi",
+              formations: ["Diplômé de la Faculté de Médecine de Rabat", "Spécialisation en Neurologie", "DU d'Épileptologie"]
+            },
+            {
+              image: "https://i.pravatar.cc/150?u=55",
+              name: "Dr. Leïla Bouras",
+              spec: "GYNÉCOLOGIE",
+              desc: "Accompagnement global de la femme, de la puberté à la ménopause.",
+              specialty: "Gynécologie",
+              title: "Dr. Leïla Bouras",
+              formations: ["Diplômée de la Faculté de Médecine de Paris", "Chirurgie Gynécologique", "DU d'Échographie Obstétricale"]
+            },
+            {
+              image: "https://i.pravatar.cc/150?u=19",
+              name: "Dr. Omar Fassi",
+              spec: "CHIRURGIE ORTHOPÉDIQUE",
+              desc: "Expert en chirurgie articulaire et prothétique, médecine du sport.",
+              specialty: "Orthopédie",
+              title: "Dr. Omar Fassi",
+              formations: ["Diplômé de la Faculté de Médecine de Lyon", "Fellowship en Chirurgie du Genou", "Membre de la SOFCOT"]
+            }
+          ]);
+
+          function initCinematicScroll() {
+            const docContainer = document.getElementById('docCardsContainer');
+            const docWrapper = document.getElementById('docWrapper');
+            const docHeaderText = document.getElementById('docHeaderText');
+            const docHint = document.getElementById('docHint');
+            const docProgressBar = document.getElementById('docProgressBar');
+            if (!docContainer || !docWrapper) return;
+
+            const sceneW = docWrapper.offsetWidth;
+            const sf = Math.min(1, sceneW / 900);
+            const docs = doctorCards.value;
+            const INITIAL = [
+              { x: 0, y: 0, r: 0, s: 1.05 },
+              { x: 0, y: -15 * sf, r: -2, s: 1 },
+              { x: 0, y: -30 * sf, r: 2, s: 0.95 },
+              { x: 0, y: -45 * sf, r: -3, s: 0.90 },
+              { x: 0, y: -60 * sf, r: 3, s: 0.85 },
+              { x: 0, y: -75 * sf, r: -4, s: 0.80 },
+              { x: 0, y: -90 * sf, r: 4, s: 0.75 }
+            ];
+            const EXPLODED = [
+              { x: -320 * sf, y: -160 * sf, r: -22 },
+              { x: 310 * sf, y: -140 * sf, r: 18 },
+              { x: -280 * sf, y: 170 * sf, r: 15 },
+              { x: 300 * sf, y: 160 * sf, r: -16 },
+              { x: 0, y: -280 * sf, r: -5 },
+              { x: 0, y: 280 * sf, r: 5 },
+              { x: -420 * sf, y: 0, r: -10 }
+            ];
+            const GROUPED = [
+              { x: -200 * sf, y: -95 * sf, r: -6, s: 0.48 },
+              { x: 200 * sf, y: -95 * sf, r: 6, s: 0.48 },
+              { x: -200 * sf, y: 95 * sf, r: 5, s: 0.48 },
+              { x: 200 * sf, y: 95 * sf, r: -5, s: 0.48 },
+              { x: -250 * sf, y: 0, r: -10, s: 0.48 },
+              { x: 250 * sf, y: 0, r: 10, s: 0.48 },
+              { x: 0, y: -150 * sf, r: 0, s: 0.48 }
+            ];
+            const DN = docs.length;
+            const dwraps = [];
+            const cardW = sceneW < 600 ? 170 : 280;
+            const cardH = sceneW < 600 ? 170 : 220;
+
+            docs.forEach((d, i) => {
+              const wrap = document.createElement('div');
+              wrap.className = 'doc-card-wrap';
+              wrap.style.cssText = `left:50%;top:58%;margin-left:-${cardW}px;margin-top:-${cardH}px;z-index:${10 + i};`;
+
+              const formationsHtml = d.formations.map(f => `
+              <div class="doc-formation-item">
+                <svg class="doc-formation-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span>${f}</span>
+              </div>
+            `).join('');
+
+              wrap.innerHTML = `
+              <div class="doc-card">
+                <div class="doc-card-top">
+                  <img src="${d.image}" class="doc-av" alt="${d.name}">
+                  <div style="flex:1">
+                    <div class="doc-name">${d.name}</div>
+                    <div class="doc-spec">${d.spec}</div>
+                  </div>
+                </div>
+                <hr class="doc-divider">
+                <div class="doc-desc">${d.desc}</div>
+                <div class="doc-formations">
+                  ${formationsHtml}
+                </div>
+                <div class="doc-rdv-wrapper">
+                  <button class="doc-rdv-btn" onclick="document.dispatchEvent(new CustomEvent('book-doctor',{detail:{name:'${d.name}',spec:'${d.spec}'}}))">Prendre rendez-vous <span>&rarr;</span></button>
+                </div>
+              </div>`;
+              docContainer.appendChild(wrap);
+              dwraps.push(wrap);
+              const dot = document.createElement('div');
+              dot.className = 'doc-prog-dot';
+              docProgressBar.appendChild(dot);
+            });
+
+            function lerp(a, b, t) { return a + (b - a) * t }
+            function clamp(v, mn, mx) { return Math.max(mn, Math.min(mx, v)) }
+            function ease(t) { return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t }
+
+            // Total scrollable distance = wrapper height - viewport height
+            function docUpdate() {
+              const rect = docWrapper.getBoundingClientRect();
+              const wrapH = docWrapper.offsetHeight;
+              const viewH = window.innerHeight;
+              const scrollable = wrapH - viewH;
+              // Progress: 0 at top of section, 1 at bottom
+              const raw = clamp(-rect.top / Math.max(scrollable, 1), 0, 1);
+
+              // 1 step for explode, 2 steps for each card (come out, go back)
+              const totalSteps = 1 + DN * 2;
+              const step = raw * totalSteps;
+              const dots = docProgressBar.querySelectorAll('.doc-prog-dot');
+
+              if (step < 1) {
+                const t = ease(clamp(step, 0, 1));
+                docHeaderText.style.opacity = String(1 - t * 1.4);
+                docHint.style.opacity = String(1 - t * 2);
+                dwraps.forEach((w, i) => {
+                  const ex = EXPLODED[i];
+                  const init = INITIAL[i];
+                  w.style.transform = `translate(${lerp(init.x, ex.x, t)}px,${lerp(init.y, ex.y, t)}px) rotate(${lerp(init.r, ex.r, t)}deg) scale(${lerp(init.s, 0.55, t)})`;
+                  w.style.opacity = String(lerp(1, 0.7, t));
+                  w.style.zIndex = String(50 - i);
+                });
+                dots.forEach(d => d.className = 'doc-prog-dot');
+              } else {
+                docHeaderText.style.opacity = '0';
+                docHint.style.opacity = '0';
+
+                const cardStep = step - 1;
+                const activeIdx = Math.min(Math.floor(cardStep / 2), DN - 1);
+                const localStep = cardStep - activeIdx * 2;
+
+                dwraps.forEach((w, i) => {
+                  const ex = EXPLODED[i];
+                  const g = GROUPED[i];
+
+                  if (i < activeIdx) {
+                    // Already went back into the grouped stack
+                    w.style.transform = `translate(${g.x}px,${g.y}px) rotate(${g.r}deg) scale(${g.s})`;
+                    w.style.opacity = String(0.75);
+                    w.style.zIndex = String(20 + i);
+                  } else if (i > activeIdx) {
+                    // Still exploded
+                    w.style.transform = `translate(${ex.x}px,${ex.y}px) rotate(${ex.r}deg) scale(0.55)`;
+                    w.style.opacity = '0.7';
+                    w.style.zIndex = String(50 - i);
+                  } else {
+                    // Active card (i === activeIdx)
+                    if (localStep < 1) {
+                      // Coming out
+                      const t = ease(clamp(localStep, 0, 1));
+                      w.style.transform = `translate(${lerp(ex.x, 0, t)}px,${lerp(ex.y, 0, t)}px) rotate(${lerp(ex.r, 0, t)}deg) scale(${lerp(0.55, 1.05, t)})`;
+                      w.style.opacity = String(lerp(0.7, 1, t));
+                      w.style.zIndex = '100';
+                    } else {
+                      // Going back
+                      const t = ease(clamp(localStep - 1, 0, 1));
+                      w.style.transform = `translate(${lerp(0, g.x, t)}px,${lerp(0, g.y, t)}px) rotate(${lerp(0, g.r, t)}deg) scale(${lerp(1.05, g.s, t)})`;
+                      w.style.opacity = String(lerp(1, 0.75, t));
+                      w.style.zIndex = '100'; // Keep it on top while it goes back
+                    }
+                  }
+                });
+
+                dots.forEach((d, i) => {
+                  d.className = 'doc-prog-dot' + (i === activeIdx && localStep < 1.5 ? ' active' : '');
+                });
+              }
+              requestAnimationFrame(docUpdate);
+            }
+            requestAnimationFrame(docUpdate);
+
+            document.addEventListener('book-doctor', (e) => {
+              const { name, spec } = e.detail;
+              bookDoctor(name, spec);
+            });
+          }
+
+          function initEquipmentsScroll() {
+            const section = document.getElementById('equipements');
+            const panels = document.querySelectorAll('.equip-panel');
+            const dots = document.querySelectorAll('.equip-dot');
+            if (!section || panels.length === 0) return;
+
+            const totalPanels = panels.length;
+            const transitionDuration = 0.18; // 18% of a panel's slice for transition
+
+            function easeInOut(t) {
+              return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+            }
+
+            function updateEquipments() {
+              const rect = section.getBoundingClientRect();
+              const sectionH = section.offsetHeight;
+              const viewH = window.innerHeight;
+              const scrollable = sectionH - viewH;
+              const rawProgress = Math.max(0, Math.min(1, -rect.top / Math.max(scrollable, 1)));
+
+              // Each panel gets an equal slice of the scroll
+              const slice = 1 / totalPanels;
+
+              panels.forEach((panel, i) => {
+                const sliceStart = i * slice;
+                const sliceEnd = (i + 1) * slice;
+                const mid = (sliceStart + sliceEnd) / 2;
+                const halfSlice = slice / 2;
+                const trans = halfSlice * transitionDuration;
+
+                let opacity, translateY, scale;
+
+                if (rawProgress < sliceStart - trans) {
+                  // Before this panel
+                  opacity = 0;
+                  translateY = 80;
+                  scale = 0.95;
+                } else if (rawProgress < sliceStart + trans) {
+                  // Entering
+                  const t = easeInOut((rawProgress - (sliceStart - trans)) / (2 * trans));
+                  opacity = t;
+                  translateY = 80 * (1 - t);
+                  scale = 0.95 + 0.05 * t;
+                } else if (rawProgress < sliceEnd - trans) {
+                  // Active
+                  opacity = 1;
+                  translateY = 0;
+                  scale = 1;
+                } else if (rawProgress < sliceEnd + trans) {
+                  // Exiting
+                  const t = easeInOut((rawProgress - (sliceEnd - trans)) / (2 * trans));
+                  opacity = 1 - t;
+                  translateY = -60 * t;
+                  scale = 1 - 0.05 * t;
+                } else {
+                  // After this panel
+                  opacity = 0;
+                  translateY = -60;
+                  scale = 0.95;
+                }
+
+                panel.style.opacity = String(opacity);
+                panel.style.transform = `translateY(${translateY}px) scale(${scale})`;
+              });
+
+              // Update dots
+              const activeIdx = Math.min(Math.floor(rawProgress * totalPanels), totalPanels - 1);
+              dots.forEach((d, i) => d.classList.toggle('active', i === activeIdx));
+
+              requestAnimationFrame(updateEquipments);
+            }
+            requestAnimationFrame(updateEquipments);
+          }
+
+          // Video logic
+          let rafId = null;
+          let videoDuration = 0;
+          let isVideoReady = false;
+
+          function updateVideoTime() {
+            if (!isVideoReady || !framesWrapperRef.value || !videoRef.value) return;
+            const wrapper = framesWrapperRef.value;
+            const rect = wrapper.getBoundingClientRect();
+            const wrapperHeight = wrapper.offsetHeight;
+            const viewportHeight = window.innerHeight;
+            const scrollProgress = Math.min(Math.max(-rect.top / (wrapperHeight - viewportHeight), 0), 1);
+            const targetTime = scrollProgress * videoDuration;
+            if (Math.abs(videoRef.value.currentTime - targetTime) > 0.05) {
+              videoRef.value.currentTime = targetTime;
+            }
+          }
+
+          function onScroll() {
+            scrolled.value = window.scrollY > 40;
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(updateVideoTime);
+            updateSpatialFromScroll();
+          }
+
+          function onLoadedMetadata() {
+            if (videoRef.value && videoRef.value.duration) {
+              videoDuration = videoRef.value.duration;
+              isVideoReady = true;
+              updateVideoTime();
+            }
+          }
+
+          let observer = null;
+          let resizeObserver = null;
+
+          onMounted(() => {
+            window.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('pointermove', onPointerMoveGlobe, { passive: true });
+            window.addEventListener('pointerup', onPointerUpGlobe, { passive: true });
+
+            // Init Globe — exact codeterre.md pattern
+            const initGlobe = () => {
+              if (globeInstance) return;
+              const canvas = globeCanvas.value;
+              if (!canvas) return;
+              const width = canvas.offsetWidth;
+              if (width === 0) return;
+
+              const dpr = Math.min(window.devicePixelRatio || 1, 2);
+              let phi = 0;
+
+              globeInstance = createGlobe(canvas, {
+                devicePixelRatio: dpr,
+                width,
+                height: width,
+                phi: 0,
+                theta: globeTheta,
+                dark: 0,
+                diffuse: 1.5,
+                mapSamples: 16000,
+                mapBrightness: 10,
+                baseColor,
+                markerColor,
+                glowColor,
+                markerElevation: 0.01,
+                markers: globeMarkers.map(m => ({ location: m.location, size: markerSize, id: m.id })),
+                arcs: globeArcs.map(a => ({ from: a.from, to: a.to, id: a.id })),
+                arcColor,
+                arcWidth: 0.5,
+                arcHeight: 0.25,
+                opacity: 0.7,
+              });
+
+              function animate() {
+                if (!isPausedRef) {
+                  phi += globeSpeed;
+                  if (Math.abs(velocity.phi) > 0.0001 || Math.abs(velocity.theta) > 0.0001) {
+                    phiOffsetRef += velocity.phi;
+                    thetaOffsetRef += velocity.theta;
+                    velocity.phi *= 0.95;
+                    velocity.theta *= 0.95;
+                  }
+                  const thetaMin = -0.4, thetaMax = 0.4;
+                  if (thetaOffsetRef < thetaMin) {
+                    thetaOffsetRef += (thetaMin - thetaOffsetRef) * 0.1;
+                  } else if (thetaOffsetRef > thetaMax) {
+                    thetaOffsetRef += (thetaMax - thetaOffsetRef) * 0.1;
+                  }
+                }
+                globeInstance.update({
+                  phi: phi + phiOffsetRef + dragOffset.phi,
+                  theta: globeTheta + thetaOffsetRef + dragOffset.theta,
+                  dark: 0,
+                  mapBrightness: 10,
+                  markerColor,
+                  baseColor,
+                  arcColor,
+                  markerElevation: 0.01,
+                  markers: globeMarkers.map(m => ({ location: m.location, size: markerSize, id: m.id })),
+                  arcs: globeArcs.map(a => ({ from: a.from, to: a.to, id: a.id })),
+                });
+                globeAnimationId = requestAnimationFrame(animate);
+              }
+              animate();
+              setTimeout(() => canvas && (canvas.style.opacity = '1'));
+            };
+
+            if (globeCanvas.value && globeCanvas.value.offsetWidth > 0) {
+              initGlobe();
+            } else if (globeCanvas.value) {
+              const ro = new ResizeObserver((entries) => {
+                if (entries[0]?.contentRect.width > 0) {
+                  ro.disconnect();
+                  initGlobe();
+                }
+              });
+              ro.observe(globeCanvas.value);
+            }
+
+            if (sceneRef.value) {
+              resizeObserver = new ResizeObserver(entries => {
+                for (let entry of entries) {
+                  sceneWidth.value = entry.contentRect.width;
+                  sceneHeight.value = entry.contentRect.height;
+                }
+              });
+              resizeObserver.observe(sceneRef.value);
+            }
+
+            if (videoRef.value) {
+              if (videoRef.value.readyState >= 1) {
+                onLoadedMetadata();
+              } else {
+                videoRef.value.addEventListener('loadedmetadata', onLoadedMetadata);
+              }
+            }
+
+            observer = new IntersectionObserver(
+              (entries) => {
+                entries.forEach((entry) => {
+                  if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                  }
+                });
+              },
+              { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
+            );
+
+            document.querySelectorAll('.animate-on-scroll').forEach((el) => {
+              observer.observe(el);
+            });
+
+            // Initialize Cinematic Doctor Scroll
+            initCinematicScroll();
+
+            // Initialize Equipments ScrollTrigger
+            initEquipmentsScroll();
+
+            // Close dropdowns on outside click
+            const onDocClick = (e) => {
+              const serviceEl = document.querySelector('[data-dropdown="service"]');
+              const doctorEl = document.querySelector('[data-dropdown="doctor"]');
+              if (serviceEl && !serviceEl.contains(e.target)) serviceOpen.value = false;
+              if (doctorEl && !doctorEl.contains(e.target)) doctorOpen.value = false;
+            };
+            document.addEventListener('click', onDocClick);
+            onUnmounted(() => document.removeEventListener('click', onDocClick));
+          });
+
+          // Rotating Addresses
+          const addressList = [
+            "12 Avenue Montaigne, 75008 Paris, France",
+            "45 Boulevard Mohammed VI, Marrakech, Maroc",
+            "Plateau, Rue du Commerce, Abidjan, Côte d'Ivoire",
+            "100 King St W, Toronto, ON M5X 1A9, Canada"
+          ];
+          const currentAddressIndex = ref(0);
+          const isAddressPaused = ref(false);
+          let addressIntervalId = null;
+
+          onMounted(() => {
+            fetchMedecins();
+            addressIntervalId = setInterval(() => {
+              if (!isAddressPaused.value) {
+                currentAddressIndex.value = (currentAddressIndex.value + 1) % addressList.length;
+              }
+            }, 3000); // Change address every 3 seconds
+          });
+
+          onUnmounted(() => {
+            window.removeEventListener('scroll', onScroll);
+            window.removeEventListener('pointermove', onPointerMoveGlobe);
+            window.removeEventListener('pointerup', onPointerUpGlobe);
+            if (globeAnimationId) cancelAnimationFrame(globeAnimationId);
+            if (globeInstance) globeInstance.destroy();
+            if (addressIntervalId) clearInterval(addressIntervalId);
+
+            if (rafId) cancelAnimationFrame(rafId);
+
+            if (videoRef.value) {
+              videoRef.value.removeEventListener('loadedmetadata', onLoadedMetadata);
+            }
+            if (observer) observer.disconnect();
+            if (resizeObserver) resizeObserver.disconnect();
+          });
+
+          return {
+            videoRef,
+            framesWrapperRef,
+            sceneRef,
+            scrolled,
+            videoSrc,
+            equipments,
+            spatialCur,
+            worldTransform,
+            spatialLabel,
+            spatialGoto,
+            spatialNext,
+            spatialPrev,
+            spatialWrapperRef,
+            onSpatialTouchStart,
+            onSpatialTouchEnd,
+            globeCanvas,
+            onPointerDownGlobe,
+            globeMarkers,
+            globeArcs,
+            addressList,
+            currentAddressIndex,
+            isAddressPaused,
+            docScrollerRef,
+            doctorCards,
+            testimonials,
+            firstColumn,
+            secondColumn,
+            thirdColumn,
+            isModalOpen,
+            appointmentSuccess,
+            selectedDate,
+            selectedTime,
+            patientName,
+            patientEmail,
+            patientPhone,
+            patientDescription,
+            selectedService,
+            selectedDoctor,
+            currentMonthName,
+            currentYear,
+            prevMonth,
+            nextMonth,
+            monthDays,
+            blankDays,
+            isPast,
+            selectDate,
+            timeSlots,
+            openModal,
+            closeModal,
+            resetAndCloseModal,
+            submitAppointment,
+            bookDoctor,
+            bookService,
+            bookedSlots,
+            fetchAvailability,
+            isBooked,
+            medecins,
+            filteredDoctors,
+            fetchMedecins,
+            serviceOpen,
+            doctorOpen,
+            landingServices,
+            selectedDoctorLabelLanding,
+            toggleServiceDropdown,
+            toggleDoctorDropdown,
+            selectLandingService,
+            selectLandingDoctor,
+          };
+        }
+      }).mount('#app');
+    </script>
+
+    <style>
+      .chatbot-btn {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: #0d9488;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(13, 148, 136, 0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .chatbot-btn:hover {
+        transform: scale(1.08);
+        box-shadow: 0 6px 24px rgba(13, 148, 136, 0.5);
+      }
+      .chatbot-btn svg {
+        width: 26px;
+        height: 26px;
+        color: #fff;
+      }
+      .chatbot-window {
+        position: fixed;
+        bottom: 96px;
+        right: 24px;
+        width: 350px;
+        height: 500px;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+        display: none;
+        flex-direction: column;
+        z-index: 9999;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+      }
+      .chatbot-window.open { display: flex; }
+      .chatbot-header {
+        background: #0d9488;
+        color: #fff;
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-shrink: 0;
+      }
+      .chatbot-header-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .chatbot-close {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        border: none;
+        background: rgba(255,255,255,0.15);
+        color: #fff;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+      }
+      .chatbot-close:hover { background: rgba(255,255,255,0.3); }
+      .chatbot-close svg { width: 16px; height: 16px; }
+      .chatbot-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background: #f8fafc;
+      }
+      .chatbot-msg {
+        max-width: 85%;
+        padding: 10px 14px;
+        border-radius: 14px;
+        font-size: 13px;
+        line-height: 1.6;
+        animation: fadeUp 0.25s ease;
+      }
+      @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+      .chatbot-msg.ai {
+        align-self: flex-start;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        color: #1a1a2e;
+        border-bottom-left-radius: 4px;
+      }
+      .chatbot-msg.user {
+        align-self: flex-end;
+        background: #0d9488;
+        color: #fff;
+        border-bottom-right-radius: 4px;
+      }
+      .chatbot-msg.loading {
+        align-self: flex-start;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        color: #94a3b8;
+        border-bottom-left-radius: 4px;
+        display: flex;
+        gap: 4px;
+        padding: 14px 18px;
+      }
+      .chatbot-dot {
+        width: 7px;
+        height: 7px;
+        background: #94a3b8;
+        border-radius: 50%;
+        animation: typing 1.4s infinite ease-in-out;
+      }
+      .chatbot-dot:nth-child(2) { animation-delay: 0.2s; }
+      .chatbot-dot:nth-child(3) { animation-delay: 0.4s; }
+      @keyframes typing {
+        0%, 60%, 100% { opacity: 0.3; transform: scale(0.8); }
+        30% { opacity: 1; transform: scale(1); }
+      }
+      .chatbot-input-area {
+        padding: 12px 16px;
+        border-top: 1px solid #e2e8f0;
+        background: #fff;
+        display: flex;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+      .chatbot-input {
+        flex: 1;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 10px 14px;
+        font-size: 13px;
+        outline: none;
+        font-family: inherit;
+        color: #1a1a2e;
+        transition: border-color 0.2s;
+      }
+      .chatbot-input:focus { border-color: #0d9488; }
+      .chatbot-send {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        border: none;
+        background: #0d9488;
+        color: #fff;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: background 0.2s;
+      }
+      .chatbot-send:hover { background: #0f766e; }
+      .chatbot-send:disabled { background: #e2e8f0; cursor: not-allowed; }
+      .chatbot-send svg { width: 16px; height: 16px; }
+    </style>
+
+    <script>
+      (function() {
+        var welcomeMsg = 'Bonjour ! Je suis l\'assistant MediCare. Comment puis-je vous aider ?';
+        var messages = [{ role: 'ai', text: welcomeMsg }];
+        var loading = false;
+        var sessionId = crypto.randomUUID();
+
+        var btn = document.createElement('button');
+        btn.className = 'chatbot-btn';
+        btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>';
+        document.body.appendChild(btn);
+
+        var win = document.createElement('div');
+        win.className = 'chatbot-window';
+        win.innerHTML =
+          '<div class="chatbot-header">' +
+            '<span class="chatbot-header-title">Assistant MediCare</span>' +
+            '<button class="chatbot-close" id="chatbotCloseBtn">' +
+              '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
+            '</button>' +
+          '</div>' +
+          '<div class="chatbot-messages" id="chatbotMessages"></div>' +
+          '<div class="chatbot-input-area">' +
+            '<input class="chatbot-input" id="chatbotInput" type="text" placeholder="Votre message..." />' +
+            '<button class="chatbot-send" id="chatbotSendBtn" disabled>' +
+              '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m-7 7l7-7 7 7"/></svg>' +
+            '</button>' +
+          '</div>';
+        document.body.appendChild(win);
+
+        var msgContainer = document.getElementById('chatbotMessages');
+        var inputEl = document.getElementById('chatbotInput');
+        var sendBtn = document.getElementById('chatbotSendBtn');
+        var closeBtn = document.getElementById('chatbotCloseBtn');
+
+        function renderMessages() {
+          msgContainer.innerHTML = '';
+          messages.forEach(function(m) {
+            var div = document.createElement('div');
+            div.className = 'chatbot-msg ' + m.role;
+            if (m.role === 'loading') {
+              for (var i = 0; i < 3; i++) {
+                var dot = document.createElement('span');
+                dot.className = 'chatbot-dot';
+                div.appendChild(dot);
+              }
+            } else {
+              div.textContent = m.text;
+            }
+            msgContainer.appendChild(div);
+          });
+          msgContainer.scrollTop = msgContainer.scrollHeight;
+        }
+
+        function addLoading() {
+          messages.push({ role: 'loading' });
+          renderMessages();
+        }
+
+        function removeLoading() {
+          messages = messages.filter(function(m) { return m.role !== 'loading'; });
+        }
+
+        function sendMessage() {
+          var text = inputEl.value.trim();
+          if (!text || loading) return;
+          messages.push({ role: 'user', text: text });
+          inputEl.value = '';
+          sendBtn.disabled = true;
+          loading = true;
+          addLoading();
+
+          fetch('/n8n/webhook/chatbot-assistant', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chatInput: text, session_id: sessionId })
+          })
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            removeLoading();
+            var reply = data && data.response ? data.response : (data && data.output ? data.output : 'Désolé, je n\'ai pas pu traiter votre demande.');
+            messages.push({ role: 'ai', text: reply });
+            renderMessages();
+          })
+          .catch(function() {
+            removeLoading();
+            messages.push({ role: 'ai', text: 'Désolé, une erreur est survenue. Veuillez réessayer.' });
+            renderMessages();
+          })
+          .finally(function() {
+            loading = false;
+            sendBtn.disabled = !inputEl.value.trim();
+          });
+        }
+
+        btn.addEventListener('click', function() {
+          win.classList.toggle('open');
+          if (win.classList.contains('open')) {
+            renderMessages();
+            inputEl.focus();
+          }
+        });
+
+        closeBtn.addEventListener('click', function() {
+          win.classList.remove('open');
+        });
+
+        inputEl.addEventListener('input', function() {
+          sendBtn.disabled = !inputEl.value.trim();
+        });
+
+        inputEl.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') sendMessage();
+        });
+
+        sendBtn.addEventListener('click', sendMessage);
+      })();
+    </script>
+
+</body>
+
+</html>

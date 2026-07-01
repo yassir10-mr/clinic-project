@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('adresse', 255)->nullable();
             $table->string('telephone', 20);
             $table->string('email', 100)->nullable();
+            $table->string('mot_de_passe', 255);
             $table->string('groupe_sanguin', 5)->nullable();
             // Pas de timestamps() car ta table n'a pas created_at/updated_at
         });

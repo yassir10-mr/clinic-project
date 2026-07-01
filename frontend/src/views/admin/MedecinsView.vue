@@ -323,7 +323,7 @@ const resetForm = () => {
 }
 
 .page-subtitle {
-  color: #64748b;
+  color: #475569;
   font-size: 14px;
   margin: 0;
 }
@@ -380,7 +380,7 @@ const resetForm = () => {
 
 .stat-label {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   margin-bottom: 4px;
 }
 
@@ -464,7 +464,7 @@ const resetForm = () => {
 
 .doctor-specialty {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   margin: 0 0 12px 0;
 }
 
@@ -501,7 +501,7 @@ const resetForm = () => {
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   margin-bottom: 8px;
 }
 
@@ -510,7 +510,7 @@ const resetForm = () => {
 }
 
 .contact-item svg {
-  color: #94a3b8;
+  color: #475569;
   flex-shrink: 0;
 }
 
@@ -559,7 +559,7 @@ const resetForm = () => {
 .loading {
   padding: 60px;
   text-align: center;
-  color: #64748b;
+  color: #475569;
 }
 
 /* Empty State */
@@ -568,7 +568,7 @@ const resetForm = () => {
   flex-direction: column;
   align-items: center;
   padding: 80px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .empty-icon {
@@ -631,7 +631,7 @@ const resetForm = () => {
   background: none;
   border: none;
   font-size: 24px;
-  color: #94a3b8;
+  color: #475569;
   cursor: pointer;
   width: 32px;
   height: 32px;
@@ -778,7 +778,7 @@ const resetForm = () => {
 }
 
 .page-subtitle {
-  color: #64748b;
+  color: #475569;
   font-size: 14px;
   margin: 0;
 }
@@ -835,7 +835,7 @@ const resetForm = () => {
 
 .stat-label {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   margin-bottom: 4px;
 }
 
@@ -919,7 +919,7 @@ const resetForm = () => {
 
 .doctor-specialty {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   margin: 0 0 12px 0;
 }
 
@@ -956,7 +956,7 @@ const resetForm = () => {
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   margin-bottom: 8px;
 }
 
@@ -965,7 +965,7 @@ const resetForm = () => {
 }
 
 .contact-item svg {
-  color: #94a3b8;
+  color: #475569;
   flex-shrink: 0;
 }
 
@@ -1014,7 +1014,7 @@ const resetForm = () => {
 .loading {
   padding: 60px;
   text-align: center;
-  color: #64748b;
+  color: #475569;
 }
 
 /* Empty State */
@@ -1023,7 +1023,7 @@ const resetForm = () => {
   flex-direction: column;
   align-items: center;
   padding: 80px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .empty-icon {
@@ -1086,7 +1086,7 @@ const resetForm = () => {
   background: none;
   border: none;
   font-size: 24px;
-  color: #94a3b8;
+  color: #475569;
   cursor: pointer;
   width: 32px;
   height: 32px;

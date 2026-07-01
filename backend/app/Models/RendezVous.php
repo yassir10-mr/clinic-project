@@ -43,3 +43,4 @@ class RendezVous extends Model
         return $this->hasOne(Consultation::class, 'id_rdv');
     }
 }
+

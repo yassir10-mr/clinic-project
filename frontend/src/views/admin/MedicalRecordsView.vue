@@ -264,7 +264,7 @@ const formatDate = (dateStr) => {
 
 .page-subtitle {
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
   margin: 0;
 }
 
@@ -295,7 +295,7 @@ const formatDate = (dateStr) => {
 
 .stat-label {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   font-weight: 500;
 }
 
@@ -349,7 +349,7 @@ const formatDate = (dateStr) => {
 }
 
 .search-box i {
-  color: #94a3b8;
+  color: #475569;
   font-size: 14px;
 }
 
@@ -363,7 +363,7 @@ const formatDate = (dateStr) => {
 }
 
 .search-box input::placeholder {
-  color: #94a3b8;
+  color: #475569;
 }
 
 .filter-select {
@@ -372,7 +372,7 @@ const formatDate = (dateStr) => {
   border-radius: 8px;
   background: white;
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
   cursor: pointer;
   min-width: 140px;
   outline: none;
@@ -467,7 +467,7 @@ const formatDate = (dateStr) => {
 
 .record-description {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   margin: 0;
   line-height: 1.5;
 }
@@ -477,7 +477,7 @@ const formatDate = (dateStr) => {
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .patient-name {
@@ -502,7 +502,7 @@ const formatDate = (dateStr) => {
   justify-content: center;
   padding: 60px;
   gap: 16px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .spinner {
@@ -526,7 +526,7 @@ const formatDate = (dateStr) => {
   justify-content: center;
   padding: 60px;
   gap: 12px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .empty-icon {
@@ -579,7 +579,7 @@ const formatDate = (dateStr) => {
 
 .page-subtitle {
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
   margin: 0;
 }
 
@@ -610,7 +610,7 @@ const formatDate = (dateStr) => {
 
 .stat-label {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   font-weight: 500;
 }
 
@@ -664,7 +664,7 @@ const formatDate = (dateStr) => {
 }
 
 .search-box i {
-  color: #94a3b8;
+  color: #475569;
   font-size: 14px;
 }
 
@@ -678,7 +678,7 @@ const formatDate = (dateStr) => {
 }
 
 .search-box input::placeholder {
-  color: #94a3b8;
+  color: #475569;
 }
 
 .filter-select {
@@ -687,7 +687,7 @@ const formatDate = (dateStr) => {
   border-radius: 8px;
   background: white;
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
   cursor: pointer;
   min-width: 140px;
   outline: none;
@@ -782,7 +782,7 @@ const formatDate = (dateStr) => {
 
 .record-description {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   margin: 0;
   line-height: 1.5;
 }
@@ -792,7 +792,7 @@ const formatDate = (dateStr) => {
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .patient-name {
@@ -817,7 +817,7 @@ const formatDate = (dateStr) => {
   justify-content: center;
   padding: 60px;
   gap: 16px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .spinner {
@@ -841,7 +841,7 @@ const formatDate = (dateStr) => {
   justify-content: center;
   padding: 60px;
   gap: 12px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .empty-icon {

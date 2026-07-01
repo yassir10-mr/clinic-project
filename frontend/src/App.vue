@@ -4,10 +4,7 @@
     <aside v-if="isLoggedIn && !isAuthPage && !isDedicatedLayoutPage" class="sidebar">
       <!-- Logo -->
       <div class="sidebar-logo">
-        <div class="logo-icon-small">
-          <i class="fas fa-stethoscope"></i>
-        </div>
-        <span class="logo-text-small">MediCare</span>
+        <span class="logo-text">MediCare</span>
       </div>
 
       <!-- Navigation -->
@@ -68,15 +65,18 @@
       <!-- Header (hidden on pages with dedicated layout) -->
       <header v-if="isLoggedIn && !isAuthPage && !isDedicatedLayoutPage" class="top-header">
         <div class="header-actions">
-          <div class="header-profile">
-            <span class="header-name">{{ userFullName }}</span>
-            <div class="header-avatar">{{ userInitials }}</div>
-          </div>
+        <button class="theme-toggle" @click="toggleTheme" :title="isDark ? 'Mode clair' : 'Mode sombre'">
+          <svg v-if="isDark" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <div class="header-logo">
+          <img src="/src/assets/logo-medicare.png" alt="MediCare" class="header-logo-img" />
+        </div>
         </div>
       </header>
 
       <!-- Content -->
-      <div :class="['content-area', isAuthPage ? 'auth-page' : '', isDedicatedLayoutPage ? 'no-padding' : '']">
+      <div :class="['content-area', isAuthPage ? 'auth-page' : '', isDedicatedLayoutPage ? 'no-padding' : '', isAIAssistantPage ? 'ai-assistant-mode' : '']">
         <router-view />
       </div>
     </main>
@@ -93,6 +93,13 @@ const route = useRoute();
 
 const showProfileMenu = ref(false);
 const profileRef = ref(null);
+const isDark = ref(localStorage.getItem('theme') === 'dark');
+
+const toggleTheme = () => {
+  isDark.value = !isDark.value;
+  document.documentElement.dataset.theme = isDark.value ? 'dark' : 'light';
+  localStorage.setItem('theme', isDark.value ? 'dark' : 'light');
+};
 
 // Hide sidebar on login/landing pages OR on pages with their own dedicated layout
 const isAuthPage = computed(() => {
@@ -100,8 +107,11 @@ const isAuthPage = computed(() => {
 });
 
 const isDedicatedLayoutPage = computed(() => {
-  // Routes that have their own layout (infirmier, patient, etc.)
-  return route.path.startsWith('/infirmier');
+  return route.path.startsWith('/infirmier') || route.path.startsWith('/patient');
+});
+
+const isAIAssistantPage = computed(() => {
+  return route.path === '/ai-assistant';
 });
 
 // Auth
@@ -110,6 +120,7 @@ const isLoggedIn = computed(() => {
     !!localStorage.getItem('admin_token') ||
     !!localStorage.getItem('secretaire_token') ||
     !!localStorage.getItem('infirmier_token') ||
+    !!localStorage.getItem('patient_token') ||
     !!localStorage.getItem('token')
   );
 });
@@ -168,6 +179,7 @@ const menuItems = computed(() => {
 
   return [
     { path: '/dashboard', label: 'Dashboard', icon: 'fas fa-th-large' },
+    { path: '/ai-assistant', label: 'Assistant IA', icon: 'fas fa-robot' },
     { path: '/patients', label: 'Patients', icon: 'fas fa-user-injured' },
     { path: '/rendez-vous', label: 'Appointments', icon: 'fas fa-calendar-check' },
     { path: '/consultations', label: 'Consultations', icon: 'fas fa-stethoscope' },
@@ -191,6 +203,7 @@ const handleClickOutside = (event) => {
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside);
+  if (isDark.value) document.documentElement.dataset.theme = 'dark';
 });
 
 onUnmounted(() => {
@@ -246,43 +259,28 @@ html, body {
 /* ========== SIDEBAR ========== */
 .sidebar {
   width: 260px;
-  background: white;
-  border-right: 1px solid #e2e8f0;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
   display: flex;
   flex-direction: column;
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  z-index: 100;
-  overflow-y: auto; /* Sidebar scrolls if too long */
+  flex-shrink: 0;
+  overflow-y: auto;
 }
 
 .sidebar-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 20px 24px;
-  border-bottom: 1px solid #f1f5f9;
+  height: 64px;
+  padding: 0 24px;
   flex-shrink: 0;
 }
 
-.logo-icon-small {
-  width: 36px;
-  height: 36px;
-  background: #2563eb;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 16px;
-}
-
-.logo-text-small {
-  font-size: 18px;
+.logo-text {
+  font-family: 'Playfair Display', 'Times New Roman', Georgia, serif;
+  font-size: 28px;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--sidebar-logo);
+  letter-spacing: -0.4px;
 }
 
 /* Sidebar Navigation */
@@ -292,7 +290,7 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  overflow-y: auto; /* Nav scrolls if too many items */
+  overflow-y: auto;
 }
 
 .nav-item {
@@ -301,7 +299,7 @@ html, body {
   gap: 12px;
   padding: 12px 16px;
   border-radius: 8px;
-  color: #64748b;
+  color: var(--sidebar-text);
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
@@ -310,13 +308,17 @@ html, body {
 }
 
 .nav-item:hover {
-  background: #f1f5f9;
-  color: #1e293b;
+  background: var(--sidebar-hover-bg);
+  color: var(--sidebar-hover-text);
 }
 
 .nav-item.active {
-  background: #eff6ff;
-  color: #2563eb;
+  background: var(--sidebar-active-bg);
+  color: var(--sidebar-active-text);
+}
+
+.nav-item span {
+  font-family: 'Playfair Display', 'Times New Roman', Georgia, serif;
 }
 
 .nav-item i {
@@ -328,7 +330,7 @@ html, body {
 /* Sidebar Profile */
 .sidebar-profile {
   padding: 16px;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--sidebar-divider);
   display: flex;
   align-items: center;
   gap: 12px;
@@ -339,7 +341,7 @@ html, body {
 }
 
 .sidebar-profile:hover {
-  background: #f8fafc;
+  background: var(--sidebar-hover-bg);
 }
 
 .profile-avatar {
@@ -364,7 +366,7 @@ html, body {
 .profile-name {
   font-size: 14px;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--profile-name);
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -373,13 +375,13 @@ html, body {
 
 .profile-role {
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--profile-role);
   margin: 0;
 }
 
 .profile-arrow {
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--profile-arrow);
   transition: transform 0.2s;
   flex-shrink: 0;
 }
@@ -394,10 +396,10 @@ html, body {
   bottom: 100%;
   left: 12px;
   right: 12px;
-  background: white;
+  background: var(--dropdown-bg);
   border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-  border: 1px solid #e2e8f0;
+  box-shadow: var(--dropdown-shadow);
+  border: 1px solid var(--dropdown-border);
   padding: 8px 0;
   margin-bottom: 8px;
   z-index: 200;
@@ -410,7 +412,7 @@ html, body {
 .dropdown-title {
   font-size: 12px;
   font-weight: 600;
-  color: #94a3b8;
+  color: var(--profile-role);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin: 0;
@@ -418,7 +420,7 @@ html, body {
 
 .dropdown-divider {
   height: 1px;
-  background: #f1f5f9;
+  background: var(--sidebar-divider);
   margin: 8px 0;
 }
 
@@ -427,7 +429,7 @@ html, body {
   align-items: center;
   gap: 12px;
   padding: 10px 16px;
-  color: #374151;
+  color: var(--dropdown-item);
   text-decoration: none;
   font-size: 14px;
   transition: background 0.2s;
@@ -439,11 +441,11 @@ html, body {
 }
 
 .dropdown-item:hover {
-  background: #f8fafc;
+  background: var(--dropdown-hover);
 }
 
 .dropdown-item.logout {
-  color: #dc2626;
+  color: var(--dropdown-item-logout);
 }
 
 .dropdown-item i {
@@ -455,31 +457,22 @@ html, body {
 /* ========== MAIN CONTENT ========== */
 .main-content {
   flex: 1;
-  margin-left: 260px;
   display: flex;
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
-  width: calc(100% - 260px);
-  max-width: none;
-}
-
-/* Full width for auth pages and dedicated layouts */
-.main-content.full-width {
-  margin-left: 0;
-  width: 100%;
 }
 
 /* ========== TOP HEADER ========== */
 .top-header {
   height: 64px;
-  background: white;
-  border-bottom: 1px solid #e2e8f0;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--header-border);
   display: flex;
   align-items: center;
   justify-content: flex-end;
   padding: 0 32px;
-  flex-shrink: 0; /* Prevent header from shrinking */
+  flex-shrink: 0;
 }
 
 .header-actions {
@@ -488,37 +481,22 @@ html, body {
   gap: 20px;
 }
 
-.header-profile {
+.header-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
 }
 
-.header-name {
-  font-size: 14px;
-  font-weight: 500;
-  color: #374151;
-}
-
-.header-avatar {
-  width: 36px;
+.header-logo-img {
   height: 36px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 600;
+  width: auto;
 }
 
 /* ========== CONTENT AREA ========== */
 .content-area {
   flex: 1;
   padding: 24px 32px;
-  overflow-y: auto; /* 🔥 KEY FIX: Enable scrolling here */
-  background: #f8fafc;
+  overflow-y: auto;
+  background: var(--content-bg);
 }
 
 /* No padding for auth pages */
@@ -533,6 +511,12 @@ html, body {
   overflow-y: hidden;
 }
 
+/* Full bleed for AI assistant */
+.content-area.ai-assistant-mode {
+  padding: 0;
+  overflow: hidden;
+}
+
 /* ========== RESPONSIVE ========== */
 @media (max-width: 1024px) {
   .sidebar {
@@ -541,10 +525,10 @@ html, body {
 
   .sidebar-logo {
     justify-content: center;
-    padding: 20px 0;
+    padding: 0;
   }
 
-  .logo-text-small,
+  .logo-text,
   .profile-info,
   .profile-arrow,
   .nav-item span {
@@ -560,28 +544,32 @@ html, body {
     justify-content: center;
     padding: 16px 0;
   }
-
-  .main-content {
-    margin-left: 70px;
-  }
-
-  .main-content.full-width {
-    margin-left: 0;
-  }
 }
 
 @media (max-width: 768px) {
   .sidebar {
-    transform: translateX(-100%);
-    width: 260px;
+    display: none;
   }
+}
 
-  .sidebar.open {
-    transform: translateX(0);
-  }
+/* ========== THEME TOGGLE ========== */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--sidebar-border);
+  background: var(--toggle-bg);
+  color: var(--toggle-color);
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
 
-  .main-content {
-    margin-left: 0;
-  }
+.theme-toggle:hover {
+  background: var(--toggle-hover);
+  color: var(--sidebar-hover-text);
 }
 </style>

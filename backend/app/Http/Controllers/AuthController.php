@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Admin;
 use App\Models\Infirmier;
 use App\Models\Patient;
+use App\Models\Secretaire;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -77,6 +78,89 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
+    }
+
+    // ==================== LOGIN UNIFIÉ (tous rôles) ====================
+    public function loginUnified(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        // Essayer Admin
+        $admin = Admin::where('email', $request->email)->first();
+        if ($admin && Hash::check($request->password, $admin->mot_de_passe)) {
+            $token = bin2hex(random_bytes(40));
+            return response()->json([
+                'success' => true,
+                'token' => $token,
+                'role' => 'admin',
+                'user' => [
+                    'id' => $admin->id_admin,
+                    'nom' => $admin->nom,
+                    'prenom' => $admin->prenom,
+                    'email' => $admin->email,
+                    'role' => 'admin'
+                ]
+            ]);
+        }
+
+        // Essayer Secrétaire
+        $secretaire = Secretaire::where('email', $request->email)->first();
+        if ($secretaire && Hash::check($request->password, $secretaire->mot_de_passe)) {
+            $token = bin2hex(random_bytes(40));
+            return response()->json([
+                'success' => true,
+                'token' => $token,
+                'role' => 'secretaire',
+                'user' => [
+                    'id' => $secretaire->id_secretaire,
+                    'nom' => $secretaire->nom,
+                    'prenom' => $secretaire->prenom,
+                    'email' => $secretaire->email,
+                    'role' => 'secretaire'
+                ]
+            ]);
+        }
+
+        // Essayer Infirmier
+        $infirmier = Infirmier::where('email', $request->email)->first();
+        if ($infirmier && Hash::check($request->password, $infirmier->mot_de_passe)) {
+            $token = bin2hex(random_bytes(40));
+            return response()->json([
+                'success' => true,
+                'token' => $token,
+                'role' => 'infirmier',
+                'user' => [
+                    'id' => $infirmier->id_infirmier,
+                    'nom' => $infirmier->nom,
+                    'prenom' => $infirmier->prenom,
+                    'email' => $infirmier->email,
+                    'role' => 'infirmier'
+                ]
+            ]);
+        }
+
+        // Essayer Patient
+        $patient = Patient::where('email', $request->email)->first();
+        if ($patient && Hash::check($request->password, $patient->mot_de_passe)) {
+            $token = bin2hex(random_bytes(40));
+            return response()->json([
+                'success' => true,
+                'token' => $token,
+                'role' => 'patient',
+                'user' => [
+                    'id' => $patient->id_patient,
+                    'nom' => $patient->nom,
+                    'prenom' => $patient->prenom,
+                    'email' => $patient->email,
+                    'role' => 'patient'
+                ]
+            ]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Identifiants incorrects'], 401);
     }
 
     // ==================== LOGIN PATIENT ====================

@@ -12,6 +12,8 @@ return new class extends Migration
             $table->id('id_infirmier');
             $table->string('nom', 100);
             $table->string('prenom', 100);
+            $table->string('email', 100)->unique()->nullable();
+            $table->string('mot_de_passe', 255);
             $table->string('telephone', 20);
             $table->string('service', 100);
         });

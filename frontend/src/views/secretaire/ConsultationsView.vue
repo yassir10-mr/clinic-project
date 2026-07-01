@@ -455,7 +455,7 @@ onMounted(() => {
 }
 
 .subtitle {
-  color: #64748b;
+  color: #475569;
   font-size: 14px;
 }
 
@@ -478,7 +478,7 @@ onMounted(() => {
 }
 
 .stat-info { flex: 1; }
-.stat-label { color: #64748b; font-size: 14px; font-weight: 500; margin-bottom: 8px; }
+.stat-label { color: #475569; font-size: 14px; font-weight: 500; margin-bottom: 8px; }
 .stat-value { font-size: 32px; font-weight: 700; color: #1e293b; }
 
 .stat-icon {
@@ -512,7 +512,7 @@ onMounted(() => {
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: #94a3b8;
+  color: #475569;
 }
 
 .search-box input {
@@ -551,7 +551,7 @@ onMounted(() => {
   padding: 16px 20px;
   font-size: 12px;
   font-weight: 600;
-  color: #64748b;
+  color: #475569;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   background: #f8fafc;
@@ -571,7 +571,7 @@ onMounted(() => {
 
 .date-cell { display: flex; flex-direction: column; gap: 2px; }
 .date { font-weight: 600; }
-.time { font-size: 12px; color: #64748b; }
+.time { font-size: 12px; color: #475569; }
 
 .patient-cell { display: flex; align-items: center; gap: 12px; }
 .avatar {
@@ -587,7 +587,7 @@ onMounted(() => {
   font-size: 13px;
 }
 .name { font-weight: 600; margin: 0; }
-.phone { font-size: 12px; color: #64748b; margin: 2px 0 0; }
+.phone { font-size: 12px; color: #475569; margin: 2px 0 0; }
 
 .doctor-badge {
   display: inline-flex;
@@ -621,7 +621,7 @@ onMounted(() => {
 
 .badge-success { background: #d1fae5; color: #065f46; }
 .badge-warning { background: #fef3c7; color: #92400e; }
-.badge-empty { background: #f1f5f9; color: #64748b; }
+.badge-empty { background: #f1f5f9; color: #475569; }
 
 .actions { display: flex; gap: 8px; }
 
@@ -647,7 +647,7 @@ onMounted(() => {
 .empty-state {
   text-align: center;
   padding: 60px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .empty-state i { font-size: 48px; margin-bottom: 16px; display: block; }
@@ -686,14 +686,14 @@ onMounted(() => {
 .btn-close {
   background: none;
   border: none;
-  color: #94a3b8;
+  color: #475569;
   cursor: pointer;
   padding: 8px;
   border-radius: 8px;
   transition: all 0.2s;
 }
 
-.btn-close:hover { background: #f1f5f9; color: #64748b; }
+.btn-close:hover { background: #f1f5f9; color: #475569; }
 
 .modal-body { padding: 24px; }
 .details-body { padding-bottom: 24px; }
@@ -757,7 +757,7 @@ onMounted(() => {
   padding: 12px 24px;
   border: 1px solid #e2e8f0;
   background: white;
-  color: #64748b;
+  color: #475569;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
@@ -788,7 +788,7 @@ onMounted(() => {
 .detail-section h4 {
   font-size: 13px;
   font-weight: 600;
-  color: #64748b;
+  color: #475569;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 8px;
@@ -798,7 +798,7 @@ onMounted(() => {
 }
 
 .detail-section p { margin: 4px 0; color: #1e293b; }
-.text-muted { color: #64748b; font-size: 14px; }
+.text-muted { color: #475569; font-size: 14px; }
 .text-success { color: #059669; }
 .text-warning { color: #d97706; }
 

@@ -306,8 +306,8 @@ const loadData = async () => {
 }
 
 const formatMoney = (amount) => {
-  if (!amount) return 'MAD 0.00'
-  return 'MAD ' + Number(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  if (!amount) return '0.00 DH'
+  return Number(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' DH'
 }
 
 const formatDate = (date) => {
@@ -403,7 +403,7 @@ onMounted(() => {
 }
 
 .subtitle {
-  color: #64748b;
+  color: #475569;
   font-size: 14px;
 }
 
@@ -452,7 +452,7 @@ onMounted(() => {
 }
 
 .stat-label {
-  color: #94a3b8;
+  color: #475569;
   font-size: 14px;
   font-weight: 500;
   margin-bottom: 8px;
@@ -543,7 +543,7 @@ thead th {
   padding: 14px 24px;
   font-size: 13px;
   font-weight: 600;
-  color: #64748b;
+  color: #475569;
   background: #f8fafc;
   border-bottom: 1px solid #e2e8f0;
 }
@@ -577,7 +577,7 @@ tbody tr:last-child td {
 
 /* Date */
 .date {
-  color: #64748b;
+  color: #475569;
   font-size: 14px;
 }
 
@@ -662,7 +662,7 @@ tbody tr:last-child td {
 .empty-state {
   text-align: center;
   padding: 60px 20px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .empty-state i {
@@ -720,7 +720,7 @@ tbody tr:last-child td {
 .btn-close {
   background: none;
   border: none;
-  color: #94a3b8;
+  color: #475569;
   cursor: pointer;
   padding: 8px;
   border-radius: 8px;
@@ -729,7 +729,7 @@ tbody tr:last-child td {
 
 .btn-close:hover {
   background: #f1f5f9;
-  color: #64748b;
+  color: #475569;
 }
 
 .modal-body {
@@ -791,7 +791,7 @@ tbody tr:last-child td {
   padding: 12px 24px;
   border: 1px solid #e2e8f0;
   background: white;
-  color: #64748b;
+  color: #475569;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
@@ -849,7 +849,7 @@ tbody tr:last-child td {
 }
 
 .invoice-date {
-  color: #64748b;
+  color: #475569;
   font-size: 14px;
   margin: 0;
 }
@@ -867,7 +867,7 @@ tbody tr:last-child td {
 }
 
 .detail-row .label {
-  color: #64748b;
+  color: #475569;
   font-size: 14px;
 }
 

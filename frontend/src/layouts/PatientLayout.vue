@@ -1,8 +1,6 @@
 <template>
-  <div class="infirmier-layout" :class="{ 'sidebar-collapsed': sidebarCollapsed }">
-    <!-- Sidebar -->
+  <div class="patient-layout" :class="{ 'sidebar-collapsed': sidebarCollapsed }">
     <aside class="sidebar">
-      <!-- Logo -->
       <div class="sidebar-logo">
         <span class="logo-text">MediCare</span>
         <button class="sidebar-toggle" @click="sidebarCollapsed = !sidebarCollapsed" :title="sidebarCollapsed ? 'Ouvrir' : 'Fermer'">
@@ -10,7 +8,6 @@
         </button>
       </div>
 
-      <!-- Navigation -->
       <nav class="sidebar-nav">
         <router-link
           v-for="item in menuItems"
@@ -26,16 +23,14 @@
         </router-link>
       </nav>
 
-      <!-- Profile -->
       <div class="sidebar-profile" @click="toggleLogoutDropdown">
         <div class="profile-avatar">{{ userInitials }}</div>
         <div class="profile-info">
           <p class="profile-name">{{ userFullName }}</p>
-          <p class="profile-role">Nurse</p>
+          <p class="profile-role">Patient</p>
         </div>
         <i class="fas fa-chevron-down profile-arrow"></i>
 
-        <!-- Logout Dropdown -->
         <Transition name="dropdown">
           <div v-if="showLogoutDropdown" class="profile-dropdown">
             <button @click.stop="handleLogout" class="dropdown-item">
@@ -47,9 +42,7 @@
       </div>
     </aside>
 
-    <!-- Main -->
     <main class="main-content">
-      <!-- Header -->
       <header class="top-header">
         <div class="header-decoration">
           <div class="header-logo">
@@ -64,8 +57,7 @@
         </div>
       </header>
 
-      <!-- Content -->
-      <div class="content-area">
+      <div :class="['content-area', isAIAssistantPage ? 'ai-assistant-mode' : '']">
         <router-view />
       </div>
     </main>
@@ -75,18 +67,22 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { logout as apiLogout } from '@/services/api.js';
 
 const router = useRouter();
 const route = useRoute();
 const showLogoutDropdown = ref(false);
 const sidebarCollapsed = ref(false);
 
+const isAIAssistantPage = computed(() => route.path === '/patient/ai-assistant');
+
 const menuItems = [
-  { path: '/infirmier/dashboard', label: 'Dashboard', icon: 'fas fa-th-large' },
-  { path: '/infirmier/patients', label: 'Patients', icon: 'fas fa-user-injured' },
-  { path: '/infirmier/appointments', label: 'Appointments', icon: 'fas fa-calendar-check' },
-  { path: '/infirmier/medical-records', label: 'Medical Records', icon: 'fas fa-folder-open' },
+  { path: '/patient/dashboard', label: 'Dashboard', icon: 'fas fa-th-large' },
+  { path: '/patient/appointments', label: 'Mes Rendez-vous', icon: 'fas fa-calendar-check' },
+  { path: '/patient/medical-records', label: 'Dossier Médical', icon: 'fas fa-folder-open' },
+  { path: '/patient/consultations', label: 'Consultations', icon: 'fas fa-stethoscope' },
+  { path: '/patient/invoices', label: 'Factures', icon: 'fas fa-file-invoice-dollar' },
+  { path: '/patient/profile', label: 'Mon Profil', icon: 'fas fa-user' },
+  { path: '/patient/ai-assistant', label: 'Assistant IA', icon: 'fas fa-robot' },
 ];
 
 const isActive = (path) => {
@@ -94,15 +90,15 @@ const isActive = (path) => {
 };
 
 const userData = computed(() => {
-  const user = localStorage.getItem('infirmier_user');
+  const user = localStorage.getItem('patient_user');
   if (user) {
     try {
       return JSON.parse(user);
     } catch (e) {
-      return { nom: 'El Bouazzati', prenom: 'Raed' };
+      return { nom: 'Patient', prenom: 'Cher' };
     }
   }
-  return { nom: 'El Bouazzati', prenom: 'Raed' };
+  return { nom: 'Patient', prenom: 'Cher' };
 });
 
 const userFullName = computed(() => {
@@ -110,8 +106,8 @@ const userFullName = computed(() => {
 });
 
 const userInitials = computed(() => {
-  const prenom = userData.value.prenom?.charAt(0) || 'R';
-  const nom = userData.value.nom?.charAt(0) || 'E';
+  const prenom = userData.value.prenom?.charAt(0) || 'P';
+  const nom = userData.value.nom?.charAt(0) || 'T';
   return `${prenom}${nom}`.toUpperCase();
 });
 
@@ -119,15 +115,10 @@ const toggleLogoutDropdown = () => {
   showLogoutDropdown.value = !showLogoutDropdown.value;
 };
 
-const handleLogout = async () => {
+const handleLogout = () => {
   showLogoutDropdown.value = false;
-  try {
-    await apiLogout();
-  } catch (e) {
-    // ignore
-  }
-  localStorage.removeItem('infirmier_token');
-  localStorage.removeItem('infirmier_user');
+  localStorage.removeItem('patient_token');
+  localStorage.removeItem('patient_user');
   localStorage.removeItem('user_role');
   router.push('/login');
 };
@@ -151,8 +142,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* ========== LAYOUT ========== */
-.infirmier-layout {
+.patient-layout {
   display: flex;
   height: 100vh;
   width: 100%;
@@ -160,7 +150,6 @@ onUnmounted(() => {
   font-family: 'Playfair Display', 'Times New Roman', Georgia, serif;
 }
 
-/* ========== SIDEBAR ========== */
 .sidebar {
   width: 260px;
   background: var(--sidebar-bg);
@@ -187,7 +176,6 @@ onUnmounted(() => {
   letter-spacing: -0.4px;
 }
 
-/* Sidebar Navigation */
 .sidebar-nav {
   flex: 1;
   padding: 16px 12px;
@@ -230,7 +218,6 @@ onUnmounted(() => {
   font-size: 16px;
 }
 
-/* Sidebar Profile */
 .sidebar-profile {
   padding: 16px;
   border-top: 1px solid var(--sidebar-border);
@@ -332,7 +319,6 @@ onUnmounted(() => {
   margin: 0;
 }
 
-/* ========== MAIN CONTENT ========== */
 .main-content {
   flex: 1;
   display: flex;
@@ -342,7 +328,6 @@ onUnmounted(() => {
   background: var(--content-bg);
 }
 
-/* ========== TOP HEADER ========== */
 .top-header {
   height: 64px;
   background: var(--header-bg);
@@ -382,18 +367,20 @@ onUnmounted(() => {
   width: auto;
 }
 
-/* ========== CONTENT AREA ========== */
 .content-area {
   flex: 1;
   width: 100%;
-  max-width: none;
   padding: 24px 32px 0;
   overflow-y: auto;
   background: var(--content-bg);
   box-sizing: border-box;
 }
 
-/* ========== RESPONSIVE ========== */
+.content-area.ai-assistant-mode {
+  padding: 0;
+  overflow: hidden;
+}
+
 @media (max-width: 1024px) {
   .sidebar {
     width: 70px;

@@ -17,7 +17,7 @@
       <div class="stat-card">
         <div class="stat-info">
           <span class="stat-label">Total Revenue</span>
-          <span class="stat-value">MAD{{ formatNumber(montantTotal) }}</span>
+          <span class="stat-value">{{ formatNumber(montantTotal) }} DH</span>
         </div>
         <div class="stat-icon blue">
           <i class="fas fa-dollar-sign"></i>
@@ -27,7 +27,7 @@
       <div class="stat-card">
         <div class="stat-info">
           <span class="stat-label">Paid</span>
-          <span class="stat-value green">MAD{{ formatNumber(montantPaye) }}</span>
+          <span class="stat-value green">{{ formatNumber(montantPaye) }} DH</span>
         </div>
         <div class="stat-icon green">
           <i class="fas fa-check-circle"></i>
@@ -37,7 +37,7 @@
       <div class="stat-card">
         <div class="stat-info">
           <span class="stat-label">Pending</span>
-          <span class="stat-value orange">MAD{{ formatNumber(montantPending) }}</span>
+          <span class="stat-value orange">{{ formatNumber(montantPending) }} DH</span>
         </div>
         <div class="stat-icon orange">
           <i class="fas fa-clock"></i>
@@ -47,7 +47,7 @@
       <div class="stat-card">
         <div class="stat-info">
           <span class="stat-label">Overdue</span>
-          <span class="stat-value red">MAD{{ formatNumber(montantOverdue) }}</span>
+          <span class="stat-value red">{{ formatNumber(montantOverdue) }} DH</span>
         </div>
         <div class="stat-icon red">
           <i class="fas fa-file-invoice-dollar"></i>
@@ -87,7 +87,7 @@
               </div>
             </td>
             <td>{{ formatDate(facture.date) }}</td>
-            <td class="amount">MAD{{ facture.montant_total }}</td>
+            <td class="amount">{{ facture.montant_total }} DH</td>
             <td>
               <span :class="['status-badge', getStatusClass(facture.statut_paiement)]">
                 {{ getStatusLabel(facture.statut_paiement) }}
@@ -192,7 +192,7 @@
           </div>
           <div class="detail-row">
             <span class="detail-label">Amount:</span>
-            <span class="detail-value amount">MAD{{ selectedFacture.montant_total }}</span>
+            <span class="detail-value amount">{{ selectedFacture.montant_total }} DH</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Status:</span>
@@ -417,7 +417,7 @@ const resetForm = () => {
 
 .page-subtitle {
   font-size: 14px;
-  color: #94a3b8;
+  color: #475569;
   margin: 0;
 }
 
@@ -466,7 +466,7 @@ const resetForm = () => {
 
 .stat-label {
   font-size: 13px;
-  color: #94a3b8;
+  color: #475569;
   font-weight: 500;
 }
 
@@ -520,7 +520,7 @@ const resetForm = () => {
   padding: 12px 16px;
   font-size: 13px;
   font-weight: 600;
-  color: #64748b;
+  color: #475569;
   border-bottom: 1px solid #f1f5f9;
 }
 
@@ -591,7 +591,7 @@ const resetForm = () => {
   cursor: pointer;
   border: 1px solid #e2e8f0;
   background: white;
-  color: #64748b;
+  color: #475569;
   transition: all 0.2s;
 }
 
@@ -616,7 +616,7 @@ const resetForm = () => {
   justify-content: center;
   padding: 60px;
   gap: 16px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .spinner {
@@ -639,7 +639,7 @@ const resetForm = () => {
   justify-content: center;
   padding: 60px;
   gap: 12px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .empty-icon {
@@ -688,7 +688,7 @@ const resetForm = () => {
   background: none;
   border: none;
   font-size: 24px;
-  color: #94a3b8;
+  color: #475569;
   cursor: pointer;
   width: 32px;
   height: 32px;
@@ -757,7 +757,7 @@ const resetForm = () => {
   padding: 10px 20px;
   border: 1px solid #e2e8f0;
   background: white;
-  color: #64748b;
+  color: #475569;
   border-radius: 10px;
   font-size: 14px;
   font-weight: 600;
@@ -806,7 +806,7 @@ const resetForm = () => {
 
 .detail-label {
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
   font-weight: 500;
 }
 
@@ -863,7 +863,7 @@ const resetForm = () => {
 
 .page-subtitle {
   font-size: 14px;
-  color: #94a3b8;
+  color: #475569;
   margin: 0;
 }
 
@@ -912,7 +912,7 @@ const resetForm = () => {
 
 .stat-label {
   font-size: 13px;
-  color: #94a3b8;
+  color: #475569;
   font-weight: 500;
 }
 
@@ -966,7 +966,7 @@ const resetForm = () => {
   padding: 12px 16px;
   font-size: 13px;
   font-weight: 600;
-  color: #64748b;
+  color: #475569;
   border-bottom: 1px solid #f1f5f9;
 }
 
@@ -1037,7 +1037,7 @@ const resetForm = () => {
   cursor: pointer;
   border: 1px solid #e2e8f0;
   background: white;
-  color: #64748b;
+  color: #475569;
   transition: all 0.2s;
 }
 
@@ -1062,7 +1062,7 @@ const resetForm = () => {
   justify-content: center;
   padding: 60px;
   gap: 16px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .spinner {
@@ -1085,7 +1085,7 @@ const resetForm = () => {
   justify-content: center;
   padding: 60px;
   gap: 12px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .empty-icon {
@@ -1134,7 +1134,7 @@ const resetForm = () => {
   background: none;
   border: none;
   font-size: 24px;
-  color: #94a3b8;
+  color: #475569;
   cursor: pointer;
   width: 32px;
   height: 32px;
@@ -1203,7 +1203,7 @@ const resetForm = () => {
   padding: 10px 20px;
   border: 1px solid #e2e8f0;
   background: white;
-  color: #64748b;
+  color: #475569;
   border-radius: 10px;
   font-size: 14px;
   font-weight: 600;
@@ -1252,7 +1252,7 @@ const resetForm = () => {
 
 .detail-label {
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
   font-weight: 500;
 }
 

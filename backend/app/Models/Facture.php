@@ -26,3 +26,4 @@ class Facture extends Model
         return $this->belongsTo(Consultation::class, 'id_consultation');
     }
 }
+

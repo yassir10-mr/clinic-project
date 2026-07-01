@@ -1,0 +1,38 @@
+# --- Dependencies ---
+node_modules/
+vendor/
+
+# --- Build output ---
+dist/
+build/
+/public/build/
+/public/hot/
+
+# --- Environment ---
+.env
+.env.local
+.env.*.local
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# --- IDE ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.cursor/
+
+# --- Logs ---
+*.log
+
+# --- PHP / Laravel ---
+/.phpunit.cache
+/.phpactor.json
+
+# --- Misc ---
+*.sqlite
+*.sqlite3

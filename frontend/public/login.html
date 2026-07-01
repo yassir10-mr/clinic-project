@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MediCare — Connexion</title>
+
+  <!-- Vue 3 CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    .font-serif {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up {
+      animation: fadeInUp 1s ease-out forwards;
+    }
+    .delay-100 { animation-delay: 0.1s; opacity: 0; }
+    .delay-200 { animation-delay: 0.2s; opacity: 0; }
+    .delay-300 { animation-delay: 0.3s; opacity: 0; }
+    .delay-500 { animation-delay: 0.5s; opacity: 0; }
+    .delay-700 { animation-delay: 0.7s; opacity: 0; }
+    .ornament {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .ornament::before,
+    .ornament::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.3);
+    }
+    .classic-glass {
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(20px) saturate(1.4);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow:
+        0 25px 50px -12px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+    .classic-input {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+    .classic-input:focus {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(45, 212, 191, 0.6);
+      box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.1);
+    }
+    .btn-classic {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .btn-classic::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+    .btn-classic:hover::after {
+      left: 100%;
+    }
+    .video-overlay {
+      background: linear-gradient(
+        135deg,
+        rgba(15, 23, 42, 0.85) 0%,
+        rgba(15, 23, 42, 0.6) 40%,
+        rgba(15, 23, 42, 0.4) 100%
+      );
+    }
+    .grain::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.03;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+  </style>
+</head>
+<body class="min-h-screen relative bg-slate-950">
+
+  <!-- Background Video -->
+  <div class="absolute inset-0 z-0">
+    <video id="bgVideo" autoplay muted playsinline preload="auto" class="w-full h-full object-cover" style="filter: brightness(1.1);">
+      <source src="/videos/login-bg.mp4" type="video/mp4" />
+    </video>
+  </div>
+
+  <!-- Dark overlay -->
+  <div class="absolute inset-0 z-10 video-overlay grain"></div>
+
+  <!-- Content -->
+  <div id="app" class="relative z-20 min-h-screen flex flex-col items-center justify-center px-6 py-6">
+
+    <!-- Back to Home - Top Left -->
+    <div class="absolute top-6 left-6 animate-fade-in-up">
+      <a href="/"
+        class="inline-flex items-center gap-2 text-white/50 hover:text-teal-300 transition-all duration-300 text-sm group">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256"
+          class="transition-transform duration-300 group-hover:-translate-x-1">
+          <path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"/>
+        </svg>
+        <span>Retour à l'accueil</span>
+      </a>
+    </div>
+
+    <!-- Top branding area -->
+    <div class="text-center mb-6 animate-fade-in-up">
+      <div class="inline-flex items-center justify-center mb-5 animate-fade-in-up delay-100">
+        <img src="/image-removebg-preview.png" alt="MediCare Logo" class="h-16 w-auto object-contain" />
+      </div>
+
+      <h1 class="font-serif text-5xl md:text-6xl text-white font-medium tracking-wide mb-3 animate-fade-in-up delay-200">
+        MediCare
+      </h1>
+
+      <div class="ornament max-w-xs mx-auto mb-4 animate-fade-in-up delay-300">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256" class="text-teal-400 opacity-70">
+          <path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V96H40V56Zm0,64v40H40V120ZM40,200V160H216v40Z"/>
+        </svg>
+      </div>
+
+      <p class="text-white/60 text-sm md:text-base font-light tracking-widest uppercase animate-fade-in-up delay-300">
+        Système de Gestion Clinique
+      </p>
+    </div>
+
+    <!-- Login Card -->
+    <div class="w-full max-w-md classic-glass rounded-2xl p-8 md:p-10 animate-fade-in-up delay-500">
+      <div class="text-center mb-6">
+        <h2 class="font-serif text-2xl text-white font-medium mb-2">Bienvenue</h2>
+        <p class="text-white/50 text-sm">Connectez-vous à votre espace clinique</p>
+      </div>
+
+      <form @submit.prevent="handleLogin" class="space-y-5">
+        <div>
+          <label class="block text-xs text-white/60 uppercase tracking-wider mb-2 font-medium">Adresse email</label>
+          <input v-model="form.email" type="email" required
+            placeholder="votre@email.com"
+            class="classic-input w-full px-4 py-3.5 rounded-xl text-white placeholder-white/30 text-sm outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs text-white/60 uppercase tracking-wider mb-2 font-medium">Mot de passe</label>
+          <input v-model="form.password" type="password" placeholder="••••••••"
+            class="classic-input w-full px-4 py-3.5 rounded-xl text-white placeholder-white/30 text-sm outline-none" />
+        </div>
+
+        <div class="flex items-center justify-end text-sm">
+          <a href="#" class="text-teal-300/80 hover:text-teal-300 transition-colors text-sm">Mot de passe oublié ?</a>
+        </div>
+
+        <button type="submit" :disabled="loading"
+          class="btn-classic w-full py-4 bg-teal-600 hover:bg-teal-500 text-white font-medium rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-teal-900/30">
+          <span>{{ loading ? 'Connexion...' : 'Se connecter' }}</span>
+          <svg v-if="!loading" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 256 256">
+            <path d="M221.66,133.66l-72,72A8,8,0,0,1,136,200V136H40a8,8,0,0,1,0-16h96V56a8,8,0,0,1,13.66-5.66l72,72A8,8,0,0,1,221.66,133.66Z"/>
+          </svg>
+        </button>
+
+        <p v-if="error" class="text-red-400 text-sm text-center mt-3">{{ error }}</p>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <div class="mt-10 text-center animate-fade-in-up delay-700">
+      <p class="text-white/30 text-xs tracking-widest uppercase">© 2026 MediCare. Tous droits réservés.</p>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = window.location.origin;
+
+    const app = Vue.createApp({
+      data() {
+        return {
+          form: {
+            email: '',
+            password: ''
+          },
+          loading: false,
+          error: ''
+        }
+      },
+      methods: {
+        async handleLogin() {
+          this.loading = true;
+          this.error = '';
+
+          try {
+            const res = await fetch(`${API_BASE}/api/login`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                email: this.form.email,
+                password: this.form.password
+              })
+            });
+
+            const data = await res.json();
+
+            if (data.success && data.token) {
+              const role = data.role;
+              const tokenKey = `${role}_token`;
+              const userKey = `${role}_user`;
+
+              localStorage.setItem(tokenKey, data.token);
+              localStorage.setItem(userKey, JSON.stringify(data.user));
+              localStorage.setItem('token', data.token);
+              localStorage.setItem('user_role', role);
+
+              if (role === 'admin') window.location.href = '/dashboard';
+              else if (role === 'secretaire') window.location.href = '/secretaire/dashboard';
+              else if (role === 'infirmier') window.location.href = '/infirmier/dashboard';
+              else if (role === 'patient') window.location.href = '/patient/dashboard';
+            } else {
+              this.error = 'Jeton de sécurité non reçu.';
+            }
+          } catch (err) {
+            this.error = 'Email ou mot de passe incorrect.';
+          } finally {
+            this.loading = false;
+          }
+        }
+      },
+      mounted() {
+        const video = document.getElementById('bgVideo');
+        if (video) {
+          video.playbackRate = 0.8;
+          video.addEventListener('ended', () => video.pause());
+        }
+      }
+    });
+
+    app.mount('#app');
+  </script>
+</body>
+</html>

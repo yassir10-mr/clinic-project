@@ -389,7 +389,7 @@ const removePatient = async (id) => {
 
 .page-subtitle {
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
 }
 
 .btn-add {
@@ -440,7 +440,7 @@ const removePatient = async (id) => {
 }
 
 .search-box i {
-  color: #94a3b8;
+  color: #475569;
   font-size: 14px;
 }
 
@@ -454,7 +454,7 @@ const removePatient = async (id) => {
 }
 
 .search-box input::placeholder {
-  color: #94a3b8;
+  color: #475569;
 }
 
 .filter-select {
@@ -463,7 +463,7 @@ const removePatient = async (id) => {
   border-radius: 8px;
   background: white;
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
   cursor: pointer;
   min-width: 140px;
 }
@@ -498,7 +498,7 @@ th {
   text-align: left;
   font-size: 12px;
   font-weight: 600;
-  color: #64748b;
+  color: #475569;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   background: #f8fafc;
@@ -529,7 +529,7 @@ tr:hover {
 
 .patient-id {
   font-size: 12px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 /* Contact Info */
@@ -541,7 +541,7 @@ tr:hover {
 
 .contact-info span {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -549,7 +549,7 @@ tr:hover {
 
 .contact-info i {
   font-size: 12px;
-  color: #94a3b8;
+  color: #475569;
   width: 14px;
 }
 
@@ -580,7 +580,7 @@ tr:hover {
 
 .status-badge.inactive {
   background: #f1f5f9;
-  color: #64748b;
+  color: #475569;
 }
 
 /* Actions */
@@ -623,14 +623,14 @@ tr:hover {
 .loading {
   padding: 60px;
   text-align: center;
-  color: #64748b;
+  color: #475569;
 }
 
 /* Empty */
 .empty {
   padding: 60px;
   text-align: center;
-  color: #94a3b8;
+  color: #475569;
 }
 
 /* Modal */
@@ -766,7 +766,7 @@ tr:hover {
 
 .page-subtitle {
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
 }
 
 .btn-add {
@@ -817,7 +817,7 @@ tr:hover {
 }
 
 .search-box i {
-  color: #94a3b8;
+  color: #475569;
   font-size: 14px;
 }
 
@@ -831,7 +831,7 @@ tr:hover {
 }
 
 .search-box input::placeholder {
-  color: #94a3b8;
+  color: #475569;
 }
 
 .filter-select {
@@ -840,7 +840,7 @@ tr:hover {
   border-radius: 8px;
   background: white;
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
   cursor: pointer;
   min-width: 140px;
 }
@@ -875,7 +875,7 @@ th {
   text-align: left;
   font-size: 12px;
   font-weight: 600;
-  color: #64748b;
+  color: #475569;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   background: #f8fafc;
@@ -906,7 +906,7 @@ tr:hover {
 
 .patient-id {
   font-size: 12px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 /* Contact Info */
@@ -918,7 +918,7 @@ tr:hover {
 
 .contact-info span {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -926,7 +926,7 @@ tr:hover {
 
 .contact-info i {
   font-size: 12px;
-  color: #94a3b8;
+  color: #475569;
   width: 14px;
 }
 
@@ -957,7 +957,7 @@ tr:hover {
 
 .status-badge.inactive {
   background: #f1f5f9;
-  color: #64748b;
+  color: #475569;
 }
 
 /* Actions */
@@ -1000,14 +1000,14 @@ tr:hover {
 .loading {
   padding: 60px;
   text-align: center;
-  color: #64748b;
+  color: #475569;
 }
 
 /* Empty */
 .empty {
   padding: 60px;
   text-align: center;
-  color: #94a3b8;
+  color: #475569;
 }
 
 /* Modal */

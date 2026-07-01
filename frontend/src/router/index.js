@@ -27,8 +27,15 @@ import InfirmierPatients from '@/views/infirmier/PatientsView.vue';
 import InfirmierAppointments from '@/views/infirmier/AppointmentsView.vue';
 import InfirmierMedicalRecords from '@/views/infirmier/MedicalRecordsView.vue';
 
-// --- TON IMPORT PATIENT (AMINE) ---
-import DashboardPatient from '@/views/patient/Patient.vue';
+// Patient
+import PatientLayout from '@/layouts/PatientLayout.vue';
+import PatientDashboard from '@/views/patient/DashboardPatient.vue';
+import PatientAIAssistant from '@/views/patient/AIAssistantPatient.vue';
+import PatientAppointments from '@/views/patient/MyAppointments.vue';
+import PatientMedicalRecords from '@/views/patient/MyMedicalRecords.vue';
+import PatientConsultations from '@/views/patient/MyConsultations.vue';
+import PatientInvoices from '@/views/patient/MyInvoices.vue';
+import PatientProfile from '@/views/patient/MyProfile.vue';
 
 const routes = [
   /*
@@ -124,6 +131,12 @@ const routes = [
     component: SettingsView,
     meta: { requiresAuth: true, role: 'admin' }
   },
+  {
+    path: '/ai-assistant',
+    name: 'AIAssistant',
+    component: () => import('@/views/AIAssistantView.vue'),
+    meta: { requiresAuth: true, role: 'admin' }
+  },
 
   /*
   |--------------------------------------------------------------------------
@@ -165,17 +178,34 @@ const routes = [
     component: SecretaireDoctors,
     meta: { requiresAuth: true, role: 'secretaire' }
   },
+  /*
+  |--------------------------------------------------------------------------
+  | PATIENT ROUTES (LAYOUT DÉDIÉ)
+  |--------------------------------------------------------------------------
+  */
+  {
+    path: '/patient',
+    component: PatientLayout,
+    meta: { requiresAuth: true, role: 'patient' },
+    children: [
+      { path: 'dashboard', name: 'PatientDashboard', component: PatientDashboard },
+      { path: 'appointments', name: 'PatientAppointments', component: PatientAppointments },
+      { path: 'medical-records', name: 'PatientMedicalRecords', component: PatientMedicalRecords },
+      { path: 'consultations', name: 'PatientConsultations', component: PatientConsultations },
+      { path: 'invoices', name: 'PatientInvoices', component: PatientInvoices },
+      { path: 'profile', name: 'PatientProfile', component: PatientProfile },
+      { path: 'ai-assistant', name: 'PatientAIAssistant', component: PatientAIAssistant },
+    ]
+  },
 
   /*
   |--------------------------------------------------------------------------
-  | TON ESPACE PATIENT (AMINE)
+  | REDIRECT (ANCIENNE ROUTE PATIENT)
   |--------------------------------------------------------------------------
   */
   {
     path: '/mon-espace-patient',
-    name: 'EspacePatient',
-    component: DashboardPatient,
-    meta: { public: true } // DÉVERROUILLÉ POUR TOI AMINE !
+    redirect: '/patient/dashboard'
   }
 ];
 
@@ -224,6 +254,10 @@ router.beforeEach((to, from, next) => {
         next('/infirmier/dashboard');
         return;
       }
+      if (userRole === 'patient') {
+        next('/patient/dashboard');
+        return;
+      }
       next('/login');
       return;
     }
@@ -247,6 +281,10 @@ router.beforeEach((to, from, next) => {
       }
       if (role === 'infirmier') {
         next('/infirmier/dashboard');
+        return;
+      }
+      if (role === 'patient') {
+        next('/patient/dashboard');
         return;
       }
     }

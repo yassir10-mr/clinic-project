@@ -25,3 +25,4 @@ class DossierMedical extends Model
         return $this->belongsTo(Patient::class, 'id_patient');
     }
 }
+

@@ -354,7 +354,7 @@ onMounted(() => {
 }
 
 .subtitle {
-  color: #64748b;
+  color: #475569;
   font-size: 14px;
 }
 
@@ -403,7 +403,7 @@ onMounted(() => {
 }
 
 .stat-label {
-  color: #64748b;
+  color: #475569;
   font-size: 14px;
   font-weight: 500;
   margin-bottom: 8px;
@@ -510,13 +510,13 @@ onMounted(() => {
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   margin-bottom: 2px;
 }
 
 .doctor-info i, .motif-info i {
   font-size: 12px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 /* Status Badge */
@@ -597,7 +597,7 @@ onMounted(() => {
 
 .btn-edit {
   background: #f1f5f9;
-  color: #64748b;
+  color: #475569;
 }
 
 .btn-edit:hover {
@@ -609,7 +609,7 @@ onMounted(() => {
 .empty-state {
   text-align: center;
   padding: 60px 20px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .empty-state i {
@@ -663,7 +663,7 @@ onMounted(() => {
 .btn-close {
   background: none;
   border: none;
-  color: #94a3b8;
+  color: #475569;
   cursor: pointer;
   padding: 8px;
   border-radius: 8px;
@@ -672,7 +672,7 @@ onMounted(() => {
 
 .btn-close:hover {
   background: #f1f5f9;
-  color: #64748b;
+  color: #475569;
 }
 
 .modal-body {
@@ -730,7 +730,7 @@ onMounted(() => {
   padding: 12px 24px;
   border: 1px solid #e2e8f0;
   background: white;
-  color: #64748b;
+  color: #475569;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;

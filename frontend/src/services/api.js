@@ -12,11 +12,12 @@ const api = axios.create({
 
 // ==================== REQUEST INTERCEPTOR ====================
 api.interceptors.request.use((config) => {
-    // Support admin + secretaire + infirmier tokens
+    // Support admin + secretaire + infirmier + patient tokens
     const token =
         localStorage.getItem('admin_token') ||
         localStorage.getItem('secretaire_token') ||
         localStorage.getItem('infirmier_token') ||
+        localStorage.getItem('patient_token') ||
         localStorage.getItem('token');
 
     if (token) {
@@ -170,7 +171,9 @@ export const updateRendezVousStatus = (id, status) => {
     const endpoint =
         role === 'secretaire'
             ? `/secretaire/rendez-vous/${id}/status`
-            : `/admin/rendez-vous/${id}/status`;
+            : role === 'infirmier'
+                ? `/infirmier/rendez-vous/${id}/status`
+                : `/admin/rendez-vous/${id}/status`;
 
     return api.patch(endpoint, { statut: status });
 };
@@ -228,5 +231,21 @@ export const getInfirmierMedicalRecords = () =>
 
 export const saveInfirmierObservations = (data) =>
     api.post('/infirmier/observations', data);
+
+// ==================== PATIENT ====================
+export const getPatientAppointments = (id) =>
+    api.get(`/patient/${id}/rendez-vous`);
+
+export const cancelPatientAppointment = (id) =>
+    api.patch(`/patient/rendez-vous/${id}/annuler`);
+
+export const getPatientMedicalRecords = (id) =>
+    api.get(`/patient/${id}/dossier-medical`);
+
+export const getPatientProfile = (id) =>
+    api.get(`/patient/${id}/profile`);
+
+export const updatePatientProfile = (id, data) =>
+    api.put(`/patient/${id}/profile`, data);
 
 export default api;

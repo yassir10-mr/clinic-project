@@ -207,7 +207,7 @@ onMounted(() => {
 }
 
 .subtitle {
-  color: #64748b;
+  color: #475569;
   font-size: 14px;
 }
 
@@ -231,7 +231,7 @@ onMounted(() => {
 }
 
 .stat-info { flex: 1; }
-.stat-label { color: #64748b; font-size: 14px; font-weight: 500; margin-bottom: 8px; }
+.stat-label { color: #475569; font-size: 14px; font-weight: 500; margin-bottom: 8px; }
 .stat-value { font-size: 32px; font-weight: 700; color: #1e293b; }
 
 .stat-icon {
@@ -265,7 +265,7 @@ onMounted(() => {
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: #94a3b8;
+  color: #475569;
 }
 
 .search-box input {
@@ -373,14 +373,14 @@ onMounted(() => {
 .doctor-contact p {
   margin: 6px 0;
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .doctor-contact i {
-  color: #94a3b8;
+  color: #475569;
   font-size: 12px;
   width: 14px;
 }
@@ -414,7 +414,7 @@ onMounted(() => {
 .empty-state {
   text-align: center;
   padding: 60px;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .empty-state i { font-size: 48px; margin-bottom: 16px; display: block; }
@@ -451,13 +451,13 @@ onMounted(() => {
 .btn-close {
   background: none;
   border: none;
-  color: #94a3b8;
+  color: #475569;
   cursor: pointer;
   padding: 8px;
   border-radius: 8px;
 }
 
-.btn-close:hover { background: #f1f5f9; color: #64748b; }
+.btn-close:hover { background: #f1f5f9; color: #475569; }
 
 .modal-body { padding: 24px; }
 
@@ -491,7 +491,7 @@ onMounted(() => {
 }
 
 .specialty {
-  color: #64748b;
+  color: #475569;
   font-size: 14px;
   margin-bottom: 8px;
 }
