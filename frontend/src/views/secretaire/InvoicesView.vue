@@ -1,4 +1,4 @@
-<<template>
+<template>
   <div class="invoices-page">
     <!-- Header -->
     <div class="page-header">

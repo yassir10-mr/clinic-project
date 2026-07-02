@@ -1,10 +1,13 @@
-<<template>
+<template>
   <div class="app">
     <!-- Sidebar (hidden on pages with dedicated layout) -->
-    <aside v-if="isLoggedIn && !isAuthPage && !isDedicatedLayoutPage" class="sidebar">
+    <aside v-if="isLoggedIn && !isAuthPage && !isDedicatedLayoutPage" class="sidebar" :class="{ collapsed: sidebarCollapsed }">
       <!-- Logo -->
       <div class="sidebar-logo">
         <span class="logo-text">MediCare</span>
+        <button class="sidebar-toggle" @click="toggleSidebar" :title="sidebarCollapsed ? 'Ouvrir' : 'Fermer'">
+          <i :class="sidebarCollapsed ? 'fas fa-chevron-right' : 'fas fa-chevron-left'"></i>
+        </button>
       </div>
 
       <!-- Navigation -->
@@ -64,14 +67,17 @@
     <main :class="['main-content', isAuthPage || isDedicatedLayoutPage ? 'full-width' : '']">
       <!-- Header (hidden on pages with dedicated layout) -->
       <header v-if="isLoggedIn && !isAuthPage && !isDedicatedLayoutPage" class="top-header">
+        <div class="header-decoration">
+          <div class="header-logo">
+            <img src="/src/assets/logo-medicare.png" alt="MediCare" class="header-logo-img" />
+          </div>
+          <span class="header-tagline">"Votre santé, notre priorité"</span>
+        </div>
         <div class="header-actions">
         <button class="theme-toggle" @click="toggleTheme" :title="isDark ? 'Mode clair' : 'Mode sombre'">
           <svg v-if="isDark" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
           <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
-        <div class="header-logo">
-          <img src="/src/assets/logo-medicare.png" alt="MediCare" class="header-logo-img" />
-        </div>
         </div>
       </header>
 
@@ -94,6 +100,7 @@ const route = useRoute();
 const showProfileMenu = ref(false);
 const profileRef = ref(null);
 const isDark = ref(localStorage.getItem('theme') === 'dark');
+const sidebarCollapsed = ref(localStorage.getItem('sidebarCollapsed') === 'true');
 
 const toggleTheme = () => {
   isDark.value = !isDark.value;
@@ -195,6 +202,11 @@ const toggleProfileMenu = () => {
   showProfileMenu.value = !showProfileMenu.value;
 };
 
+const toggleSidebar = () => {
+  sidebarCollapsed.value = !sidebarCollapsed.value;
+  localStorage.setItem('sidebarCollapsed', sidebarCollapsed.value);
+};
+
 const handleClickOutside = (event) => {
   if (profileRef.value && !profileRef.value.contains(event.target)) {
     showProfileMenu.value = false;
@@ -273,6 +285,29 @@ html, body {
   height: 64px;
   padding: 0 24px;
   flex-shrink: 0;
+  gap: 12px;
+}
+
+.sidebar-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: var(--toggle-bg);
+  color: var(--toggle-color);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 12px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.sidebar-toggle:hover {
+  background: var(--toggle-hover);
+  color: var(--sidebar-hover-text);
 }
 
 .logo-text {
@@ -475,10 +510,24 @@ html, body {
   flex-shrink: 0;
 }
 
+.header-decoration {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-tagline {
+  font-family: 'Playfair Display', 'Times New Roman', Georgia, serif;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--header-tagline);
+}
+
 .header-actions {
   display: flex;
   align-items: center;
   gap: 20px;
+  margin-left: auto;
 }
 
 .header-logo {
@@ -519,28 +568,29 @@ html, body {
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 1024px) {
-  .sidebar {
+  .sidebar:not(.collapsed) {
     width: 70px;
   }
 
-  .sidebar-logo {
+  .sidebar:not(.collapsed) .sidebar-logo {
     justify-content: center;
     padding: 0;
   }
 
-  .logo-text,
-  .profile-info,
-  .profile-arrow,
-  .nav-item span {
+  .sidebar:not(.collapsed) .logo-text,
+  .sidebar:not(.collapsed) .profile-info,
+  .sidebar:not(.collapsed) .profile-arrow,
+  .sidebar:not(.collapsed) .nav-item span,
+  .sidebar:not(.collapsed) .sidebar-toggle {
     display: none;
   }
 
-  .nav-item {
+  .sidebar:not(.collapsed) .nav-item {
     justify-content: center;
     padding: 14px;
   }
 
-  .sidebar-profile {
+  .sidebar:not(.collapsed) .sidebar-profile {
     justify-content: center;
     padding: 16px 0;
   }
@@ -550,6 +600,42 @@ html, body {
   .sidebar {
     display: none;
   }
+}
+
+/* ========== COLLAPSED SIDEBAR ========== */
+.sidebar.collapsed {
+  width: 70px;
+}
+
+.sidebar.collapsed .sidebar-logo {
+  justify-content: center;
+  padding: 0;
+}
+
+.sidebar.collapsed .logo-text,
+.sidebar.collapsed .profile-info,
+.sidebar.collapsed .profile-arrow,
+.sidebar.collapsed .nav-item span,
+.sidebar.collapsed .sidebar-toggle {
+  display: none;
+}
+
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+  padding: 14px;
+}
+
+.sidebar.collapsed .sidebar-profile {
+  justify-content: center;
+  padding: 16px 0;
+}
+
+/* Profile dropdown in collapsed mode — extends to right */
+.sidebar.collapsed .profile-dropdown {
+  left: 74px;
+  bottom: auto;
+  top: -120px;
+  width: 180px;
 }
 
 /* ========== THEME TOGGLE ========== */

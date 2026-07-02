@@ -1,4 +1,4 @@
-<<template>
+<template>
   <div class="doctors-page">
     <!-- Header -->
     <div class="page-header">

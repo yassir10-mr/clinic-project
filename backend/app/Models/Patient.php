@@ -8,4 +8,9 @@ class Patient extends Model
     protected $primaryKey = 'id_patient';
     public $timestamps = false;
     protected $fillable = ['nom', 'prenom', 'date_naissance', 'sexe', 'adresse', 'telephone', 'email', 'mot_de_passe', 'groupe_sanguin'];
+
+    public function dossierMedical()
+    {
+        return $this->hasOne(DossierMedical::class, 'id_patient');
+    }
 }

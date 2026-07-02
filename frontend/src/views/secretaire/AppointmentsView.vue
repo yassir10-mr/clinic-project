@@ -1,4 +1,4 @@
-<<template>
+<template>
   <div class="appointments-page">
     <!-- Header -->
     <div class="page-header">

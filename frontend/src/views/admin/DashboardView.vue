@@ -14,49 +14,49 @@
     <!-- Stats Cards (Masqué pour les patients) -->
     <div v-if="currentUserRole !== 'patient'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <!-- Patients Card -->
-      <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
+      <div class="stat-card bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
         <div>
           <p class="text-xs font-bold text-slate-400 uppercase">Total Patients</p>
           <p class="text-2xl font-bold text-slate-900 mt-1">{{ stats.totalPatients }}</p>
           <span class="text-xs font-semibold text-emerald-600">↑ 12% depuis le mois dernier</span>
         </div>
-        <div class="p-3 bg-blue-50 text-blue-600 rounded-xl">
+        <div class="stat-icon patients p-3 rounded-xl">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
         </div>
       </div>
 
       <!-- Appointments Card -->
-      <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
+      <div class="stat-card bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
         <div>
           <p class="text-xs font-bold text-slate-400 uppercase">Rendez-vous Aujourd'hui</p>
           <p class="text-2xl font-bold text-slate-900 mt-1">{{ stats.todayAppointments }}</p>
           <span class="text-xs font-semibold text-emerald-600">↑ 8% aujourd'hui</span>
         </div>
-        <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
+        <div class="stat-icon appointments p-3 rounded-xl">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
         </div>
       </div>
 
       <!-- Revenue Card -->
-      <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
+      <div class="stat-card bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
         <div>
           <p class="text-xs font-bold text-slate-400 uppercase">Revenu Mensuel</p>
           <p class="text-2xl font-bold text-slate-900 mt-1">{{ stats.monthlyRevenue }} DH</p>
           <span class="text-xs font-semibold text-emerald-600">↑ 15% ce mois</span>
         </div>
-        <div class="p-3 bg-teal-50 text-teal-600 rounded-xl">
+        <div class="stat-icon revenue p-3 rounded-xl">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
         </div>
       </div>
 
       <!-- Doctors Card -->
-      <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
+      <div class="stat-card bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
         <div>
           <p class="text-xs font-bold text-slate-400 uppercase">Médecins Actifs</p>
           <p class="text-2xl font-bold text-slate-900 mt-1">{{ stats.activeDoctors }}</p>
           <span class="text-xs text-slate-400">Personnel de garde</span>
         </div>
-        <div class="p-3 bg-purple-50 text-purple-600 rounded-xl">
+        <div class="stat-icon doctors p-3 rounded-xl">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
         </div>
       </div>

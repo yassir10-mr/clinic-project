@@ -1,4 +1,4 @@
-<<template>
+<template>
   <div class="page">
     <!-- Page Header -->
     <div class="page-header">
