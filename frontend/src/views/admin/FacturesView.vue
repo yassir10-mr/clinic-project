@@ -267,15 +267,17 @@ const montantTotal = computed(() => {
   return factures.value.reduce((sum, f) => sum + parseFloat(f.montant_total || 0), 0);
 });
 
+const s = (v) => (v || '').toLowerCase();
+
 const montantPaye = computed(() => {
   return factures.value
-    .filter(f => f.statut_paiement === 'payé')
+    .filter(f => s(f.statut_paiement) === 'payé' || s(f.statut_paiement) === 'paye')
     .reduce((sum, f) => sum + parseFloat(f.montant_total || 0), 0);
 });
 
 const montantPending = computed(() => {
   return factures.value
-    .filter(f => f.statut_paiement === 'non payé')
+    .filter(f => s(f.statut_paiement) === 'non payé' || s(f.statut_paiement) === 'non paye')
     .reduce((sum, f) => sum + parseFloat(f.montant_total || 0), 0);
 });
 
@@ -283,7 +285,7 @@ const montantOverdue = computed(() => {
   const today = new Date();
   return factures.value
     .filter(f => {
-      if (f.statut_paiement === 'payé') return false;
+      if (s(f.statut_paiement) === 'payé' || s(f.statut_paiement) === 'paye') return false;
       const factureDate = new Date(f.date);
       const diffDays = Math.floor((today - factureDate) / (1000 * 60 * 60 * 24));
       return diffDays > 30;
@@ -302,19 +304,15 @@ const formatDate = (dateStr) => {
 };
 
 const getStatusClass = (status) => {
-  switch (status) {
-    case 'payé': return 'status-paid';
-    case 'non payé': return 'status-pending';
-    default: return 'status-pending';
-  }
+  const n = (status || '').toLowerCase();
+  if (n === 'payé' || n === 'paye') return 'status-paid';
+  return 'status-pending';
 };
 
 const getStatusLabel = (status) => {
-  switch (status) {
-    case 'payé': return 'paid';
-    case 'non payé': return 'pending';
-    default: return 'pending';
-  }
+  const n = (status || '').toLowerCase();
+  if (n === 'payé' || n === 'paye') return 'paid';
+  return 'pending';
 };
 
 const openAddModal = () => {

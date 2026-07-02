@@ -222,7 +222,7 @@
               <p><strong>Amount:</strong> {{ selectedConsult.facture.montant_total }} DH</p>
 
               <p><strong>Status:</strong> 
-                <span :class="selectedConsult.facture.statut_paiement === 'payé' ? 'text-success' : 'text-warning'">
+                <span :class="isStatutPaye(selectedConsult.facture.statut_paiement) ? 'text-success' : 'text-warning'">
                   {{ selectedConsult.facture.statut_paiement }}
                 </span>
               </p>
@@ -381,6 +381,11 @@ const formatDate = (dateStr) => {
     month: '2-digit',
     year: 'numeric'
   })
+}
+
+const isStatutPaye = (status) => {
+  const n = (status || '').toLowerCase()
+  return n === 'payé' || n === 'paye'
 }
 
 const getInitials = (patient) => {

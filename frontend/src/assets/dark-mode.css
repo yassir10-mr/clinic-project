@@ -177,7 +177,7 @@
 
 /* ========== TAILWIND UTILITY OVERRIDES ========== */
 [data-theme="dark"] .bg-slate-50 {
-  background: #1e293b !important;
+  background: #0f172a !important;
 }
 
 [data-theme="dark"] .bg-white {
@@ -771,7 +771,7 @@ html[data-theme="dark"] .status-badge.completed,
 html[data-theme="dark"] .status-badge.terminé,
 html[data-theme="dark"] .status-badge.termine,
 html[data-theme="dark"] .status-completed {
-  background: #0f172a !important;
+  background: #1e293b !important;
   color: #5eead4 !important;
 }
 
@@ -1320,8 +1320,9 @@ html[data-theme="dark"] .status-completed {
 }
 
 [data-theme="dark"] .date-header {
-  background: #0f172a !important;
-  border-bottom-color: #334155 !important;
+  background: transparent !important;
+  border-bottom: 2px solid #5eead4 !important;
+  padding-bottom: 10px !important;
 }
 
 [data-theme="dark"] .date-text {

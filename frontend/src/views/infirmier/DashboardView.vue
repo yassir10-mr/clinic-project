@@ -94,7 +94,7 @@
             <p class="appointment-type">{{ rdv.motif }}</p>
           </div>
           <div class="appointment-status">
-            <span :class="['status-badge', rdv.statut]">
+            <span :class="['status-badge', getStatusClass(rdv.statut)]">
               {{ formatStatus(rdv.statut) }}
             </span>
           </div>
@@ -138,13 +138,17 @@ const formatNumber = (num) => {
 };
 
 const formatStatus = (status) => {
-  const map = {
-    'en attente': 'pending',
-    'confirme': 'confirmed',
-    'annule': 'cancelled',
-    'termine': 'completed'
-  };
   return status || 'pending';
+};
+
+const getStatusClass = (status) => {
+  if (!status) return 'pending';
+  const s = status.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  if (s.includes('confirme')) return 'confirmed';
+  if (s.includes('attente')) return 'pending';
+  if (s.includes('annule')) return 'cancelled';
+  if (s.includes('termine')) return 'completed';
+  return 'pending';
 };
 
 const fetchData = async () => {

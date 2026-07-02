@@ -1,7 +1,7 @@
 <template>
-  <div class="app">
+  <div class="app" :class="{ 'sidebar-collapsed': sidebarCollapsed }">
     <!-- Sidebar (hidden on pages with dedicated layout) -->
-    <aside v-if="isLoggedIn && !isAuthPage && !isDedicatedLayoutPage" class="sidebar" :class="{ collapsed: sidebarCollapsed }">
+    <aside v-if="isLoggedIn && !isAuthPage && !isDedicatedLayoutPage" class="sidebar">
       <!-- Logo -->
       <div class="sidebar-logo">
         <span class="logo-text">MediCare</span>
@@ -17,49 +17,33 @@
           :key="item.path"
           :to="item.path"
           class="nav-item"
-          :class="{ active: $route.path === item.path || $route.path.startsWith(item.path + '/') }"
+          :class="{ active: isActive(item.path) }"
         >
-          <i :class="item.icon"></i>
+          <div class="nav-icon">
+            <i :class="item.icon"></i>
+          </div>
           <span>{{ item.label }}</span>
         </router-link>
       </nav>
 
       <!-- Profile -->
-      <div class="sidebar-profile" @click="toggleProfileMenu" ref="profileRef">
+      <div class="sidebar-profile" @click="toggleLogoutDropdown">
         <div class="profile-avatar">{{ userInitials }}</div>
-
         <div class="profile-info">
           <p class="profile-name">{{ userFullName }}</p>
           <p class="profile-role">{{ userRoleLabel }}</p>
         </div>
+        <i class="fas fa-chevron-down profile-arrow"></i>
 
-        <i class="fas fa-chevron-up profile-arrow" :class="{ open: showProfileMenu }"></i>
-
-        <!-- Dropdown -->
-        <div v-if="showProfileMenu" class="profile-dropdown">
-          <div class="dropdown-header">
-            <p class="dropdown-title">My Account</p>
+        <!-- Logout Dropdown -->
+        <Transition name="dropdown">
+          <div v-if="showLogoutDropdown" class="profile-dropdown">
+            <button @click.stop="handleLogout" class="dropdown-item">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </button>
           </div>
-
-          <div class="dropdown-divider"></div>
-
-          <router-link
-            to="/settings"
-            class="dropdown-item"
-            @click="showProfileMenu = false"
-            v-if="isAdmin"
-          >
-            <i class="fas fa-cog"></i>
-            <span>Settings</span>
-          </router-link>
-
-          <div class="dropdown-divider" v-if="isAdmin"></div>
-
-          <button @click="handleLogout" class="dropdown-item logout">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
-          </button>
-        </div>
+        </Transition>
       </div>
     </aside>
 
@@ -97,8 +81,7 @@ import { logout } from '@/services/api.js';
 const router = useRouter();
 const route = useRoute();
 
-const showProfileMenu = ref(false);
-const profileRef = ref(null);
+const showLogoutDropdown = ref(false);
 const isDark = ref(localStorage.getItem('theme') === 'dark');
 const sidebarCollapsed = ref(localStorage.getItem('sidebarCollapsed') === 'true');
 
@@ -114,7 +97,7 @@ const isAuthPage = computed(() => {
 });
 
 const isDedicatedLayoutPage = computed(() => {
-  return route.path.startsWith('/infirmier') || route.path.startsWith('/patient');
+  return route.path.startsWith('/infirmier/') || route.path.startsWith('/patient/');
 });
 
 const isAIAssistantPage = computed(() => {
@@ -197,9 +180,13 @@ const menuItems = computed(() => {
   ];
 });
 
+const isActive = (path) => {
+  return route.path === path || route.path.startsWith(path + '/');
+};
+
 // Dropdown
-const toggleProfileMenu = () => {
-  showProfileMenu.value = !showProfileMenu.value;
+const toggleLogoutDropdown = () => {
+  showLogoutDropdown.value = !showLogoutDropdown.value;
 };
 
 const toggleSidebar = () => {
@@ -208,8 +195,8 @@ const toggleSidebar = () => {
 };
 
 const handleClickOutside = (event) => {
-  if (profileRef.value && !profileRef.value.contains(event.target)) {
-    showProfileMenu.value = false;
+  if (!event.target.closest('.sidebar-profile')) {
+    showLogoutDropdown.value = false;
   }
 };
 
@@ -224,7 +211,7 @@ onUnmounted(() => {
 
 // Logout
 const handleLogout = async () => {
-  showProfileMenu.value = false;
+  showLogoutDropdown.value = false;
 
   try {
     await logout();
@@ -277,32 +264,32 @@ html, body {
   flex-direction: column;
   flex-shrink: 0;
   overflow-y: auto;
+  transition: width 0.3s ease;
 }
 
 .sidebar-logo {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   height: 64px;
   padding: 0 24px;
   flex-shrink: 0;
-  gap: 12px;
 }
 
 .sidebar-toggle {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  border: none;
-  border-radius: 6px;
-  background: var(--toggle-bg);
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--sidebar-border);
+  border-radius: 10px;
+  background: transparent;
   color: var(--toggle-color);
   cursor: pointer;
   transition: all 0.2s;
-  font-size: 12px;
+  font-size: 14px;
   flex-shrink: 0;
-  margin-left: auto;
 }
 
 .sidebar-toggle:hover {
@@ -362,6 +349,14 @@ html, body {
   font-size: 16px;
 }
 
+.nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  flex-shrink: 0;
+}
+
 /* Sidebar Profile */
 .sidebar-profile {
   padding: 16px;
@@ -417,12 +412,7 @@ html, body {
 .profile-arrow {
   font-size: 12px;
   color: var(--profile-arrow);
-  transition: transform 0.2s;
   flex-shrink: 0;
-}
-
-.profile-arrow.open {
-  transform: rotate(180deg);
 }
 
 /* Profile Dropdown */
@@ -440,31 +430,12 @@ html, body {
   z-index: 200;
 }
 
-.dropdown-header {
-  padding: 8px 16px;
-}
-
-.dropdown-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--profile-role);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 0;
-}
-
-.dropdown-divider {
-  height: 1px;
-  background: var(--sidebar-divider);
-  margin: 8px 0;
-}
-
 .dropdown-item {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 10px 16px;
-  color: var(--dropdown-item);
+  color: var(--dropdown-item-logout);
   text-decoration: none;
   font-size: 14px;
   transition: background 0.2s;
@@ -479,14 +450,22 @@ html, body {
   background: var(--dropdown-hover);
 }
 
-.dropdown-item.logout {
-  color: var(--dropdown-item-logout);
-}
-
 .dropdown-item i {
   width: 16px;
   text-align: center;
   font-size: 14px;
+}
+
+/* Dropdown transition */
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: all 0.2s ease;
+}
+
+.dropdown-enter-from,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
 }
 
 /* ========== MAIN CONTENT ========== */
@@ -505,7 +484,7 @@ html, body {
   border-bottom: 1px solid var(--header-border);
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding: 0 32px;
   flex-shrink: 0;
 }
@@ -567,34 +546,6 @@ html, body {
 }
 
 /* ========== RESPONSIVE ========== */
-@media (max-width: 1024px) {
-  .sidebar:not(.collapsed) {
-    width: 70px;
-  }
-
-  .sidebar:not(.collapsed) .sidebar-logo {
-    justify-content: center;
-    padding: 0;
-  }
-
-  .sidebar:not(.collapsed) .logo-text,
-  .sidebar:not(.collapsed) .profile-info,
-  .sidebar:not(.collapsed) .profile-arrow,
-  .sidebar:not(.collapsed) .nav-item span {
-    display: none;
-  }
-
-  .sidebar:not(.collapsed) .nav-item {
-    justify-content: center;
-    padding: 14px;
-  }
-
-  .sidebar:not(.collapsed) .sidebar-profile {
-    justify-content: center;
-    padding: 16px 0;
-  }
-}
-
 @media (max-width: 768px) {
   .sidebar {
     display: none;
@@ -602,34 +553,41 @@ html, body {
 }
 
 /* ========== COLLAPSED SIDEBAR ========== */
-.sidebar.collapsed {
+.sidebar-collapsed .sidebar {
   width: 70px;
 }
 
-.sidebar.collapsed .sidebar-logo {
+.sidebar-collapsed .sidebar-logo {
   justify-content: center;
-  padding: 0;
+  padding: 0 14px;
 }
 
-.sidebar.collapsed .logo-text,
-.sidebar.collapsed .profile-info,
-.sidebar.collapsed .profile-arrow,
-.sidebar.collapsed .nav-item span,
-.sidebar.collapsed .nav-item {
+.sidebar-collapsed .logo-text,
+.sidebar-collapsed .profile-info,
+.sidebar-collapsed .profile-arrow {
+  display: none;
+}
+
+.sidebar-collapsed .nav-item span {
+  display: none;
+}
+
+.sidebar-collapsed .nav-item {
   justify-content: center;
   padding: 14px;
 }
 
-.sidebar.collapsed .sidebar-profile {
+.sidebar-collapsed .sidebar-profile {
   justify-content: center;
   padding: 16px 0;
 }
 
 /* Profile dropdown in collapsed mode — extends to right */
-.sidebar.collapsed .profile-dropdown {
+.sidebar-collapsed .profile-dropdown {
   left: 74px;
   bottom: auto;
-  top: -120px;
+  top: auto;
+  bottom: 80px;
   width: 180px;
 }
 

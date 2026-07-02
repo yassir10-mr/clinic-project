@@ -88,8 +88,9 @@ const user = JSON.parse(localStorage.getItem('patient_user') || '{}');
 const idPatient = user.id || user.id_patient;
 
 const stats = computed(() => {
-  const paye = factures.value.filter(f => f.statut_paiement === 'payé' || f.statut_paiement === 'paye').length;
-  const enAttente = factures.value.filter(f => f.statut_paiement !== 'payé' && f.statut_paiement !== 'paye').length;
+  const normalize = (s) => (s || '').toLowerCase();
+  const paye = factures.value.filter(f => normalize(f.statut_paiement) === 'payé' || normalize(f.statut_paiement) === 'paye').length;
+  const enAttente = factures.value.filter(f => normalize(f.statut_paiement) !== 'payé' && normalize(f.statut_paiement) !== 'paye').length;
   const montantTotal = factures.value.reduce((sum, f) => sum + Number(f.montant_total), 0);
   return { paye, enAttente, montantTotal };
 });

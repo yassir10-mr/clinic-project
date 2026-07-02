@@ -274,19 +274,21 @@ const form = ref({
   mode_paiement: ''
 })
 
+const s = (v) => (v || '').toLowerCase()
+
 const stats = computed(() => {
   const total_revenue = invoices.value.reduce((sum, inv) => sum + Number(inv.montant_total || 0), 0)
   const paid = invoices.value
-    .filter(inv => inv.statut_paiement === 'payé')
+    .filter(inv => s(inv.statut_paiement) === 'payé' || s(inv.statut_paiement) === 'paye')
     .reduce((sum, inv) => sum + Number(inv.montant_total || 0), 0)
   const pending = invoices.value
-    .filter(inv => inv.statut_paiement === 'non payé')
+    .filter(inv => s(inv.statut_paiement) === 'non payé' || s(inv.statut_paiement) === 'non paye')
     .reduce((sum, inv) => sum + Number(inv.montant_total || 0), 0)
   // Overdue = unpaid invoices older than 30 days
   const thirtyDaysAgo = new Date()
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
   const overdue = invoices.value
-    .filter(inv => inv.statut_paiement === 'non payé' && new Date(inv.date) < thirtyDaysAgo)
+    .filter(inv => (s(inv.statut_paiement) === 'non payé' || s(inv.statut_paiement) === 'non paye') && new Date(inv.date) < thirtyDaysAgo)
     .reduce((sum, inv) => sum + Number(inv.montant_total || 0), 0)
   
   return { total_revenue, paid, pending, overdue }
@@ -320,11 +322,9 @@ const formatInvoiceId = (id) => {
 }
 
 const getStatusClass = (status) => {
-  const classes = {
-    'payé': 'paid',
-    'non payé': 'unpaid'
-  }
-  return classes[status] || 'unpaid'
+  const n = (status || '').toLowerCase()
+  if (n === 'payé' || n === 'paye') return 'paid'
+  return 'unpaid'
 }
 
 const viewInvoice = (invoice) => {
