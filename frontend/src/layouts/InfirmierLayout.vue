@@ -5,7 +5,7 @@
       <!-- Logo -->
       <div class="sidebar-logo">
         <span class="logo-text">MediCare</span>
-        <button class="sidebar-toggle" @click="sidebarCollapsed = !sidebarCollapsed" :title="sidebarCollapsed ? 'Ouvrir' : 'Fermer'">
+        <button class="sidebar-toggle" @click="toggleSidebar" :title="sidebarCollapsed ? 'Ouvrir' : 'Fermer'">
           <i :class="sidebarCollapsed ? 'fas fa-chevron-right' : 'fas fa-chevron-left'"></i>
         </button>
       </div>
@@ -75,12 +75,17 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { logout as apiLogout } from '@/services/api.js';
+import { getInfirmierDashboard, logout } from '@/services/api.js';
 
 const router = useRouter();
 const route = useRoute();
 const showLogoutDropdown = ref(false);
-const sidebarCollapsed = ref(false);
+const sidebarCollapsed = ref(localStorage.getItem('infirmierSidebarCollapsed') === 'true');
+
+const toggleSidebar = () => {
+  sidebarCollapsed.value = !sidebarCollapsed.value;
+  localStorage.setItem('infirmierSidebarCollapsed', sidebarCollapsed.value);
+};
 
 const menuItems = [
   { path: '/infirmier/dashboard', label: 'Dashboard', icon: 'fas fa-th-large' },

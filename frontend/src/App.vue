@@ -580,8 +580,7 @@ html, body {
   .sidebar:not(.collapsed) .logo-text,
   .sidebar:not(.collapsed) .profile-info,
   .sidebar:not(.collapsed) .profile-arrow,
-  .sidebar:not(.collapsed) .nav-item span,
-  .sidebar:not(.collapsed) .sidebar-toggle {
+  .sidebar:not(.collapsed) .nav-item span {
     display: none;
   }
 
@@ -616,10 +615,6 @@ html, body {
 .sidebar.collapsed .profile-info,
 .sidebar.collapsed .profile-arrow,
 .sidebar.collapsed .nav-item span,
-.sidebar.collapsed .sidebar-toggle {
-  display: none;
-}
-
 .sidebar.collapsed .nav-item {
   justify-content: center;
   padding: 14px;
